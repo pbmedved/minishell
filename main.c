@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/16 21:46:17 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/16 22:14:37 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ char			*str_parser(char *buff, int *n)
 	i = 0;
 	brack = 0;
 	brack_2 = 0;
+	while (buff[i] == ' ')
+		i++;
 	while (buff[i] && (!ft_strchr(" |;", buff[i]) || brack || brack_2))
 	{
 		if (buff[i] == '\'')
@@ -80,6 +82,7 @@ void		buff_parser(t_vars *vars, char *buff)
 				buff++;
 		}
 		command_add(&vars->comm, new_comm);
+		buff++;
 	}
 }
 
@@ -107,40 +110,43 @@ void 		call_echo(t_args *args)
 
 void 		command_handler(t_command *comm)
 {
-	if (comm && !ft_strncmp(comm->command, "echo", 10))
-		call_echo(comm->args);
-	else if (comm && !ft_strncmp(comm->command, "cd", 2))
-		ft_printf("cd");
-	else if (comm && !ft_strncmp(comm->command, "pwd", 3))
-		ft_printf("pwd");
-	else if (comm && !ft_strncmp(comm->command, "export", 6))
-		ft_printf("export");
-	else if (comm && !ft_strncmp(comm->command, "unset", 5))
-		ft_printf("unset");
-	else if (comm && !ft_strncmp(comm->command, "env", 3))
-		ft_printf("env");
-	else if (comm && !ft_strncmp(comm->command, "exit", 4))
-		ft_printf("exit");
+	while (comm)
+	{
+		if (comm && !ft_strncmp(comm->command, "echo", 10))
+			call_echo(comm->args);
+		else if (comm && !ft_strncmp(comm->command, "cd", 2))
+			ft_printf("cd");
+		else if (comm && !ft_strncmp(comm->command, "pwd", 3))
+			ft_printf("pwd");
+		else if (comm && !ft_strncmp(comm->command, "export", 6))
+			ft_printf("export");
+		else if (comm && !ft_strncmp(comm->command, "unset", 5))
+			ft_printf("unset");
+		else if (comm && !ft_strncmp(comm->command, "env", 3))
+			ft_printf("env");
+		else if (comm && !ft_strncmp(comm->command, "exit", 4))
+			ft_printf("exit");
+		comm = comm->next;
+	}
 }
 
 void 		command_getter(t_vars *vars)
 {
+	char *promt;
+
+	promt = env_take(vars, "USER");
 	for (int i = 0; i < 100; ++i)
 	{
-		ft_printf("%s$ ", "USER:");
+		ft_printf("%s$ ", promt);
 //		if (0 > read(1,vars->buff, BUFF_SIZE))
 //			exit_error("Read error\n", errno);
-		ft_strlcpy(vars->buff, "echo '\"lol\"'", 200);
+		ft_strlcpy(vars->buff, "echo lol | echo lol", 200);
 		buff_parser(vars, vars->buff);
 		command_handler(vars->comm);
 		dell_all_command(&vars->comm);
 		ft_bzero(vars->buff, BUFF_SIZE);
-//		free(vars->buff);
-//		free(vars->env.promt);
 	}
 }
-
-
 
 int			main(int argc, char **argv, char **envp) {
 	t_vars 	vars;
