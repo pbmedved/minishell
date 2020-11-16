@@ -10,7 +10,8 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRC = main.c includes/minishell.h src/parser/command/command.c src/utils/utils.c src/parser/args/arg.c src/errors/errors.c libft/libft.a ft_printf/libftprintf.a
+SRC = main.c includes/minishell.h src/parser/command/command.c src/utils/utils.c src/parser/args/arg.c src/errors/errors.c src/parser/env/env.c \
+libft/libft.a ft_printf/libftprintf.a
 
 all:
 	$(MAKE) -C libft

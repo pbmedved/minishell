@@ -6,23 +6,13 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/16 16:45:03 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/16 19:13:19 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
 
-void 		get_promt(t_env *env, char **envp)
-{
-	int i;
-
-	i = 0;
-	while (envp[i] && !ft_strnstr(envp[i],"USER=",5))
-		i++;
-	if (envp[i])
-		env->promt = ft_strdup(envp[i]+5);
-}
 
 void 		preallocated(t_vars *vars)
 {
@@ -36,30 +26,39 @@ int			arg_parser(char *buff, t_args **arg)
 {
 	t_args		*new_arg;
 	int			i;
+	int			brack;
 
 	i = 0;
+	brack = 0;
+	new_arg = arg_new();
 	while (*buff && !ft_strchr("|;", *buff))
 	{
-		new_arg = arg_new();
-		while (*buff && !ft_strchr(" |;", *buff))
+		if (*buff == '"')
 		{
-			new_arg->arg = str_reallocpy(new_arg->arg, *buff);
+			brack ? brack-- : brack++;
 			buff++;
 			i++;
-			if (*buff == 92)
+		}
+		else if (*buff == ' ' && !brack)
+		{
+			arg_add(arg, new_arg);
+			new_arg = arg_new();
+			while (*buff && *buff == ' ')
 			{
-				new_arg->arg = str_reallocpy(new_arg->arg, *buff);
 				buff++;
 				i++;
 			}
 		}
-		arg_add(arg, new_arg);
-		while (*buff == ' ')
+		else
 		{
+			new_arg->arg = str_reallocpy(new_arg->arg, *buff);
 			buff++;
 			i++;
 		}
 	}
+	if (!*arg && !brack)
+		arg_add(arg, new_arg);
+//	else if (brack)
 	return (i);
 }
 
@@ -86,12 +85,40 @@ int			command_parser(char *buff, t_vars *vars)
 	return (i);
 }
 
+void			args_fix(t_args *args)
+{
+	if (args)
+	{
+		if (ft_strlen(args->arg) == 1 && args->arg[0] == 92)
+			args->arg[0] = ' ';
+	}
+}
+void			str_fix(t_command *comm)
+{
+	t_command	*comm_node;
+	t_args		*args_node;
+
+	comm_node = comm;
+	while (comm_node)
+	{
+		args_node = comm_node->args;
+		//comm fix
+		while (args_node)
+		{
+			args_fix(args_node);
+			args_node = args_node->next;
+		}
+		comm_node = comm_node->next;
+	}
+}
+
 void		buff_parser(t_vars *vars, char *buff)
 {
 	while (*buff)
 	{
 		buff += command_parser(buff, vars);
 	}
+	str_fix(vars->comm);
 }
 
 void 		call_echo(t_args *args)
@@ -119,20 +146,29 @@ void 		call_echo(t_args *args)
 void 		command_handler(t_command *comm)
 {
 	if (comm && !ft_strncmp(comm->command, "echo", 10))
-	{
 		call_echo(comm->args);
-	}
-
+	else if (comm && !ft_strncmp(comm->command, "cd", 2))
+		ft_printf("cd");
+	else if (comm && !ft_strncmp(comm->command, "pwd", 3))
+		ft_printf("pwd");
+	else if (comm && !ft_strncmp(comm->command, "export", 6))
+		ft_printf("export");
+	else if (comm && !ft_strncmp(comm->command, "unset", 5))
+		ft_printf("unset");
+	else if (comm && !ft_strncmp(comm->command, "env", 3))
+		ft_printf("env");
+	else if (comm && !ft_strncmp(comm->command, "exit", 4))
+		ft_printf("exit");
 }
 
-void 		command_getter(t_vars *vars, t_env *env)
+void 		command_getter(t_vars *vars)
 {
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
-		ft_printf("%s$ ", env->promt);
-//		if ((read(1, vars->buff, BUFF_SIZE)) < 0)
-//			exit_error("Read error\n", errno);
-		ft_strlcpy(vars->buff, "echo lol", 100);
+		ft_printf("%s$ ", "USER:");
+		if (0 > read(1,vars->buff, BUFF_SIZE))
+			exit_error("Read error\n", errno);
+//		ft_strlcpy(vars->buff, "echo \"     space     \"\"lolkaneshn\"  \\ \\ mda    ", 200);
 		buff_parser(vars, vars->buff);
 		command_handler(vars->comm);
 		dell_all_command(&vars->comm);
@@ -147,11 +183,10 @@ int			main(int argc, char **argv, char **envp) {
 	char 	*s = argv[0];
 	int d = argc;
 	if (s) {
-		get_promt(&vars.env, envp);
+		env_save(&vars, envp);
 		preallocated(&vars);
-		command_getter(&vars, &vars.env);
+		command_getter(&vars);
 	}
 	free(vars.buff);
-	free(vars.env.promt);
 	return d;
 }

@@ -26,11 +26,13 @@ typedef struct	 		s_command {
 }						t_command;
 
 typedef struct			s_env {
-	char				*promt;
+	char				*key;
+	char				*value;
+	struct s_env		*next;
 }						t_env;
 
 typedef struct 			s_vars {
-	t_env				env;
+	t_env				*env;
 	char 				*buff;
 	int					state; // 1 waiting; 0 EOF
 	struct s_command	*comm;
@@ -48,6 +50,12 @@ t_args			*arg_new();
 void 			arg_add(t_args **arg, t_args *new);
 void			dell_all_args(t_args **arg);
 
+
+
+t_env 			*env_create();
+void	 		env_add(t_env **main, t_env *new);
+void			env_save(t_vars *vars, char **envp);
+char			*env_take(t_vars *vars, const char *key);
 /*
  * 		UTILS
  */
