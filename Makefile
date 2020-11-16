@@ -6,7 +6,7 @@
 #    By: iadrien <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/15 22:40:53 by iadrien           #+#    #+#              #
-#    Updated: 2020/11/15 23:33:25 by iadrien          ###   ########.fr        #
+#    Updated: 2020/11/16 16:37:43 by iadrien          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,3 +16,7 @@ all:
 	$(MAKE) -C libft
 	$(MAKE) -C ft_printf
 	gcc -Wall -Wextra -Werror $(SRC)
+clean:
+	$(MAKE) -C libft clean
+	$(MAKE) -C ft_printf clean
+	rm -f a.out
