@@ -20,8 +20,6 @@ t_args			*arg_new()
 		exit_error("Malloc error", 1);
 	new_arg->next = NULL;
 	new_arg->state = 1;
-	if (!(new_arg->arg = ft_calloc(1,1)))
-		exit_error("Calloc error", 1);
 	return (new_arg);
 }
 

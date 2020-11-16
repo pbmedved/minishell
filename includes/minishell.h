@@ -56,6 +56,7 @@ t_env 			*env_create();
 void	 		env_add(t_env **main, t_env *new);
 void			env_save(t_vars *vars, char **envp);
 char			*env_take(t_vars *vars, const char *key);
+void			dell_all_env(t_env **env);
 /*
  * 		UTILS
  */

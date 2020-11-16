@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/16 19:32:22 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/16 21:46:17 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,139 +20,67 @@ void 		preallocated(t_vars *vars)
 		exit_error("Malloc error\n", errno);
 	vars->state = 1;
 	vars->comm = NULL;
+	vars->env = NULL;
 }
 
-int			arg_parser(char *buff, t_args **arg)
+char			*str_parser(char *buff, int *n)
 {
-	t_args		*new_arg;
 	int			i;
 	int			brack;
 	int			brack_2;
+	char		*new_s;
 
+	new_s = ft_calloc(1,1);
 	i = 0;
 	brack = 0;
 	brack_2 = 0;
-	new_arg = arg_new();
-	while (*buff && !ft_strchr("|;", *buff))
+	while (buff[i] && (!ft_strchr(" |;", buff[i]) || brack || brack_2))
 	{
-		if (*buff == '\'')
+		if (buff[i] == '\'')
 		{
 			brack ? brack-- : brack++;
-			buff++;
 			i++;
 		}
-		else if (*buff == 92)
+		else if (buff[i] == '"' && !brack)
 		{
-			if (brack)
-			{
-				new_arg->arg = str_reallocpy(new_arg->arg, *buff);
-				buff++;
-				i++;
-			}
-			else
-			{
-				buff++;
-				new_arg->arg = str_reallocpy(new_arg->arg, *buff);
-				buff++;
-				i += 2;
-			}
+			brack_2 ? brack_2-- : brack_2++;
+			i++;
 		}
-		else if (*buff == '"')
+		else if (buff[i] == 92 && !brack)
 		{
-			if (brack)
-			{
-				new_arg->arg = str_reallocpy(new_arg->arg, *buff);
-				buff++;
-				i++;
-			}
-			else
-			{
-				brack_2 ? brack_2-- : brack_2++;
-				buff++;
-				i++;
-			}
-
-		}
-		else if (*buff == ' ' && !brack_2)
-		{
-			arg_add(arg, new_arg);
-			new_arg = arg_new();
-			while (*buff && *buff == ' ')
-			{
-				buff++;
-				i++;
-			}
+			i++;
+			new_s = str_reallocpy(new_s, buff[i++]);
 		}
 		else
-		{
-			new_arg->arg = str_reallocpy(new_arg->arg, *buff);
-			buff++;
-			i++;
-		}
+			new_s = str_reallocpy(new_s, buff[i++]);
 	}
-//	if (!*arg && !brack_2)
-	arg_add(arg, new_arg);
-//	else if (brack)
-	return (i);
-}
-
-int			command_parser(char *buff, t_vars *vars)
-{
-	int i;
-	t_command *new_comm;
-
-	i = 0;
-	new_comm = command_new();
-	while (*buff && !ft_strchr(" |;", *buff))
-	{
-		new_comm->command = str_reallocpy(new_comm->command, *buff);
-		buff++;
-		i++;
-	}
-	while (*buff == ' ')
-	{
-		buff++;
-		i++;
-	}
-	i += arg_parser(buff, &new_comm->args);
-	command_add(&vars->comm, new_comm);
-	return (i);
-}
-
-void			args_fix(t_args *args)
-{
-	if (args)
-	{
-		if (ft_strlen(args->arg) == 1 && args->arg[0] == 92)
-			args->arg[0] = ' ';
-	}
-}
-void			str_fix(t_command *comm)
-{
-	t_command	*comm_node;
-	t_args		*args_node;
-
-	comm_node = comm;
-	while (comm_node)
-	{
-		args_node = comm_node->args;
-		//comm fix
-		while (args_node)
-		{
-			args_fix(args_node);
-			args_node = args_node->next;
-		}
-		comm_node = comm_node->next;
-	}
+	*n = i;
+	return (new_s);
 }
 
 void		buff_parser(t_vars *vars, char *buff)
 {
+	int n;
+	t_command 	*new_comm;
+	t_args		*new_arg;
 	while (*buff)
 	{
-		buff += command_parser(buff, vars);
+		new_comm = command_new();
+		new_comm->command = str_parser(buff, &n);
+		buff += n;
+		while (*buff == ' ')
+			buff++;
+		while (*buff && !ft_strchr("|;", *buff))
+		{
+			new_arg = arg_new();
+			new_arg->arg = str_parser(buff, &n);
+			arg_add(&new_comm->args,new_arg);
+			buff += n;
+			while (*buff == ' ')
+				buff++;
+		}
+		command_add(&vars->comm, new_comm);
 	}
-//	str_fix(vars->comm);
 }
 
 void 		call_echo(t_args *args)
@@ -200,9 +128,9 @@ void 		command_getter(t_vars *vars)
 	for (int i = 0; i < 100; ++i)
 	{
 		ft_printf("%s$ ", "USER:");
-		if (0 > read(1,vars->buff, BUFF_SIZE))
-			exit_error("Read error\n", errno);
-//		ft_strlcpy(vars->buff, "echo '\\\\\\'", 200);
+//		if (0 > read(1,vars->buff, BUFF_SIZE))
+//			exit_error("Read error\n", errno);
+		ft_strlcpy(vars->buff, "echo '\"lol\"'", 200);
 		buff_parser(vars, vars->buff);
 		command_handler(vars->comm);
 		dell_all_command(&vars->comm);
@@ -212,15 +140,18 @@ void 		command_getter(t_vars *vars)
 	}
 }
 
+
+
 int			main(int argc, char **argv, char **envp) {
 	t_vars 	vars;
 	char 	*s = argv[0];
 	int d = argc;
 	if (s) {
-		env_save(&vars, envp);
 		preallocated(&vars);
+		env_save(&vars, envp);
 		command_getter(&vars);
 	}
 	free(vars.buff);
-	return d;
+	dell_all_env(&vars.env);
+	return (0);
 }

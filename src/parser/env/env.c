@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 19:02:28 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/16 19:02:37 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/16 21:46:32 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,23 @@ char			*env_take(t_vars *vars, const char *key)
 		env = env->next;
 	}
 	return (NULL);
+}
+
+void		dell_all_env(t_env **env)
+{
+	t_env	*main;
+	t_env	*res;
+
+	main = *env;
+	while (main)
+	{
+		free(main->key);
+		main->key = NULL;
+		free(main->value);
+		main->value = NULL;
+		res = main->next;
+		free(main);
+		main = res;
+	}
+	*env = NULL;
 }

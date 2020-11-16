@@ -21,8 +21,6 @@ t_command		*command_new()
 	new_comm->next = NULL;
 	new_comm->args = NULL;
 	new_comm->state = 1;
-	if (!(new_comm->command = ft_calloc(1,1)))
-		exit_error("Calloc error", 1);
 	return (new_comm);
 }
 
