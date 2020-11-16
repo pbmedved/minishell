@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/16 19:30:18 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/16 19:32:22 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,19 @@ int			arg_parser(char *buff, t_args **arg)
 		}
 		else if (*buff == '"')
 		{
-			brack_2 ? brack_2-- : brack_2++;
-			buff++;
-			i++;
+			if (brack)
+			{
+				new_arg->arg = str_reallocpy(new_arg->arg, *buff);
+				buff++;
+				i++;
+			}
+			else
+			{
+				brack_2 ? brack_2-- : brack_2++;
+				buff++;
+				i++;
+			}
+
 		}
 		else if (*buff == ' ' && !brack_2)
 		{
