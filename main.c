@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/16 19:13:19 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/16 19:30:18 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,43 @@ int			arg_parser(char *buff, t_args **arg)
 	t_args		*new_arg;
 	int			i;
 	int			brack;
+	int			brack_2;
 
 	i = 0;
 	brack = 0;
+	brack_2 = 0;
 	new_arg = arg_new();
 	while (*buff && !ft_strchr("|;", *buff))
 	{
-		if (*buff == '"')
+		if (*buff == '\'')
 		{
 			brack ? brack-- : brack++;
 			buff++;
 			i++;
 		}
-		else if (*buff == ' ' && !brack)
+		else if (*buff == 92)
+		{
+			if (brack)
+			{
+				new_arg->arg = str_reallocpy(new_arg->arg, *buff);
+				buff++;
+				i++;
+			}
+			else
+			{
+				buff++;
+				new_arg->arg = str_reallocpy(new_arg->arg, *buff);
+				buff++;
+				i += 2;
+			}
+		}
+		else if (*buff == '"')
+		{
+			brack_2 ? brack_2-- : brack_2++;
+			buff++;
+			i++;
+		}
+		else if (*buff == ' ' && !brack_2)
 		{
 			arg_add(arg, new_arg);
 			new_arg = arg_new();
@@ -56,8 +80,8 @@ int			arg_parser(char *buff, t_args **arg)
 			i++;
 		}
 	}
-	if (!*arg && !brack)
-		arg_add(arg, new_arg);
+//	if (!*arg && !brack_2)
+	arg_add(arg, new_arg);
 //	else if (brack)
 	return (i);
 }
@@ -118,7 +142,7 @@ void		buff_parser(t_vars *vars, char *buff)
 	{
 		buff += command_parser(buff, vars);
 	}
-	str_fix(vars->comm);
+//	str_fix(vars->comm);
 }
 
 void 		call_echo(t_args *args)
@@ -163,12 +187,12 @@ void 		command_handler(t_command *comm)
 
 void 		command_getter(t_vars *vars)
 {
-	for (int i = 0; i < 1; ++i)
+	for (int i = 0; i < 100; ++i)
 	{
 		ft_printf("%s$ ", "USER:");
 		if (0 > read(1,vars->buff, BUFF_SIZE))
 			exit_error("Read error\n", errno);
-//		ft_strlcpy(vars->buff, "echo \"     space     \"\"lolkaneshn\"  \\ \\ mda    ", 200);
+//		ft_strlcpy(vars->buff, "echo '\\\\\\'", 200);
 		buff_parser(vars, vars->buff);
 		command_handler(vars->comm);
 		dell_all_command(&vars->comm);
