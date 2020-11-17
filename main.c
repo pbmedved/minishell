@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/16 22:14:37 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/17 14:21:48 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,50 +23,78 @@ void 		preallocated(t_vars *vars)
 	vars->env = NULL;
 }
 
+
 char			*str_parser(char *buff, int *n)
 {
-	int			i;
-	int			brack;
-	int			brack_2;
-	char		*new_s;
+	t_parse 	parse;
 
-	new_s = ft_calloc(1,1);
-	i = 0;
-	brack = 0;
-	brack_2 = 0;
-	while (buff[i] == ' ')
-		i++;
-	while (buff[i] && (!ft_strchr(" |;", buff[i]) || brack || brack_2))
+	parse = (struct s_parse){0,0,0,NULL};
+	parse.new_s = ft_calloc(1,1);
+	while (buff[parse.i] && (!ft_strchr(" |;", buff[parse.i])\
+	|| parse.brack || parse.brack_2))
 	{
-		if (buff[i] == '\'')
+		if (ft_strchr("<>|;", buff[parse.i]))
 		{
-			brack ? brack-- : brack++;
-			i++;
+			*n = parse.i;
+			return (parse.new_s);
 		}
-		else if (buff[i] == '"' && !brack)
+		if (buff[parse.i] == '\'')
 		{
-			brack_2 ? brack_2-- : brack_2++;
-			i++;
+			parse.brack ? parse.brack-- : parse.brack++;
+			parse.i++;
 		}
-		else if (buff[i] == 92 && !brack)
+		else if (buff[parse.i] == '"' && !parse.brack)
 		{
-			i++;
-			new_s = str_reallocpy(new_s, buff[i++]);
+			parse.brack_2 ? parse.brack_2-- : parse.brack_2++;
+			parse.i++;
 		}
 		else
-			new_s = str_reallocpy(new_s, buff[i++]);
+		{
+			parse.i += buff[parse.i] == 92 && !parse.brack ? 1 : 0;
+			parse.new_s = str_reallocpy(parse.new_s, buff[parse.i++]);
+		}
 	}
-	*n = i;
-	return (new_s);
+	*n = parse.i;
+	return (parse.new_s);
 }
 
+
+
+/*
+ * 					COMMAND STATE
+ * 		|   2
+ * 		>	3
+ * 		<	4
+ * 		>>	5
+ *
+ *
+ *
+ */
+int		set_state(t_args *args, char *buff)
+{
+	int i;
+
+	i = 1;
+	if (*buff == '|' )
+		args->state = 2;
+	else if (*buff == '>' && buff[i] != '>' )
+		args->state = 3;
+	else if (*buff == '<' )
+		args->state = 4;
+	else if (*buff == '>' && buff[i++] == '>')
+		args->state = 5;
+	return (i);
+}
 void		buff_parser(t_vars *vars, char *buff)
 {
 	int n;
+
 	t_command 	*new_comm;
 	t_args		*new_arg;
 	while (*buff)
 	{
+		while (*buff == ' ')
+			buff++;
 		new_comm = command_new();
 		new_comm->command = str_parser(buff, &n);
 		buff += n;
@@ -75,45 +103,146 @@ void		buff_parser(t_vars *vars, char *buff)
 		while (*buff && !ft_strchr("|;", *buff))
 		{
 			new_arg = arg_new();
+			if (ft_strchr("<>",*buff))
+				buff += set_state(new_arg, buff);
 			new_arg->arg = str_parser(buff, &n);
 			arg_add(&new_comm->args,new_arg);
 			buff += n;
 			while (*buff == ' ')
 				buff++;
 		}
+//		buff += set_state(new_arg, buff);
 		command_add(&vars->comm, new_comm);
 		buff++;
 	}
 }
-
-void 		call_echo(t_args *args)
+//char 		*write_from_file(char *s, t_args *arg)
+//{
+//	int		fd;
+//	char 	*new_s;
+//	char	c;
+//
+//	if (!s || !arg)
+//		exit_error("bad string",1);
+//	if (!(fd = open(arg->arg, O_WRONLY)))
+//		exit_error("bad file",1);
+//	if (!(new_s = calloc(1,1)))
+//		exit_error("Calloc error", 1);
+//	while(read(fd, c, 1))
+//	{
+//		new_s = str_reallocpy(new_s, c);
+//	}
+//}
+void		save_write_in_file(char *s, t_args *arg)
 {
-	t_args *res;
-	int n;
+	int		fd;
 
-	n = 1;
-	res = args;
-	if (!ft_strncmp(args->arg,"-n",2))
+	if (!s || !arg)
+		exit_error("bad string",1);
+	if (!(fd = open(arg->arg, O_CREAT | O_APPEND | O_RDWR, 0644)))
+		exit_error("\"echo f\" hello", 1);
+	if (arg->next && arg->next->state == 5)
+		close(fd);
+	else
 	{
-		n = 0;
-		res = res->next;
+		ft_putstr_fd(s, fd);
+		close(fd);
 	}
-	while (res)
-	{
-		ft_printf("%s",res->arg);
-		if (res->next)
-			ft_printf(" ");
-		res = res->next;
-	}
-	n ? ft_printf("\n") : ft_printf("");
 }
 
-void 		command_handler(t_command *comm)
+void		write_in_file(char *s, t_args *arg)
+{
+	int		fd;
+
+	if (!s || !arg)
+		exit_error("bad string",1);
+	if (!(fd = open(arg->arg, O_CREAT | O_TRUNC | O_RDWR, 0644)))
+		exit_error("open problem", 1);
+	if (arg->next && arg->next->state == 3)
+		close(fd);
+	else
+	{
+		ft_putstr_fd(s, fd);
+		close(fd);
+	}
+}
+
+void 		print_by_state(char *s, t_args *args)
+{
+	if (args && args->next)
+	{
+		if (args->state == 1)
+			ft_printf("%s", s);
+		else if (args->state == 3)
+			write_in_file(s, args->next);
+		else if (args->state == 5)
+			save_write_in_file(s, args->next);
+	}
+	else
+		ft_printf("%s\n",s);
+}
+void 		echo_handler(t_command *command, t_vars *vars, char **envp) {
+	t_command *comm;
+	t_args *arg;
+	char *s;
+	int i;
+
+	i = 0;
+	if (!(s = ft_calloc(1, 1)))
+		exit_error("Calloc eror", 1);
+	comm = command;
+	arg = comm->args;
+	while (arg)
+	{
+		while (arg && arg->state == 1) {
+			while (arg->arg[i])
+				s = str_reallocpy(s, arg->arg[i++]);
+			s = str_reallocpy(s, ' ');
+			arg = arg->next;
+			i = 0;
+		}
+		print_by_state(s, arg);
+		if (arg && arg->next && arg->next->next)
+			arg = arg->next->next;
+	}
+}
+
+void 		call_extern_prog(char *prog, t_vars *vars, char **envp)
+{
+	char *ar[3]= {"ls","/Users/Aron", NULL};
+	pid_t pid;
+	if (!(pid = fork()))
+		execve("/bin/ls", ar, envp);
+}
+
+int		ft_strncmp_revers(char *in, char *this, size_t n)
+{
+	size_t in_len;
+	size_t this_len;
+
+	in_len = ft_strlen(in) - 1;
+	this_len = ft_strlen(this) - 1;
+	while (n-- > 0)
+	{
+		if ((unsigned char)in[in_len] == '\0' || (unsigned char)this[this_len] == '\0' \
+		|| ((unsigned char)in[in_len] != (unsigned char)this[this_len]))
+		{
+			if ((unsigned char)in[in_len] == (unsigned char)this[this_len])
+				return (0);
+			return ((unsigned char)in[in_len] - (unsigned char)this[this_len] > 0 ? 1 : -1);
+		}
+		in_len--;
+		this_len--;
+	}
+	return (0);
+}
+
+void 		command_handler(t_command *comm, t_vars *vars, char **envp)
 {
 	while (comm)
 	{
-		if (comm && !ft_strncmp(comm->command, "echo", 10))
-			call_echo(comm->args);
+		if (comm && !ft_strncmp_revers(comm->command, "echo", 4))
+			echo_handler(comm, vars, envp);
 		else if (comm && !ft_strncmp(comm->command, "cd", 2))
 			ft_printf("cd");
 		else if (comm && !ft_strncmp(comm->command, "pwd", 3))
@@ -126,25 +255,28 @@ void 		command_handler(t_command *comm)
 			ft_printf("env");
 		else if (comm && !ft_strncmp(comm->command, "exit", 4))
 			ft_printf("exit");
+		else if (comm && !ft_strncmp_revers(comm->command, "ls", 2))
+			call_extern_prog("ls", vars , envp);
 		comm = comm->next;
 	}
 }
 
-void 		command_getter(t_vars *vars)
+void 		command_getter(t_vars *vars, char **envp)
 {
 	char *promt;
 
 	promt = env_take(vars, "USER");
-	for (int i = 0; i < 100; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		ft_printf("%s$ ", promt);
 //		if (0 > read(1,vars->buff, BUFF_SIZE))
 //			exit_error("Read error\n", errno);
-		ft_strlcpy(vars->buff, "echo lol | echo lol", 200);
+		ft_strlcpy(vars->buff, "/bin/ls", 200); // fix it!
 		buff_parser(vars, vars->buff);
-		command_handler(vars->comm);
+		command_handler(vars->comm, vars, envp);
 		dell_all_command(&vars->comm);
 		ft_bzero(vars->buff, BUFF_SIZE);
+
 	}
 }
 
@@ -155,7 +287,7 @@ int			main(int argc, char **argv, char **envp) {
 	if (s) {
 		preallocated(&vars);
 		env_save(&vars, envp);
-		command_getter(&vars);
+		command_getter(&vars, envp);
 	}
 	free(vars.buff);
 	dell_all_env(&vars.env);

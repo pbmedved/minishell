@@ -11,7 +11,16 @@
 # include <unistd.h>
 # include <signal.h>
 # include <errno.h>
+# include <fcntl.h>
 # define BUFF_SIZE 2048
+
+typedef struct s_parse {
+	int i;
+	int brack;
+	int brack_2;
+	char 	*new_s;
+}				t_parse;
+
 typedef struct 			s_args {
 	char				*arg;
 	int 				state;
