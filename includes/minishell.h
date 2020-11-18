@@ -12,13 +12,15 @@
 # include <signal.h>
 # include <errno.h>
 # include <fcntl.h>
+# include <sys/types.h>
+# include <sys/stat.h>
 # define BUFF_SIZE 2048
 
-typedef struct s_parse {
-	int i;
-	int brack;
-	int brack_2;
-	char 	*new_s;
+typedef struct 	s_parse {
+	int 		i;
+	int 		brack;
+	int 		brack_2;
+	char 		*new_s;
 }				t_parse;
 
 typedef struct 			s_args {

@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/17 14:21:48 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/18 19:12:15 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char			*str_parser(char *buff, int *n)
 	while (buff[parse.i] && (!ft_strchr(" |;", buff[parse.i])\
 	|| parse.brack || parse.brack_2))
 	{
-		if (ft_strchr("<>|;", buff[parse.i]))
+		if (ft_strchr("<>", buff[parse.i]))
 		{
 			*n = parse.i;
 			return (parse.new_s);
@@ -61,7 +61,9 @@ char			*str_parser(char *buff, int *n)
 
 
 /*
- * 					COMMAND STATE
+ *
+ * 				COMMAND STATE
+ * 		;	1
  * 		|   2
  * 		>	3
  * 		<	4
@@ -111,9 +113,8 @@ void		buff_parser(t_vars *vars, char *buff)
 			while (*buff == ' ')
 				buff++;
 		}
-//		buff += set_state(new_arg, buff);
+		buff += set_state(new_arg, buff);
 		command_add(&vars->comm, new_comm);
-		buff++;
 	}
 }
 //char 		*write_from_file(char *s, t_args *arg)
@@ -167,7 +168,7 @@ void		write_in_file(char *s, t_args *arg)
 	}
 }
 
-void 		print_by_state(char *s, t_args *args)
+void 		print_by_state(char *s, t_args *args, t_command *comm)
 {
 	if (args && args->next)
 	{
@@ -181,41 +182,74 @@ void 		print_by_state(char *s, t_args *args)
 	else
 		ft_printf("%s\n",s);
 }
-void 		echo_handler(t_command *command, t_vars *vars, char **envp) {
-	t_command *comm;
-	t_args *arg;
-	char *s;
-	int i;
+void 			echo_handler(t_command *command, t_vars *vars, char **envp) {
+	t_command 	*comm;
+	t_args 		*arg;
+	char 		*s;
+	int 		i;
 
 	i = 0;
 	if (!(s = ft_calloc(1, 1)))
 		exit_error("Calloc eror", 1);
 	comm = command;
 	arg = comm->args;
+	if (arg && !ft_strnstr(arg->arg, "-n", 2))
+		s = str_reallocpy(s, '\n');
+	else if (arg)
+		arg = arg->next;
 	while (arg)
 	{
-		while (arg && arg->state == 1) {
+		while (arg && arg->state == 1)
+		{
 			while (arg->arg[i])
 				s = str_reallocpy(s, arg->arg[i++]);
 			s = str_reallocpy(s, ' ');
 			arg = arg->next;
 			i = 0;
 		}
-		print_by_state(s, arg);
+		print_by_state(s, arg, comm);
 		if (arg && arg->next && arg->next->next)
 			arg = arg->next->next;
 	}
 }
 
-void 		call_extern_prog(char *prog, t_vars *vars, char **envp)
-{
-	char *ar[3]= {"ls","/Users/Aron", NULL};
-	pid_t pid;
-	if (!(pid = fork()))
-		execve("/bin/ls", ar, envp);
+int 		arg_count(t_command *comm) {
+	t_command *res;
+	int i;
+
+	i = 0;
+	res = comm;
+	while (res)
+	{
+		i++;
+		res = res->next;
+	}
+	return (i);
 }
 
-int		ft_strncmp_revers(char *in, char *this, size_t n)
+void 		call_extern_prog(t_command *comm, char *prog, char **envp)
+{
+	char **ar;
+	t_args *arg;
+	pid_t pid;
+	int i;
+
+	i = 0;
+	arg = comm->args;
+	if (!(ar = malloc((arg_count(comm) + 2) * sizeof(char *))))
+		exit_error("Malloc error", 1);
+	ar[i++] = prog;
+	while (arg)
+	{
+		ar[i++] = arg->arg;
+		arg = arg->next;
+	}
+	ar[i] = NULL;
+	if (!(pid = fork()))
+		execve(prog, ar, envp);
+}
+
+int			ft_strncmp_revers(char *in, char *this, size_t n)
 {
 	size_t in_len;
 	size_t this_len;
@@ -236,6 +270,49 @@ int		ft_strncmp_revers(char *in, char *this, size_t n)
 	}
 	return (0);
 }
+char		*try_find_prog(char *name, t_vars *vars)
+{
+	char 	*path;
+	char 	*add;
+	int		fd;
+	int 	i;
+
+	i = 0;
+	add = ft_calloc(1, 1);
+	path = env_take(vars, "PATH");
+	while (*path)
+	{
+		if ((fd = open(add, O_RDONLY)) > 0)
+		{
+			close(fd);
+			return (add);
+		}
+		ft_bzero(add,ft_strlen(add));
+		while (*path && *path != ':')
+			add = str_reallocpy(add, *path++);
+		add = str_reallocpy(add, '/');
+		path++;
+		while (name[i])
+			add = str_reallocpy(add, name[i++]);
+		i = 0;
+	}
+	close(fd);
+	return (name);
+}
+
+void		executable(t_command *comm, t_vars *vars, char **envp)
+{
+	char 	*path;
+
+	path = try_find_prog(comm->command, vars);
+	if (path)
+		call_extern_prog(comm, path, envp);
+
+
+
+}
+
+
 
 void 		command_handler(t_command *comm, t_vars *vars, char **envp)
 {
@@ -255,8 +332,8 @@ void 		command_handler(t_command *comm, t_vars *vars, char **envp)
 			ft_printf("env");
 		else if (comm && !ft_strncmp(comm->command, "exit", 4))
 			ft_printf("exit");
-		else if (comm && !ft_strncmp_revers(comm->command, "ls", 2))
-			call_extern_prog("ls", vars , envp);
+		else
+			executable(comm, vars, envp);
 		comm = comm->next;
 	}
 }
@@ -269,9 +346,9 @@ void 		command_getter(t_vars *vars, char **envp)
 	for (int i = 0; i < 1; ++i)
 	{
 		ft_printf("%s$ ", promt);
-//		if (0 > read(1,vars->buff, BUFF_SIZE))
-//			exit_error("Read error\n", errno);
-		ft_strlcpy(vars->buff, "/bin/ls", 200); // fix it!
+		if (0 > read(1,vars->buff, BUFF_SIZE))
+			exit_error("Read error\n", errno);
+//		ft_strlcpy(vars->buff, "echo -n lol;echo -n kek", 200); // fix it!
 		buff_parser(vars, vars->buff);
 		command_handler(vars->comm, vars, envp);
 		dell_all_command(&vars->comm);
