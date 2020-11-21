@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:48:00 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/21 12:22:50 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/21 14:44:07 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ t_args			*arg_new()
 	t_args 		*new_arg;
 
 	if (!(new_arg = malloc(sizeof(t_args))))
+		exit_error("Malloc error", 1);
+	if (!(new_arg->arg = ft_calloc(1,1)))
 		exit_error("Malloc error", 1);
 	new_arg->next = NULL;
 	new_arg->state = 1;

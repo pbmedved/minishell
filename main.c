@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/21 13:27:14 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/22 00:20:00 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,40 +33,75 @@ int				check_end_arg(t_parse *parse, char c)
 	}
 	return (1);
 }
-char			*str_parser(char *buff, int *n)
+
+char			*str_parser(char *buff, int *n, t_command *comm)
 {
 	t_parse 	parse;
-	char *s;
+	int			i;
+	t_args 		*arg;
 
-	s = NULL;
+	i = 0;
+	parse.brack = 0;
+	parse.brack_2 = 0;
 
-	parse = (struct s_parse){0,0,0,NULL};
-	parse.new_s = ft_calloc(1,1);
-	while (buff[parse.i] && check_end_arg(&parse, buff[parse.i]))
+	while (check_end_arg(&parse, buff[i]))
 	{
-		if (ft_strchr("<>", buff[parse.i]) && !parse.brack_2 && !parse.brack)
+		arg = arg_new();
+		while(buff[i] == ' ')
+			i++;
+		if (buff[i] && buff[i] == '\'' && !parse.brack_2)
 		{
-			*n = parse.i;
-			return (parse.new_s);
+			parse.brack = parse.brack ? 0 : 1;
+			i++;
 		}
-		if (buff[parse.i] == '\'')
+		else if (buff[i] && buff[i] == '"' && !parse.brack)
 		{
-			parse.brack ? parse.brack-- : parse.brack++;
-			parse.i++;
+			parse.brack_2 = parse.brack_2 ? 0 : 1;
+			i++;
 		}
-		else if (buff[parse.i] == '"' && !parse.brack) {
-			parse.brack_2 ? parse.brack_2-- : parse.brack_2++;
-			parse.i++;
-		}
-		else if (buff[parse.i])
-		{
-			parse.i += buff[parse.i] == 92 && !parse.brack && !parse.brack_2 ? 1 : 0;
-			parse.new_s = str_reallocpy(parse.new_s, buff[parse.i++]);
-		}
+		else
+			arg->arg = str_reallocpy(arg->arg, buff[i++]);
 	}
-	*n = parse.i;
-	return (parse.new_s);
+	arg_add(&comm->args, arg);
 }
+//char			*str_parser(char *buff, int *n)
+//{
+//	t_parse 	parse;
+//	char *s;
+//
+//	s = NULL;
+//
+//	parse = (struct s_parse){0,0,0,NULL};
+//	parse.new_s = ft_calloc(1,1);
+//	while (buff[parse.i] && check_end_arg(&parse, buff[parse.i]))
+//	{
+//		if (ft_strchr("<>", buff[parse.i]) && !parse.brack_2 && !parse.brack)
+//		{
+//			*n = parse.i;
+//			return (parse.new_s);
+//		}
+//		if (buff[parse.i] == '\'')
+//		{
+//			parse.brack ? parse.brack-- : parse.brack++;
+//			parse.i++;
+//		}
+//		else if (buff[parse.i] == '"' && !parse.brack) {
+//			parse.brack_2 ? parse.brack_2-- : parse.brack_2++;
+//			parse.i++;
+//		}
+//		else if (b)
+//		{
+//
+//		}
+//		else if (buff[parse.i])
+//		{
+//			parse.i += buff[parse.i] == 92 && !parse.brack && !parse.brack_2 ? 1 : 0;
+//			parse.new_s = str_reallocpy(parse.new_s, buff[parse.i++]);
+//		}
+//	}
+//	*n = parse.i;
+//	return (parse.new_s);
+//}
 
 
 
@@ -96,33 +131,105 @@ int		set_state(t_args *args, char *buff)
 		args->state = 6;
 	return (i);
 }
+
+int			set_bracks(t_parse *prs, char c)
+{
+	if (c == '"')
+	{
+		prs->brack_2 = prs->brack_2 ? 0 : 1;
+		if (prs->brack)
+			return (0);
+		return (1);
+	}
+	else if (c == '\'')
+	{
+		prs->brack = prs->brack ? 0 : 1;
+		if (prs->brack_2)
+			return (0);
+		return (1);
+	}
+	return (1);
+}
+
+int 		brack_status(t_parse *prs)
+{
+	if (prs->brack_2 || prs->brack)
+		return (1);
+	return (0);
+}
+int			arg_write(t_args *arg, const char *buff)
+{
+	int i;
+	t_parse prs;
+	prs.brack_2 = 0;
+	prs.brack = 0;
+
+	i = 0;
+	while (buff[i] && check_end_arg(&prs, buff[i]))
+	{
+		if (buff[i] == '"' || buff[i] == '\'')
+		{
+			if (!set_bracks(&prs, buff[i]))
+				arg->arg = str_reallocpy(arg->arg, buff[i++]);
+			else
+				i++;
+		}
+		else if (buff[i] == '\\' && buff[i+1] == ' ' && !prs.brack && !prs.brack_2)
+		{
+			arg->arg = str_reallocpy(arg->arg, ' ');
+//			i++;
+		}
+		else if (buff[i] == '$' && !prs.brack)
+		{
+			arg->state = 6;
+			arg->arg = str_reallocpy(arg->arg, buff[i++]);
+		}
+		else
+			arg->arg = str_reallocpy(arg->arg, buff[i++]);
+	}
+	return (i);
+}
+
+int 		command_write(t_command *comm, const char *buff) {
+	int i;
+
+	i = 0;
+	while (buff[i] == ' ')
+		i++;
+	while (buff[i] && buff[i] != ' ')
+	{
+		comm->command = str_reallocpy(comm->command, buff[i]);
+		i++;
+	}
+	return (i);
+
+}
+int 		whitespace_remove(char *s)
+{
+	int i;
+
+	i = 0;
+	while (s[i] == ' ')
+		i++;
+	return (i);
+}
 void		buff_parser(t_vars *vars, char *buff)
 {
-	int n;
-
 	t_command 	*new_comm;
 	t_args		*new_arg;
+
 	while (*buff)
 	{
-		while (*buff == ' ')
-			buff++;
 		new_comm = command_new();
-		new_comm->command = str_parser(buff, &n);
-		buff += n;
-		while (*buff == ' ' || *buff == '\t')
-			buff++;
-		while (*buff && !ft_strchr("|;", *buff))
+		buff += command_write(new_comm, buff);
+		buff += whitespace_remove(buff);
+		while (*buff && *buff != ';')
 		{
 			new_arg = arg_new();
-			if (ft_strchr("<>$",*buff))
-				buff += set_state(new_arg, buff);
-			new_arg->arg = str_parser(buff, &n);
-			arg_add(&new_comm->args,new_arg);
-			buff += n;
-			while (*buff == ' ')
-				buff++;
+			buff += whitespace_remove(buff);
+			buff += arg_write(new_arg, buff);
+			arg_add(&new_comm->args, new_arg);
 		}
-		buff += set_state(new_arg, buff);
 		command_add(&vars->comm, new_comm);
 	}
 }
@@ -139,7 +246,7 @@ void 			print_by_state(char *s, t_args *args, t_vars *vars)
 			save_write_in_file(s, args->next);
 	}
 	else if (s)
-		ft_printf("%s",s);
+		ft_putstr_fd(s, 1);
 }
 
 void 			exit_handler(t_command *comm)
@@ -158,6 +265,35 @@ void			env_del_one(t_env *del)
 		free(del);
 		del = NULL;
 	}
+}
+
+char			*take_env_by_arg(t_vars *vars, char *s)
+{
+	char *key;
+	char *new_s;
+	char *value;
+	int 	i;
+
+	i = 0;
+	new_s = NULL;
+	key = NULL;
+
+	while(s[i])
+	{
+		if (s[i] == '$')
+		{
+			i++;
+			while (s[i] && s[i] != ' ')
+				key = str_reallocpy(key, s[i++]);
+			value = env_take(vars->env, key);
+			new_s = str_reallocpy_str(new_s, value);
+			key = NULL;
+		}
+		else
+			new_s = str_reallocpy(new_s, s[i++]);
+	}
+	return (new_s);
+
 }
 
 void 			echo_handler(t_command *command, t_vars *vars) {
@@ -180,7 +316,7 @@ void 			echo_handler(t_command *command, t_vars *vars) {
 	}
 	if (!arg && !n)
 		write(1,"\n",1);
-	else if (!arg && n)
+	else if (!arg)
 		return ;
 	while (arg)
 	{
@@ -195,10 +331,9 @@ void 			echo_handler(t_command *command, t_vars *vars) {
 		}
 		if (arg && arg->state == 6)
 		{
-			s = str_reallocpy_str(s, env_take(vars->env, arg->arg));
+			s = str_reallocpy_str(s, take_env_by_arg(vars, arg->arg));
 			arg = arg -> next;
 		}
-
 		if (!n)
 			s = str_reallocpy(s, '\n');
 		print_by_state(s, arg, vars);
@@ -208,7 +343,7 @@ void 			echo_handler(t_command *command, t_vars *vars) {
 //			arg = arg->next->next;
 	}
 }
-
+//echo "cat paskuda ty $PWD $USER $PWD      end"
 
 
 char 			*get_str_by_state(t_args *args)
