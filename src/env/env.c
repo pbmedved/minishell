@@ -6,11 +6,11 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 19:02:28 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/16 21:46:32 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/20 17:21:17 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 t_env 		*env_create()
 {
@@ -63,20 +63,16 @@ void		env_save(t_vars *vars, char **envp)
 	}
 }
 
-char			*env_take(t_vars *vars, const char *key)
+char			*env_take(t_env *env, const char *key)
 {
-	char		*value;
-	t_env		*env;
+	t_env		*res;
 
-	env = vars->env;
-	while (env)
+	res = env;
+	while (res)
 	{
-		if (!ft_strncmp(key, env->key, ft_strlen(env->key)))
-		{
-			value = env->value;
-			return (value);
-		}
-		env = env->next;
+		if (!ft_strncmp(key, res->key, ft_strlen(res->key)))
+			return (res->value);
+		res = res->next;
 	}
 	return (NULL);
 }

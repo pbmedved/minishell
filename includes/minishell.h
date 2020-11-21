@@ -14,14 +14,15 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/stat.h>
+# include <string.h>
 # define BUFF_SIZE 2048
 
-typedef struct 	s_parse {
-	int 		i;
-	int 		brack;
-	int 		brack_2;
-	char 		*new_s;
-}				t_parse;
+typedef struct 			s_parse {
+	int 				i;
+	int 				brack;
+	int 				brack_2;
+	char 				*new_s;
+}						t_parse;
 
 typedef struct 			s_args {
 	char				*arg;
@@ -45,7 +46,7 @@ typedef struct			s_env {
 typedef struct 			s_vars {
 	t_env				*env;
 	char 				*buff;
-	int					state; // 1 waiting; 0 EOF
+	int					state;
 	struct s_command	*comm;
 }						t_vars;
 
@@ -60,24 +61,38 @@ void			dell_all_command(t_command **command);
 t_args			*arg_new();
 void 			arg_add(t_args **arg, t_args *new);
 void			dell_all_args(t_args **arg);
+int 			arg_count(t_command *comm);
 
 
 
-t_env 			*env_create();
+
+		t_env 			*env_create();
 void	 		env_add(t_env **main, t_env *new);
 void			env_save(t_vars *vars, char **envp);
-char			*env_take(t_vars *vars, const char *key);
+char			*env_take(t_env *env, const char *key);
+t_env			*env_take_ptr(t_env *env, const char *key);
 void			dell_all_env(t_env **env);
+void			env_del_by_key(t_env **env, char *key);
+
+
+
+/*
+ * 		REDIRECT
+ */
+
+void			save_write_in_file(char *s, t_args *arg);
+void			write_in_file(char *s, t_args *arg);
 /*
  * 		UTILS
  */
 
 char			*str_reallocpy(char *old, char c);
-
-
+int			ft_strncmp_revers(char *in, char *this, size_t n);
+char	*str_reallocpy_str(char *old, char *new);
 /*
  * 		ERRORS
  */
 
-void 	exit_error(char *s, int n);
+void 			exit_error(char *s, int n);
+void 			print_command_error(t_command *comm);
 #endif //MINISHELL_MINISHELL_H
