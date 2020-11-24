@@ -68,3 +68,13 @@ int			ft_strncmp_revers(char *in, char *this, size_t n)
 	}
 	return (0);
 }
+
+int 		whitespace_remove(char *s)
+{
+	int i;
+
+	i = 0;
+	while (s[i] == ' ')
+		i++;
+	return (i);
+}

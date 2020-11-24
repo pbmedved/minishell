@@ -73,6 +73,8 @@ char			*env_take(t_env *env, const char *key);
 t_env			*env_take_ptr(t_env *env, const char *key);
 void			dell_all_env(t_env **env);
 void			env_del_by_key(t_env **env, char *key);
+void 			env_add_or_change(t_env **env, char *key, char *value);
+void			env_del_one(t_env *del);
 
 
 
@@ -87,8 +89,19 @@ void			write_in_file(char *s, t_args *arg);
  */
 
 char			*str_reallocpy(char *old, char c);
-int			ft_strncmp_revers(char *in, char *this, size_t n);
-char	*str_reallocpy_str(char *old, char *new);
+int				ft_strncmp_revers(char *in, char *this, size_t n);
+char			*str_reallocpy_str(char *old, char *new);
+int 			whitespace_remove(char *s);
+
+/*
+ * 		BUILTINS
+ */
+
+void 			ft_export(t_command *comm, t_vars *vars);
+void 			ft_unset(t_command *comm, t_vars *vars);
+void 			env_print(t_env *env);
+void 			ft_cd(t_vars *vars, t_command *comm);
+void 			ft_pwd(t_vars *vars, t_command *command);
 /*
  * 		ERRORS
  */
