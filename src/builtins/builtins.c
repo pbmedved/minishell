@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/22 10:50:18 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/24 15:53:15 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ void 		ft_cd(t_vars *vars, t_command *comm)
 {
 	char s[PATH_MAX];
 	int		dir;
-	if (!comm->args)
+
+	if (!comm->args || comm->args->state == 7)
 		dir = chdir(env_take(vars->env, "HOME"));
 	else
 		dir = chdir(comm->args->arg);

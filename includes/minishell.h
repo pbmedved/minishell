@@ -47,6 +47,8 @@ typedef struct 			s_vars {
 	t_env				*env;
 	char 				*buff;
 	int					state;
+	char 				*redir;
+	int 				fd[2];
 	struct s_command	*comm;
 }						t_vars;
 
@@ -102,6 +104,7 @@ void 			ft_unset(t_command *comm, t_vars *vars);
 void 			env_print(t_env *env);
 void 			ft_cd(t_vars *vars, t_command *comm);
 void 			ft_pwd(t_vars *vars, t_command *command);
+int 			ft_echo(t_command *comm);
 /*
  * 		ERRORS
  */

@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/24 15:31:55 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/25 16:03:46 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ void 			preallocated(t_vars *vars)
 	vars->state = 1;
 	vars->comm = NULL;
 	vars->env = NULL;
+	vars->redir = NULL;
+	vars->fd[0] = dup(0);
+	vars->fd[1] = dup(1);
 }
 
 int				check_end(t_parse *parse, char c)
@@ -366,20 +369,7 @@ void			buff_parser(t_vars *vars, char *buff)
 	}
 }
 
-void 			print_by_state(char *s, t_args *args, t_vars *vars)
-{
-	if (args && args->next)
-	{
-		if (args->state == 1 || args->state == 6)
-			ft_printf("%s", s);
-		else if (args->state == 3)
-			write_in_file(s, args->next);
-		else if (args->state == 5)
-			save_write_in_file(s, args->next);
-	}
-	else if (s)
-		ft_putstr_fd(s, 1);
-}
+
 void 			exit_handler(t_command *comm)
 {
 	if (comm->args)
@@ -427,50 +417,11 @@ char 			*get_str_by_state(t_args *args)
 	return (0);
 
 }
-void 		call_extern_prog(t_command *comm, char *prog, char **envp)
-{
-	char **ar;
-	t_args *arg;
-	pid_t pid;
-	int d;
-	int i;
-	int fd;
 
-	i = 0;
-	arg = comm->args;
-	if (!(ar = malloc((arg_count(comm) + 2) * sizeof(char *))))
-		exit_error("Malloc error", 1);
-	ar[i++] = prog;
-	while (arg && arg->state == 1)
-	{
-		ar[i++] = arg->arg;
-		arg = arg->next;
-	}
-	ar[i] = NULL;
-	pid = fork();
-	if (!pid)
-	{
-		if (arg && arg->state == 3 && arg->next)
-		{
-			fd = open(arg->next->arg, O_CREAT | O_TRUNC | O_RDWR, 0644);
-			dup2(fd,1);
-			execve(prog, ar, envp);
-		}
-		else if (arg && arg->state == 5 && arg->next)
-		{
-			fd = open(arg->next->arg,  O_CREAT | O_APPEND | O_RDWR, 0644);
-			dup2(fd,1);
-			execve(prog, ar, envp);
-		}
-		else
-			execve(prog, ar, envp);
-	}
-	else if (pid < 0)
-		exit_error("fork error",1);
-	else
-		waitpid(pid,&d,0);
-
-}
+typedef struct s_exe {
+	char		*prog;
+	char 		**ar;
+}				t_exe;
 
 
 char		*try_find_prog(char *name, t_vars *vars)
@@ -503,13 +454,149 @@ char		*try_find_prog(char *name, t_vars *vars)
 	return (NULL);
 }
 
+int		spawn_proc (int in, int out, t_exe *exe, char **envp)
+{
+	pid_t pid;
+
+	if ((pid = fork ()) == 0)
+	{
+		if (in != 0)
+		{
+			dup2 (in, 0);
+			close (in);
+		}
+		if (out != 1)
+		{
+			dup2 (out, 1);
+			close (out);
+		}
+
+		return execve(exe->prog, exe->ar, envp);
+	}
+
+	return pid;
+}
+
+void 	get_exe(t_command *comm, t_exe *exe, t_vars *vars)
+{
+	t_args *arg;
+	int i;
+
+	i = 0;
+	arg = comm->args;
+	if (!(exe->ar = malloc((arg_count(comm) + 2) * sizeof(char *))))
+		exit_error("Malloc error", 1);
+	exe->prog = try_find_prog(comm->command, vars);
+	exe->ar[i++] = exe->prog;
+	while (arg && arg->state == 1)
+	{
+		exe->ar[i++] = arg->arg;
+		arg = arg->next;
+	}
+	exe->ar[i] = NULL;
+	comm->state = 1;
+}
+
+void	clean_exe(t_exe *exe)
+{
+	int i;
+
+	i = 0;
+//	free(exe->prog);
+//	exe->prog == NULL;
+//	while (exe->ar[i])
+//	{
+//		free(exe->ar[i]);
+//	}
+//	free(exe->ar);
+	exe->ar = NULL;
+}
+int		try_recode(t_command *comm)
+{
+	if (!ft_strncmp_revers(comm->command, "echo", 4))
+		return (ft_echo(comm));
+//	else if (!ft_strncmp(comm->command, "cd", 2))
+//		ft_cd(vars, comm);
+//	else if (!ft_strncmp(comm->command, "pwd", 3))
+//		ft_pwd(vars, comm);
+//	else if (!ft_strncmp(comm->command, "export", 6))
+//		ft_export(comm, vars);
+//	else if (!ft_strncmp(comm->command, "unset", 5))
+//		ft_unset(comm, vars);
+//	else if (!ft_strncmp(comm->command, "env", 3))
+//		env_print(vars->env);
+//	else if (!ft_strncmp(comm->command, "exit", 4))
+//		exit_handler(comm);
+	return 0;
+}
+int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
+{
+	t_exe exe;
+	pid_t pid;
+	int fd [2];
+
+	get_exe(comm, &exe, vars);
+	pipe(fd);
+	pid = fork();
+	if (pid == 0)
+	{
+		if (!try_recode(comm))
+			execve(exe.prog, exe.ar, envp);
+	}
+	else
+	{
+		dup2(vars->fd[0], 0);
+//		waitpid(pid, 0, 0);
+		wait(NULL);
+//		dup2(vars->fd[0], 0);
+	}
+	clean_exe(&exe);
+	return 1;
+}
+
+int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
+{
+	t_exe exe;
+	pid_t pid;
+	int fd [2];
+
+	get_exe(comm, &exe, vars);
+	pipe(fd);
+	pid = fork();
+	if (pid == 0)
+	{
+		dup2(fd[1], 1);
+		close(fd[0]);
+		if (!try_recode(comm))
+			execve(exe.prog, exe.ar, envp);
+		close(fd[1]);
+	}
+	else
+	{
+		dup2(fd[0], 0);
+		close(fd[1]);
+		waitpid(pid, 0, 0);
+		close(fd[0]);
+	}
+	clean_exe(&exe);
+	return 1;
+}
+
+
+
 void		executable(t_command *comm, t_vars *vars, char **envp)
 {
 	char 	*path;
 
 	path = try_find_prog(comm->command, vars);
 	if (path)
-		call_extern_prog(comm, path, envp);
+	{
+		if (comm->state == 3)
+			call_extern_prog_pipe(comm, envp, vars);
+		else
+			call_extern_prog(comm, envp, vars);
+	}
+
 	else
 		print_command_error(comm);
 }
@@ -593,40 +680,13 @@ int			check_args(t_command *command)
 	return (0);
 }
 
-void 		ft_echo(t_command *comm) {
-	t_args *arg;
 
-	arg = comm->args;
-	while (arg)
-	{
-		ft_putstr_fd(arg->arg, 1);
-		arg = arg->next;
-		if (arg)
-			ft_putstr_fd(" ", 1);
-		else
-			ft_putchar_fd('\n', 1);
-	}
-}
 void 		command_handler(t_command *comm, t_vars *vars, char **envp)
 {
 	while (comm)
 	{
 		if (!check_args(comm))
 			break;
-		if (!ft_strncmp_revers(comm->command, "echo", 4))
-			ft_echo(comm);
-		else if (!ft_strncmp(comm->command, "cd", 2))
-			ft_cd(vars, comm);
-		else if (!ft_strncmp(comm->command, "pwd", 3))
-			ft_pwd(vars, comm);
-		else if (!ft_strncmp(comm->command, "export", 6))
-			ft_export(comm, vars);
-		else if (!ft_strncmp(comm->command, "unset", 5))
-			ft_unset(comm, vars);
-		else if (!ft_strncmp(comm->command, "env", 3))
-			env_print(vars->env);
-		else if (!ft_strncmp(comm->command, "exit", 4))
-			exit_handler(comm);
 		else
 			executable(comm, vars, envp);
 		comm = comm->next;
@@ -679,12 +739,34 @@ int			buff_check_token(char *buff)
 	}
 }
 
+void 		command_set_state(t_command *comm)
+{
+	t_command *res;
+	t_args    *args;
+
+	res = comm;
+	while (res)
+	{
+		args = res->args;
+		while (args)
+		{
+			if (args->state == 8)
+			{
+				res->state = 3;
+				break;
+			}
+			args = args->next;
+		}
+		res = res->next;
+	}
+}
 void		command_fix(t_command **comm)
 {
 	int i;
 	t_command *res;
 
 	res = *comm;
+	command_set_state(res);
 	while (res)
 	{
 		i = -1;
@@ -703,11 +785,9 @@ void 		command_getter(t_vars *vars, char **envp, char *s)
 	while(vars->state)
 	{
 		vars->buff = ft_calloc(1,1);
-		print_promt(vars);
+//		print_promt(vars);
 		while((byte = read(0,&b, 1)) && b != '\n')
 			vars->buff = str_reallocpy(vars->buff, b);
-//		if (!buff_check_token(vars->buff))
-//			continue;
 		buff_parser(vars, vars->buff);
 		command_fix(&vars->comm);
 		command_handler(vars->comm, vars, envp);
