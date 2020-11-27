@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/25 16:03:46 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/27 06:54:37 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,65 +36,65 @@ int				check_end(t_parse *parse, char c)
 	}
 	return (1);
 }
-int				check_end_arg(t_parse *parse, char c) {
-	if (ft_strchr(" ;|", c)) {
-		if (parse->brack || parse->brack_2)
-			return (1);
-		else
-			return (0);
-	}
-	return (1);
-}
+//int				check_end_arg(t_parse *parse, char c) {
+//	if (ft_strchr(" ;|", c)) {
+//		if (parse->brack || parse->brack_2)
+//			return (1);
+//		else
+//			return (0);
+//	}
+//	return (1);
+//}
 
-char			*str_parser(char *buff, int *n, t_command *comm)
-{
-	t_parse 	parse;
-	int			i;
-	t_args 		*arg;
+//char			*str_parser(char *buff, int *n, t_command *comm)
+//{
+//	t_parse 	parse;
+//	int			i;
+//	t_args 		*arg;
+//
+//	i = 0;
+//	parse.brack = 0;
+//	parse.brack_2 = 0;
+//
+////	while (check_end_arg(&parse, buff[i]))
+//	while (buff[i])
+//	{
+//		arg = arg_new();
+//		while(buff[i] == ' ')
+//			i++;
+//		if (buff[i] && buff[i] == '\'' && !parse.brack_2)
+//		{
+//			parse.brack = parse.brack ? 0 : 1;
+//			i++;
+//		}
+//		else if (buff[i] && buff[i] == '"' && !parse.brack)
+//		{
+//			parse.brack_2 = parse.brack_2 ? 0 : 1;
+//			i++;
+//		}
+//		else
+//			arg->arg = str_reallocpy(arg->arg, buff[i++]);
+//	}
+//	arg_add(&comm->args, arg);
+//}
 
-	i = 0;
-	parse.brack = 0;
-	parse.brack_2 = 0;
-
-//	while (check_end_arg(&parse, buff[i]))
-	while (buff[i])
-	{
-		arg = arg_new();
-		while(buff[i] == ' ')
-			i++;
-		if (buff[i] && buff[i] == '\'' && !parse.brack_2)
-		{
-			parse.brack = parse.brack ? 0 : 1;
-			i++;
-		}
-		else if (buff[i] && buff[i] == '"' && !parse.brack)
-		{
-			parse.brack_2 = parse.brack_2 ? 0 : 1;
-			i++;
-		}
-		else
-			arg->arg = str_reallocpy(arg->arg, buff[i++]);
-	}
-	arg_add(&comm->args, arg);
-}
-
-int				set_state(t_args *args, char *buff)
-{
-	int i;
-
-	i = 1;
-	if (*buff == '|' )
-		args->state = 2;
-	else if (*buff == '>' && buff[i] != '>' )
-		args->state = 3;
-	else if (*buff == '<' )
-		args->state = 4;
-	else if (*buff == '>' && buff[i++] == '>')
-		args->state = 5;
-	else if (*buff == '$')
-		args->state = 6;
-	return (i);
-}
+//int				set_state(t_args *args, char *buff)
+//{
+//	int i;
+//
+//	i = 1;
+//	if (*buff == '|' )
+//		args->state = 2;
+//	else if (*buff == '>' && buff[i] != '>' )
+//		args->state = 3;
+//	else if (*buff == '<' )
+//		args->state = 4;
+//	else if (*buff == '>' && buff[i++] == '>')
+//		args->state = 5;
+//	else if (*buff == '$')
+//		args->state = 6;
+//	return (i);
+//}
 
 int				set_bracks(t_parse *prs, char c)
 {
@@ -121,8 +121,6 @@ int 			brack_status(t_parse *prs)
 		return (1);
 	return (0);
 }
-
-
 
 void			parse_bracks(t_command *comm, t_parse *prs, char c)
 {
@@ -250,50 +248,50 @@ int				arg_write(t_env *env, t_args *args, char *buff)
 	return (prs.i);
 }
 
-int				old_arg_write(t_args *arg, const char *buff)
-{
-	int i;
-	t_parse prs;
-	prs.brack_2 = 0;
-	prs.brack = 0;
-
-	i = 0;
-	if (buff[i] == ';' && !prs.brack && !prs.brack_2)
-	{
-		arg->state = 7;
-		arg->arg = str_reallocpy(arg->arg, buff[i++]);
-		return (i);
-	}
-	else if (buff[i] == '|' && !prs.brack && !prs.brack_2)
-	{
-		arg->state = 8;
-		arg->arg = str_reallocpy(arg->arg, buff[i++]);
-		return (i);
-	}
-	while (buff[i] && check_end(&prs, buff[i]))
-	{
-		if (buff[i] == '"' || buff[i] == '\'')
-		{
-			if (!set_bracks(&prs, buff[i]))
-				arg->arg = str_reallocpy(arg->arg, buff[i++]);
-			else
-				i++;
-		}
-		else if (buff[i] == '\\' && buff[i+1] == ' ' && !prs.brack && !prs.brack_2)
-		{
-			arg->arg = str_reallocpy(arg->arg, ' ');
-//			i++;
-		}
-		else if (buff[i] == '$' && !prs.brack)
-		{
-			arg->state = 6;
-			arg->arg = str_reallocpy(arg->arg, buff[i++]);
-		}
-		else
-			arg->arg = str_reallocpy(arg->arg, buff[i++]);
-	}
-	return (i);
-}
+//int				old_arg_write(t_args *arg, const char *buff)
+//{
+//	int i;
+//	t_parse prs;
+//	prs.brack_2 = 0;
+//	prs.brack = 0;
+//
+//	i = 0;
+//	if (buff[i] == ';' && !prs.brack && !prs.brack_2)
+//	{
+//		arg->state = 7;
+//		arg->arg = str_reallocpy(arg->arg, buff[i++]);
+//		return (i);
+//	}
+//	else if (buff[i] == '|' && !prs.brack && !prs.brack_2)
+//	{
+//		arg->state = 8;
+//		arg->arg = str_reallocpy(arg->arg, buff[i++]);
+//		return (i);
+//	}
+//	while (buff[i] && check_end(&prs, buff[i]))
+//	{
+//		if (buff[i] == '"' || buff[i] == '\'')
+//		{
+//			if (!set_bracks(&prs, buff[i]))
+//				arg->arg = str_reallocpy(arg->arg, buff[i++]);
+//			else
+//				i++;
+//		}
+//		else if (buff[i] == '\\' && buff[i+1] == ' ' && !prs.brack && !prs.brack_2)
+//		{
+//			arg->arg = str_reallocpy(arg->arg, ' ');
+////			i++;
+//		}
+//		else if (buff[i] == '$' && !prs.brack)
+//		{
+//			arg->state = 6;
+//			arg->arg = str_reallocpy(arg->arg, buff[i++]);
+//		}
+//		else
+//			arg->arg = str_reallocpy(arg->arg, buff[i++]);
+//	}
+//	return (i);
+//}
 
 int 			old_command_write(t_command *comm, const char *buff) {
 	int i;
@@ -432,6 +430,9 @@ char		*try_find_prog(char *name, t_vars *vars)
 	int 	i;
 
 	i = 0;
+
+	if (name[0] == 'e')
+		return (ft_strdup(name));
 	add = ft_calloc(1, 1);
 	path = env_take(vars->env, "PATH");
 	while (*path)
@@ -542,13 +543,12 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 	{
 		if (!try_recode(comm))
 			execve(exe.prog, exe.ar, envp);
+		exit(1);
 	}
 	else
 	{
 		dup2(vars->fd[0], 0);
-//		waitpid(pid, 0, 0);
-		wait(NULL);
-//		dup2(vars->fd[0], 0);
+		wait(&pid);
 	}
 	clean_exe(&exe);
 	return 1;
@@ -570,12 +570,13 @@ int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
 		if (!try_recode(comm))
 			execve(exe.prog, exe.ar, envp);
 		close(fd[1]);
+		exit(1);
 	}
 	else
 	{
 		dup2(fd[0], 0);
 		close(fd[1]);
-		waitpid(pid, 0, 0);
+		wait(&pid);
 		close(fd[0]);
 	}
 	clean_exe(&exe);
@@ -588,6 +589,8 @@ void		executable(t_command *comm, t_vars *vars, char **envp)
 {
 	char 	*path;
 
+	path = NULL;
+//	if (comm->command[0] != 'e')
 	path = try_find_prog(comm->command, vars);
 	if (path)
 	{
@@ -804,8 +807,8 @@ int			main(int argc, char **argv, char **envp) {
 	preallocated(&vars);
 	env_save(&vars, envp);
 	buff = NULL;
-	if (argc == 3 && !ft_strncmp(argv[1], "-c", 2))
-		buff = argv[2];
+//	if (argc == 3 && !ft_strncmp(argv[1], "-c", 2))
+//		buff = argv[2];
 	command_getter(&vars, envp, buff);
 	free(vars.buff);
 	dell_all_env(&vars.env);

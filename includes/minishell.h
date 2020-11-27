@@ -109,6 +109,6 @@ int 			ft_echo(t_command *comm);
  * 		ERRORS
  */
 
-void 			exit_error(char *s, int n);
+void 			exit_error(char *s, int err);
 void 			print_command_error(t_command *comm);
 #endif //MINISHELL_MINISHELL_H

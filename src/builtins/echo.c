@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:01:11 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/25 09:59:08 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/27 06:22:37 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,19 @@
 static void 			print_by_state(char *s, t_args *args)
 {
 	if (args) {
-		if (args->state == 1)
-			ft_printf("%s", s);
-		else if (args->state == 3)
+//		if (args->state == 1)
+//			ft_printf("%s", s);
+		if (args->state == 3)
 			write_in_file(s, args->next);
 		else if (args->state == 5)
 			save_write_in_file(s, args->next);
 	}
 	else if (s)
+	{
+		s = str_reallocpy(s, '\04');
 		ft_putstr_fd(s, 1);
+	}
+
 }
 
 int 		ft_echo(t_command *comm) {
@@ -49,7 +53,6 @@ int 		ft_echo(t_command *comm) {
 		else if (!n)
 			s = str_reallocpy(s, '\n');
 	}
-//	print_by_state(s, arg);
 	write(1, s, ft_strlen(s));
 	return (1);
 }
