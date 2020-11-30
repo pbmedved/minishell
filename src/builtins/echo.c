@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:01:11 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/27 06:22:37 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/27 06:24:41 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ int 		ft_echo(t_command *comm) {
 		else if (!n)
 			s = str_reallocpy(s, '\n');
 	}
-	write(1, s, ft_strlen(s));
+	if (s)
+		write(1, s, ft_strlen(s));
+	free(s);
 	return (1);
 }

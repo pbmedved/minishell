@@ -47,7 +47,7 @@ void		dell_all_args(t_args **arg)
 	while (main)
 	{
 		res = main->next;
-		free(main->arg);
+//		free(main->arg);
 		main->arg = NULL;
 		free(main);
 		main = res;

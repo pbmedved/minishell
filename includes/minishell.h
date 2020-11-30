@@ -15,7 +15,11 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <string.h>
-# define BUFF_SIZE 2048
+
+typedef struct 			s_exe {
+	char				*prog;
+	char 				**ar;
+}						t_exe;
 
 typedef struct 			s_parse {
 	int 				i;
@@ -47,8 +51,8 @@ typedef struct 			s_vars {
 	t_env				*env;
 	char 				*buff;
 	int					state;
-	char 				*redir;
 	int 				fd[2];
+	char				*prompt;
 	struct s_command	*comm;
 }						t_vars;
 
@@ -58,17 +62,19 @@ typedef struct 			s_vars {
 t_command		*command_new();
 void 			command_add(t_command **comm, t_command *new);
 void			dell_all_command(t_command **command);
-
+void 		command_set_state(t_command *comm);
+void		command_fix(t_command **comm);
+void 		command_getter(t_vars *vars, char **envp);
 
 t_args			*arg_new();
 void 			arg_add(t_args **arg, t_args *new);
 void			dell_all_args(t_args **arg);
 int 			arg_count(t_command *comm);
+int				check_args(t_command *command);
 
 
 
-
-		t_env 			*env_create();
+t_env 			*env_create();
 void	 		env_add(t_env **main, t_env *new);
 void			env_save(t_vars *vars, char **envp);
 char			*env_take(t_env *env, const char *key);
@@ -77,7 +83,7 @@ void			dell_all_env(t_env **env);
 void			env_del_by_key(t_env **env, char *key);
 void 			env_add_or_change(t_env **env, char *key, char *value);
 void			env_del_one(t_env *del);
-
+char			*take_env_by_arg(t_vars *vars, char *s);
 
 
 /*
@@ -99,16 +105,57 @@ int 			whitespace_remove(char *s);
  * 		BUILTINS
  */
 
-void 			ft_export(t_command *comm, t_vars *vars);
-void 			ft_unset(t_command *comm, t_vars *vars);
-void 			env_print(t_env *env);
-void 			ft_cd(t_vars *vars, t_command *comm);
-void 			ft_pwd(t_vars *vars, t_command *command);
+int 			ft_export(t_command *comm, t_vars *vars);
+int 			ft_unset(t_command *comm, t_vars *vars);
+int 			env_print(t_env *env);
+int 			ft_cd(t_vars *vars, t_command *comm);
+int 			ft_pwd(t_vars *vars, t_command *command);
 int 			ft_echo(t_command *comm);
+void			exit_handler(t_command *comm);
+
+
+/*
+ * 		PARSER
+ */
+
+
+
+int				check_end(t_parse *parse, char c);
+int				set_bracks(t_parse *prs, char c);
+int 			brack_status(t_parse *prs);
+void			parse_bracks(t_command *comm, t_parse *prs, char c);
+void 			parse_escape(t_command *comm, t_parse *prs, char *buff);
+int				command_write(t_command *comm, char *buff);
+void			parse_bracks_arg(t_args *args, t_parse *prs, char c);
+void 			parse_escape_arg(t_args *args, t_parse *prs, char *buff);
+void 			parse_dollar_arg(t_args *args, t_parse *prs, char *buff, t_env *env);
+int 			parse_semicolon(t_args *args, t_parse *prs, char *buff);
+int				arg_write(t_env *env, t_args *args, char *buff);
+int 			pipe_write(t_args *args, char *buff);
+void			buff_parser(t_vars *vars, char *buff);
+
+
+/*
+ * 		EXEC
+ */
+void 		command_handler(t_command *comm, t_vars *vars, char **envp);
+void 		get_exe(t_command *comm, t_exe *exe, t_vars *vars);
+void		clean_exe(t_exe *exe);
+char		*try_find_prog(char *name, t_vars *vars);
+int			try_recode(t_command *comm, t_vars *vars);
+int			call_extern_prog(t_command *comm, char **envp, t_vars *vars);
+int			call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars);
+void		executable(t_command *comm, t_vars *vars, char **envp);
+int 		try_recode_prog(char *name);
+
+
+
 /*
  * 		ERRORS
  */
-
+int				check_token_symb(char c);
+int				token_error(char *err);
+void 			which_token_err(char *buf);
 void 			exit_error(char *s, int err);
 void 			print_command_error(t_command *comm);
 #endif //MINISHELL_MINISHELL_H

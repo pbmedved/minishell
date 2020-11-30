@@ -6,11 +6,31 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:50:19 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/15 22:50:34 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/27 07:15:21 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+int			token_error(char *err)
+{
+	ft_putstr_fd("-bash: syntax error near unexpected token '", 2);
+	write(2, err, ft_strlen(err));
+	write(2, "'\n", 2);
+	return (0);
+}
+
+void 		which_token_err(char *buf)
+{
+	if (buf[0] == ';' && buf[1] == ';')
+		token_error(";;");
+	else if (buf[0] == ';' && buf[1] != ';')
+		token_error(";");
+	else if (buf[0] == '|' && buf[1] == '|')
+		token_error("||");
+	else
+		token_error("|");
+}
 
 void 	exit_error(char *s, int n)
 {
