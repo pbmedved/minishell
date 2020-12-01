@@ -16,6 +16,16 @@
 # include <sys/stat.h>
 # include <string.h>
 
+
+
+/*
+ * REDIRECT STATE
+ *    > 3
+ *    >> 4
+ *    <  5
+ */
+
+
 typedef struct 			s_exe {
 	char				*prog;
 	char 				**ar;
@@ -25,7 +35,6 @@ typedef struct 			s_parse {
 	int 				i;
 	int 				brack;
 	int 				brack_2;
-	char 				*new_s;
 }						t_parse;
 
 typedef struct 			s_args {
@@ -37,6 +46,8 @@ typedef struct 			s_args {
 typedef struct	 		s_command {
 	char 				*command;
 	int					state;
+	int					fd_out;
+	int 				fd_in;
 	struct s_args		*args;
 	struct s_command	*next;
 }						t_command;
@@ -62,15 +73,15 @@ typedef struct 			s_vars {
 t_command		*command_new();
 void 			command_add(t_command **comm, t_command *new);
 void			dell_all_command(t_command **command);
-void 		command_set_state(t_command *comm);
-void		command_fix(t_command **comm);
-void 		command_getter(t_vars *vars, char **envp);
+void 			command_set_state(t_command *comm);
+void			command_fix(t_command **comm);
+void 			command_getter(t_vars *vars, char **envp);
 
 t_args			*arg_new();
 void 			arg_add(t_args **arg, t_args *new);
 void			dell_all_args(t_args **arg);
 int 			arg_count(t_command *comm);
-int				check_args(t_command *command);
+int				check_pipes(t_command *command);
 
 
 
@@ -129,7 +140,8 @@ int				command_write(t_command *comm, char *buff);
 void			parse_bracks_arg(t_args *args, t_parse *prs, char c);
 void 			parse_escape_arg(t_args *args, t_parse *prs, char *buff);
 void 			parse_dollar_arg(t_args *args, t_parse *prs, char *buff, t_env *env);
-int 			parse_semicolon(t_args *args, t_parse *prs, char *buff);
+void 			parse_semicolon(t_args *args, t_parse *prs, char *buff);
+int				parse_redirect(t_args *args, t_parse *prs, char *buff);
 int				arg_write(t_env *env, t_args *args, char *buff);
 int 			pipe_write(t_args *args, char *buff);
 void			buff_parser(t_vars *vars, char *buff);
@@ -158,4 +170,5 @@ int				token_error(char *err);
 void 			which_token_err(char *buf);
 void 			exit_error(char *s, int err);
 void 			print_command_error(t_command *comm);
+int			print_file_error(char *s);
 #endif //MINISHELL_MINISHELL_H

@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/27 21:57:14 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/01 23:33:50 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,11 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 
 		pid = fork();
 		if (pid == 0) {
+//			dup2(vars->fd[1], comm->fd_in);
 			execve(exe.prog, exe.ar, envp);
 			exit(1);
 		} else {
-			dup2(vars->fd[0], 0);
+//			dup2(vars->fd[0], comm->fd_out);
 			wait(&pid);
 		}
 		clean_exe(&exe);
@@ -101,7 +102,7 @@ int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
 	pid = fork();
 	if (pid == 0)
 	{
-		dup2(fd[1], 1);
+		dup2(fd[1], comm->fd_out);
 		close(fd[0]);
 		if (!try_recode(comm, vars))
 			execve(exe.prog, exe.ar, envp);
@@ -110,7 +111,7 @@ int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
 	}
 	else
 	{
-		dup2(fd[0], 0);
+		dup2(fd[0], comm->fd_out);
 		close(fd[1]);
 		wait(&pid);
 		close(fd[0]);

@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/30 07:15:38 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/30 07:16:06 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,9 @@ int				main(int argc, char **argv, char **envp)
 	if (argc == 3 && argv[1][0] == '-' && argv[1][1] == 'c' && !argv[1][2])
 		vars.buff = str_reallocpy_str(vars.buff, argv[2]);
 	env_save(&vars, envp);
-	vars.prompt = env_take(vars.env, "USER");
+	vars.prompt = ft_strdup(env_take(vars.env, "USER"));
 	command_getter(&vars, envp);
+	free(vars.prompt);
 	free(vars.buff);
 	dell_all_env(&vars.env);
 	return (0);

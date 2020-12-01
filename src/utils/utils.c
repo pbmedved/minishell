@@ -46,7 +46,7 @@ char	*str_reallocpy_str(char *old, char *new)
 	free(old);
 	return (young);
 }
-//echo "$USER $PATH $PWD"
+
 int			ft_strncmp_revers(char *in, char *this, size_t n)
 {
 	size_t in_len;

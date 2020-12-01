@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/27 21:57:56 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/30 08:36:25 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,23 @@
 
 int 		ft_export(t_command *comm, t_vars *vars)
 {
-	if (comm->args && comm->args->next)
-		env_add_or_change(&vars->env, comm->args->arg, comm->args->next->arg);
+	char	*key;
+	char	*value;
+	char	*command;
+
+	key = NULL;
+	value = NULL;
+	command = NULL;
+	if (comm->args)
+		command = comm->args->arg;
+	while (*command && *command != '=')
+		key = str_reallocpy(key, *command++);
+	if (*command == '=')
+		command++;
+	while (*command)
+		value = str_reallocpy(value, *command++);
+	if (key && value)
+		env_add_or_change(&vars->env, key, value);
 	return (1);
 }
 
@@ -28,10 +43,13 @@ int 		ft_unset(t_command *comm, t_vars *vars)
 
 int 		env_print(t_env *env)
 {
-	while (env)
+	t_env  *node;
+
+	node = env;
+	while (node)
 	{
-		ft_printf("%s=%s\n", env->key, env->value);
-		env=env->next;
+		ft_printf("%s=%s\n", node->key, node->value);
+		node = node->next;
 	}
 	return (1);
 }
@@ -46,7 +64,7 @@ int 		ft_cd(t_vars *vars, t_command *comm)
 	else
 		dir = chdir(comm->args->arg);
 	if (dir == -1)
-		exit_error("dir error", errno);
+		return (print_file_error(comm->args->arg));
 	env_add_or_change(&vars->env, "OLDPWD", env_take(vars->env, "PWD"));
 	getwd(s);
 	env_add_or_change(&vars->env, "PWD", s);
@@ -55,10 +73,10 @@ int 		ft_cd(t_vars *vars, t_command *comm)
 
 int 		ft_pwd(t_vars *vars, t_command *command)
 {
-	char *pwd;
+	char pwd[PATH_MAX];
 
-	pwd = NULL;
-	pwd = env_take(vars->env, "PWD");
+	if (!getcwd(pwd, PATH_MAX))
+		exit_error("GETCWD ERROR", errno);
 	write(1, pwd, ft_strlen(pwd));
 	write(1, "\n", 1);
 	return (1);

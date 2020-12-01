@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/27 08:29:29 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/02 00:20:09 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static void		print_prompt(t_vars *vars)
 {
 
-	ft_putstr_fd(env_take(vars->env, "USER"), 1);
+	ft_putstr_fd(vars->prompt, 1);
 	write(1, "$ ", 2);
 }
 
@@ -40,6 +40,83 @@ void 		command_set_state(t_command *comm)
 		res = res->next;
 	}
 }
+void 			permission_error(char *prog, char *file)
+{
+	write(2, prog, ft_strlen(prog));
+	write(2, ":", 1);
+	write(2, file, ft_strlen(file));
+	write(2, ": Permission denied\n", 21);
+}
+
+void 			command_set_fd(t_command *comm, char redir, char *file)
+{
+	int fd;
+
+	if ((fd = open(file, O_CREAT | O_TRUNC | O_RDWR, 0644)) < 0)
+	{
+		permission_error(comm->command, file);
+		return ;
+	}
+	if (redir == '>')
+		comm->fd_out = fd;
+	else
+		comm->fd_in = fd;
+}
+
+void 			command_set_fd_end(t_command *comm, char *file)
+{
+	int fd;
+
+	if ((fd = open(file, O_CREAT | O_RDWR | O_APPEND, 0644)) < 0)
+	{
+		permission_error(comm->command, file);
+		return ;
+	}
+	comm->fd_out = fd;
+}
+
+void 			newline_error()
+{
+	write(2,"-bash: syntax error near unexpected token `newline'\n", 53);
+}
+
+int			redirect_fd_choose(t_command *comm, t_args *args)
+{
+	if (!args->next)
+	{
+		newline_error();
+		return (0);
+	}
+	args->next->state = 2;
+	if(!ft_strncmp(args->arg, ">", ft_strlen(args->arg)))
+		command_set_fd(comm, '>', args->next->arg);
+	else if(!ft_strncmp(args->arg, "<", ft_strlen(args->arg)))
+		command_set_fd(comm, '<', args->next->arg);
+	else if(!ft_strncmp(args->arg, ">>", ft_strlen(args->arg)))
+		command_set_fd_end(comm, args->next->arg);
+	return (1);
+}
+
+void	 		redirect_fd_set(t_command *command)
+{
+	t_args		*args;
+	t_command   *comm;
+
+	comm = command;
+	while (comm)
+	{
+		args = comm -> args;
+		while (args) {
+			if (args->state == 2)
+			{
+				if (redirect_fd_choose(comm,args))
+					args = args -> next;
+			}
+			args = args -> next;
+		}
+		comm = comm -> next;
+	}
+}
 
 void		command_fix(t_command **comm)
 {
@@ -50,6 +127,7 @@ void		command_fix(t_command **comm)
 	command_set_state(res);
 	while (res)
 	{
+		redirect_fd_set(res);
 		i = -1;
 		while (res->command[++i])
 			res->command[i] = (char)ft_tolower(res->command[i]);
