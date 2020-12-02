@@ -16,6 +16,7 @@
 # include <sys/stat.h>
 # include <string.h>
 
+
 typedef struct 			s_exe {
 	char				*prog;
 	char 				**ar;

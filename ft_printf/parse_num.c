@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_num.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 16:37:51 by iadrien           #+#    #+#             */
-/*   Updated: 2020/07/22 15:37:14 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/01 23:56:21 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ void				ft_prf_itoa_hex_p(unsigned long n, int base, char *buf)
 
 	dict = "0123456789ABCDEFG";
 	i = ft_numlen_uns(n, base);
-	if (n < 0 && (n *= -1))
-		base == 10 ? buf[0] = '-' : 0;
+	// if (n < 0 && (n *= -1))
+	// 	base == 10 ? buf[0] = '-' : 0;
 	buf[i--] = '\0';
 	while ((n / base))
 	{

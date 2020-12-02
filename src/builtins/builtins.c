@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/27 21:57:56 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/01 23:49:55 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int 		ft_cd(t_vars *vars, t_command *comm)
 	if (dir == -1)
 		exit_error("dir error", errno);
 	env_add_or_change(&vars->env, "OLDPWD", env_take(vars->env, "PWD"));
-	getwd(s);
+	getwd(s); // TODO: getwd - deprecated надо использовать getcwd()
 	env_add_or_change(&vars->env, "PWD", s);
 	return (1);
 }
