@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/30 08:36:25 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/02 09:16:22 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,19 @@ int 		ft_export(t_command *comm, t_vars *vars)
 	command = NULL;
 	if (comm->args)
 		command = comm->args->arg;
-	while (*command && *command != '=')
-		key = str_reallocpy(key, *command++);
-	if (*command == '=')
-		command++;
-	while (*command)
-		value = str_reallocpy(value, *command++);
-	if (key && value)
-		env_add_or_change(&vars->env, key, value);
-	return (1);
+	if (command)
+	{
+		while (*command && *command != '=')
+			key = str_reallocpy(key, *command++);
+		if (*command == '=')
+			command++;
+		while (*command)
+			value = str_reallocpy(value, *command++);
+		if (key && value)
+			env_add_or_change(&vars->env, key, value);
+		return (1);
+	}
+	return (0);
 }
 
 int 		ft_unset(t_command *comm, t_vars *vars)

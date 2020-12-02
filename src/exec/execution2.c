@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:13:44 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/02 00:22:57 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/02 09:02:40 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void 	get_exe(t_command *comm, t_exe *exe, t_vars *vars)
 
 	i = 0;
 	arg = comm->args;
-	if (!(exe->ar = malloc((arg_count(comm) + 3) * sizeof(char *))))
+	if (!(exe->ar = malloc((arg_count(comm) + 2) * sizeof(char *))))
 		exit_error("Malloc error", 1);
 	if (try_recode_prog(comm->command))
 		exe->prog = ft_strdup(comm->command);
@@ -90,7 +90,8 @@ void	clean_exe(t_exe *exe)
 	int i;
 
 	i = 0;
-//	while (exe->ar[i])
-//		free(exe->ar[i++]);
-//	free(exe->ar);
+	while (exe->ar[i])
+		free(exe->ar[i++]);
+
+	free(exe->ar);
 }

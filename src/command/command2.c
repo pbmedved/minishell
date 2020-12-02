@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/02 00:20:09 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/02 08:34:01 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void 			permission_error(char *prog, char *file)
 	write(2, ": Permission denied\n", 21);
 }
 
-void 			command_set_fd(t_command *comm, char redir, char *file)
+void 			command_set_fd_out(t_command *comm, char redir, char *file)
 {
 	int fd;
 
@@ -57,13 +57,22 @@ void 			command_set_fd(t_command *comm, char redir, char *file)
 		permission_error(comm->command, file);
 		return ;
 	}
-	if (redir == '>')
-		comm->fd_out = fd;
-	else
-		comm->fd_in = fd;
+	comm->fd_out = fd;
 }
 
-void 			command_set_fd_end(t_command *comm, char *file)
+void 			command_set_fd_in(t_command *comm, char redir, char *file)
+{
+	int fd;
+
+	if ((fd = open(file, O_RDWR, 0644)) < 0)
+	{
+		permission_error(comm->command, file);
+		return ;
+	}
+	comm->fd_in = fd;
+}
+
+void 			command_set_fd_out_end(t_command *comm, char *file)
 {
 	int fd;
 
@@ -89,11 +98,11 @@ int			redirect_fd_choose(t_command *comm, t_args *args)
 	}
 	args->next->state = 2;
 	if(!ft_strncmp(args->arg, ">", ft_strlen(args->arg)))
-		command_set_fd(comm, '>', args->next->arg);
+		command_set_fd_out(comm, '>', args->next->arg);
 	else if(!ft_strncmp(args->arg, "<", ft_strlen(args->arg)))
-		command_set_fd(comm, '<', args->next->arg);
+		command_set_fd_in(comm, '<', args->next->arg);
 	else if(!ft_strncmp(args->arg, ">>", ft_strlen(args->arg)))
-		command_set_fd_end(comm, args->next->arg);
+		command_set_fd_out_end(comm, args->next->arg);
 	return (1);
 }
 
@@ -145,7 +154,7 @@ void 		command_getter(t_vars *vars, char **envp)
 		{
 			if (!(vars->buff = ft_calloc(1,1)))
 				exit_error("Malloc error", errno);
-			while((read(0,&b, 1)) && b != '\n')
+			while((read(vars->fd[0], &b, 1)) && b != '\n')
 				vars->buff = str_reallocpy(vars->buff, b);
 		}
 		buff_parser(vars, vars->buff);
