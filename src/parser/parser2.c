@@ -45,6 +45,8 @@ int				command_write(t_command *comm, char *buff)
 			parse_bracks(comm, &prs, buff[prs.i]);
 		else if (buff[prs.i] == '\\')
 			parse_escape(comm, &prs, buff);
+//		else if (buff[prs.i] == '$')
+//			parse_dollar_arg(args, &prs, buff, env);
 		else
 			comm->command = str_reallocpy(comm->command, buff[prs.i++]);
 	}

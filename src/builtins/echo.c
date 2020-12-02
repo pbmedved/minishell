@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:01:11 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/27 06:24:41 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/02 00:35:40 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,23 @@ int 		ft_echo(t_command *comm) {
 		n++;
 		arg = arg->next;
 	}
-	while (arg && arg->state == 1)
+	while (arg)
 	{
-		s = str_reallocpy_str(s, arg->arg);
-		arg = arg->next;
-		if (arg && arg->state == 1)
-			s = str_reallocpy(s, ' ');
-		else if (!n)
-			s = str_reallocpy(s, '\n');
+		if (arg->state == 1)
+		{
+			s = str_reallocpy_str(s, arg->arg);
+			arg = arg->next;
+			if (arg && arg->state <= 2)
+				s = str_reallocpy(s, ' ');
+
+		}
+		else
+			arg = arg->next;
 	}
+	if (!n)
+		s = str_reallocpy(s, '\n');
 	if (s)
-		write(1, s, ft_strlen(s));
+		write(comm->fd_out, s, ft_strlen(s));
 	free(s);
 	return (1);
 }

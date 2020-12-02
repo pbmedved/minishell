@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:03:45 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/27 07:16:33 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/30 09:56:24 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int			check_token_symb(char c)
 	return (0);
 }
 
-int			check_args(t_command *command)
+int			check_pipes(t_command *command)
 {
 	t_command 	*comm;
 	t_args		*args;
@@ -51,7 +51,7 @@ int			check_args(t_command *command)
 
 int				check_end(t_parse *parse, char c)
 {
-	if (ft_strchr(" |;<>", c))
+	if (ft_strchr(" |;", c))
 	{
 		if (parse->brack || parse->brack_2)
 			return (1);

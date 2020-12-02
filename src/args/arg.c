@@ -47,7 +47,7 @@ void		dell_all_args(t_args **arg)
 	while (main)
 	{
 		res = main->next;
-//		free(main->arg);
+		free(main->arg);
 		main->arg = NULL;
 		free(main);
 		main = res;
@@ -57,14 +57,15 @@ void		dell_all_args(t_args **arg)
 
 int 			arg_count(t_command *comm)
 {
-	t_command *res;
+	t_args *res;
 	int i;
 
 	i = 0;
-	res = comm;
-	while (res && res->state == 1)
+	res = comm->args;
+	while (res)
 	{
-		i++;
+		if (res->state == 1)
+			i++;
 		res = res->next;
 	}
 	return (i);

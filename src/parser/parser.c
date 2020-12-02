@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/21 12:12:03 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/30 12:28:14 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,10 @@ void 	parse_dollar_arg(t_args *args, t_parse *prs, char *buff, t_env *env)
 	free(new);
 }
 
-int 			parse_semicolon(t_args *args, t_parse *prs, char *buff)
+void 			parse_semicolon(t_args *args, t_parse *prs, char *buff)
 {
 	if (brack_status(prs))
-	{
 		args->arg = str_reallocpy(args->arg, buff[prs->i++]);
-		return (0);
-	}
 	else
 	{
 		if (buff[prs->i] == ';')
@@ -55,7 +52,23 @@ int 			parse_semicolon(t_args *args, t_parse *prs, char *buff)
 		else
 			args->state = 8;
 		args->arg = str_reallocpy(args->arg, buff[prs->i++]);
-		return  (1);
+	}
+}
+
+int			parse_redirect(t_args *args, t_parse *prs, char *buff)
+{
+	if (brack_status(prs))
+	{
+		while(ft_strchr("<>", buff[prs->i]))
+			args->arg = str_reallocpy(args->arg, buff[prs->i++]);
+		return (0);
+	}
+	else
+	{
+		while(ft_strchr("<>", buff[prs->i]))
+			args->arg = str_reallocpy(args->arg, buff[prs->i++]);
+		args->state = 2;
+		return (1);
 	}
 }
 
@@ -72,19 +85,23 @@ int				arg_write(t_env *env, t_args *args, char *buff)
 		else if (buff[prs.i] == '$')
 			parse_dollar_arg(args, &prs, buff, env);
 		else if (buff[prs.i] == ';' || buff[prs.i] == '|')
+			parse_semicolon(args, &prs, buff);
+		else if (ft_strchr("<>", buff[prs.i]))
 		{
-			if (parse_semicolon(args, &prs, buff))
+			if (parse_redirect(args, &prs, buff))
 				return (prs.i);
 		}
 		else
 			args->arg = str_reallocpy(args->arg, buff[prs.i++]);
+		if (ft_strchr("<>", buff[prs.i]))
+			return (prs.i);
 	}
 	return (prs.i);
 }
 
 int 			pipe_write(t_args *args, char *buff)
 {
-	while (*buff && ft_strchr(";|", *buff))
+	while (*buff && ft_strchr(";|<>", *buff))
 	{
 		args->arg = str_reallocpy(args->arg, *buff);
 		if(*buff == ';')
@@ -117,6 +134,7 @@ void			buff_parser(t_vars *vars, char *buff)
 
 	while (*buff)
 	{
+		buff += whitespace_remove(buff);
 		new_comm = command_new();
 		buff += command_write(new_comm, buff);
 		buff += whitespace_remove(buff);

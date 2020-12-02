@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/27 21:57:14 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/02 08:52:06 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,20 +73,26 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 	int fd [2];
 
 	pipe(fd);
+//	dup2(comm->fd_out, 1);
+	dup2(comm->fd_in, 0);
 	get_exe(comm, &exe, vars);
 	if (exe.prog && !try_recode(comm, vars))
 	{
 
 		pid = fork();
 		if (pid == 0) {
+			dup2(comm->fd_out, 1);
 			execve(exe.prog, exe.ar, envp);
 			exit(1);
 		} else {
-			dup2(vars->fd[0], 0);
+//			dup2(comm->fd_in, 0);
 			wait(&pid);
 		}
 		clean_exe(&exe);
 	}
+//	close(comm->fd_out);
+//	close(comm->fd_in);
+
 	return 1;
 }
 
@@ -101,7 +107,10 @@ int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
 	pid = fork();
 	if (pid == 0)
 	{
-		dup2(fd[1], 1);
+//		dup2(fd[1], 1);
+//		if (comm->fd_out > 1)
+		dup2(comm->fd_out, 1);
+		dup2(fd[1], comm->fd_out);
 		close(fd[0]);
 		if (!try_recode(comm, vars))
 			execve(exe.prog, exe.ar, envp);
@@ -110,7 +119,8 @@ int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
 	}
 	else
 	{
-		dup2(fd[0], 0);
+//		dup2(fd[0], 0);
+		dup2(fd[0], comm->fd_in);
 		close(fd[1]);
 		wait(&pid);
 		close(fd[0]);

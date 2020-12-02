@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 17:20:53 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/21 12:11:29 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/30 09:00:19 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,23 +66,20 @@ void			env_del_by_key(t_env **env, char *key)
 	if (!del)
 		return ;
 	node = *env;
-	res = NULL;
 	if (node == del)
-	{
-		res = *env;
 		*env = node->next;
-	}
 	else
 	{
 		while (node->next != del)
 			node = node->next;
-		res = node->next;
-		if (node->next->next)
-			node->next = node->next->next;
+		del = node->next;
+		res = node->next->next;
+		node->next = res;
 	}
-	free(res->value);
-	free(res->key);
-	free(res);
+	free(del->value);
+	free(del->key);
+	free(del);
+	del = NULL;
 }
 
 void 		env_add_or_change(t_env **env, char *key, char *value)

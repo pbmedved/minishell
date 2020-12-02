@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:43:18 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/21 14:43:33 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/02 08:25:01 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@ t_command		*command_new()
 		exit_error("Malloc error", 1);
 	new_comm->next = NULL;
 	new_comm->args = NULL;
+	new_comm->fd_in = 0;
+	new_comm->fd_out = 1;
 	new_comm->state = 1;
-
 	return (new_comm);
 }
 

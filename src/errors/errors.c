@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:50:19 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/27 07:15:21 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/11/30 07:56:46 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,12 @@ void 		print_command_error(t_command *comm)
 	write(2, "bash: -bash: ",13);
 	write(2, comm->command, ft_strlen(comm->command));
 	write(2, ": command not found\n",20);
+}
+
+int		print_file_error(char *s)
+{
+	write(2, "bash: -cd: ",11);
+	write(2, s, ft_strlen(s));
+	write(2, ": No such file or directory\n",28);
+	return (1);
 }
