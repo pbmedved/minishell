@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/02 08:52:06 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/04 08:31:13 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,22 +76,26 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 //	dup2(comm->fd_out, 1);
 	dup2(comm->fd_in, 0);
 	get_exe(comm, &exe, vars);
-	if (exe.prog && !try_recode(comm, vars))
+	if (exe.prog && !try_recode_prog(comm->command))
 	{
 
 		pid = fork();
 		if (pid == 0) {
 			dup2(comm->fd_out, 1);
 			execve(exe.prog, exe.ar, envp);
-			exit(1);
+			exit(0);
 		} else {
 //			dup2(comm->fd_in, 0);
 			wait(&pid);
 		}
-		clean_exe(&exe);
 	}
+	else
+		try_recode(comm, vars);
+	clean_exe(&exe);
 //	close(comm->fd_out);
 //	close(comm->fd_in);
+
+
 
 	return 1;
 }
@@ -153,22 +157,9 @@ int 		try_recode_prog(char *name)
 
 void		executable(t_command *comm, t_vars *vars, char **envp)
 {
-//	char 	*path;
-//
-//	path = NULL;
-//	if (try_recode_prog(comm->command))
-//		path = ft_strdup(comm->command);
-//	else
-//		path = try_find_prog(comm->command, vars);
-//	if (path)
-//	{
 		if (comm->state == 3)
 			call_extern_prog_pipe(comm, envp, vars);
 		else
 			call_extern_prog(comm, envp, vars);
-//	}
-//	else
-//		print_command_error(comm);
-//	free(path);
 }
 

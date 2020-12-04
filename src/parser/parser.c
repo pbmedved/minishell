@@ -6,12 +6,40 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/30 12:28:14 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/04 08:41:36 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+
+void 	parse_dollar_comm(t_command *comm, t_parse *prs, char *buff, t_env *env)
+{
+	char *new;
+	int valid;
+
+	valid = 0;
+	if (!(new = ft_calloc(1,1)))
+		exit_error("Calloc error", errno);
+	if (prs->brack && !prs->brack_2)
+		comm->command = str_reallocpy(comm->command, buff[prs->i++]);
+	else
+	{
+		prs->i++;
+		if (!ft_isalpha(buff[prs->i]))
+		{
+			valid = 1;
+			prs->i++;
+		}
+		while (ft_isalnum(buff[prs->i]))
+			new = str_reallocpy(new, buff[prs->i++]);
+		if (valid)
+			comm->command = str_reallocpy_str(comm->command, new);
+		else
+			comm->command = str_reallocpy_str(comm->command, env_take(env, new));
+	}
+	free(new);
+}
 
 void 	parse_dollar_arg(t_args *args, t_parse *prs, char *buff, t_env *env)
 {
@@ -136,7 +164,7 @@ void			buff_parser(t_vars *vars, char *buff)
 	{
 		buff += whitespace_remove(buff);
 		new_comm = command_new();
-		buff += command_write(new_comm, buff);
+		buff += command_write(new_comm, buff, vars->env);
 		buff += whitespace_remove(buff);
 		while (*buff && *buff != ' ')
 		{

@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:01:08 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/27 07:01:18 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/04 08:41:36 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void 			parse_escape(t_command *comm, t_parse *prs, char *buff)
 	}
 }
 
-int				command_write(t_command *comm, char *buff)
+int				command_write(t_command *comm, char *buff, t_env *env)
 {
 	t_parse prs;
 
@@ -45,8 +45,8 @@ int				command_write(t_command *comm, char *buff)
 			parse_bracks(comm, &prs, buff[prs.i]);
 		else if (buff[prs.i] == '\\')
 			parse_escape(comm, &prs, buff);
-//		else if (buff[prs.i] == '$')
-//			parse_dollar_arg(args, &prs, buff, env);
+		else if (buff[prs.i] == '$')
+			parse_dollar_comm(comm, &prs, buff, env);
 		else
 			comm->command = str_reallocpy(comm->command, buff[prs.i++]);
 	}
