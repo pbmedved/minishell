@@ -77,6 +77,7 @@ void			dell_all_command(t_command **command);
 void 			command_set_state(t_command *comm);
 void			command_fix(t_command **comm);
 void 			command_getter(t_vars *vars, char **envp);
+void 	parse_dollar_comm(t_command *comm, t_parse *prs, char *buff, t_env *env);
 
 t_args			*arg_new();
 void 			arg_add(t_args **arg, t_args *new);
@@ -137,7 +138,7 @@ int				set_bracks(t_parse *prs, char c);
 int 			brack_status(t_parse *prs);
 void			parse_bracks(t_command *comm, t_parse *prs, char c);
 void 			parse_escape(t_command *comm, t_parse *prs, char *buff);
-int				command_write(t_command *comm, char *buff);
+int				command_write(t_command *comm, char *buff, t_env *env);
 void			parse_bracks_arg(t_args *args, t_parse *prs, char c);
 void 			parse_escape_arg(t_args *args, t_parse *prs, char *buff);
 void 			parse_dollar_arg(t_args *args, t_parse *prs, char *buff, t_env *env);
