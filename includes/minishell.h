@@ -17,6 +17,7 @@
 # include <string.h>
 # include <limits.h>
 # include <sys/wait.h>
+# include <errno.h>
 
 
 /*
@@ -66,6 +67,7 @@ typedef struct 			s_vars {
 	int 				fd[2];
 	char				*prompt;
 	struct s_command	*comm;
+	int					global_r_code;
 }						t_vars;
 
 /*
@@ -77,7 +79,7 @@ void			dell_all_command(t_command **command);
 void 			command_set_state(t_command *comm);
 void			command_fix(t_command **comm);
 void 			command_getter(t_vars *vars, char **envp);
-void 	parse_dollar_comm(t_command *comm, t_parse *prs, char *buff, t_env *env);
+void 			parse_dollar_comm(t_command *comm, t_parse *prs, char *buff, t_env *env);
 
 t_args			*arg_new();
 void 			arg_add(t_args **arg, t_args *new);
@@ -121,9 +123,9 @@ int 			whitespace_remove(char *s);
 int 			ft_export(t_command *comm, t_vars *vars);
 int 			ft_unset(t_command *comm, t_vars *vars);
 int 			env_print(t_env *env);
-int 			ft_cd(t_vars *vars, t_command *comm);
+int 		ft_cd(t_vars **vars, t_command *comm);
 int 			ft_pwd(t_vars *vars, t_command *command);
-int 			ft_echo(t_command *comm);
+int 			ft_echo(t_command *comm, t_vars **vars);
 void			exit_handler(t_command *comm);
 
 
@@ -152,14 +154,14 @@ void			buff_parser(t_vars *vars, char *buff);
 /*
  * 		EXEC
  */
-void 		command_handler(t_command *comm, t_vars *vars, char **envp);
+void 		command_handler(t_command *comm, t_vars **vars, char **envp);
 void 		get_exe(t_command *comm, t_exe *exe, t_vars *vars);
 void		clean_exe(t_exe *exe);
 char		*try_find_prog(char *name, t_vars *vars);
-int			try_recode(t_command *comm, t_vars *vars);
-int			call_extern_prog(t_command *comm, char **envp, t_vars *vars);
-int			call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars);
-void		executable(t_command *comm, t_vars *vars, char **envp);
+int		try_recode(t_command *comm, t_vars **vars);
+int		call_extern_prog(t_command *comm, char **envp, t_vars **vars);
+int			call_extern_prog_pipe(t_command *comm, char **envp, t_vars **vars);
+void		executable(t_command *comm, t_vars **vars, char **envp);
 int 		try_recode_prog(char *name);
 
 

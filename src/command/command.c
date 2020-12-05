@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:43:18 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/02 08:25:01 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/05 20:56:59 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ t_command		*command_new()
 	return (new_comm);
 }
 
+/*
+** Добавляет очередную команду в конец списка.
+**
+*/
 void 			command_add(t_command **comm, t_command *new)
 {
 	t_command	*res;

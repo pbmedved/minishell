@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/04 00:03:36 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/06 00:42:15 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,21 +59,26 @@ int 		env_print(t_env *env)
 	return (1);
 }
 
-int 		ft_cd(t_vars *vars, t_command *comm)
+int 		ft_cd(t_vars **vars, t_command *comm)
 {
 	char s[PATH_MAX];
 	int		dir;
 
+	errno = 0;
 	if (!comm->args || comm->args->state == 7)
-		dir = chdir(env_take(vars->env, "HOME"));
+		dir = chdir(env_take((*vars)->env, "HOME"));
 	else
 		dir = chdir(comm->args->arg);
 	if (dir == -1)
+	{
+		(*vars)->global_r_code = errno;
 		return (print_file_error(comm->args->arg));
-	env_add_or_change(&vars->env, "OLDPWD", env_take(vars->env, "PWD"));
+	}
+	env_add_or_change(&(*vars)->env, "OLDPWD", env_take((*vars)->env, "PWD"));
 	// getwd(s); // TODO: getwd - deprecated надо использовать getcwd()
-	getcwd(s, PATH_MAX);
-	env_add_or_change(&vars->env, "PWD", s);
+	if (!getcwd(s, PATH_MAX))
+		(*vars)->global_r_code = errno;
+	env_add_or_change(&(*vars)->env, "PWD", s);
 	return (1);
 }
 

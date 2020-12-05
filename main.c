@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/30 07:16:06 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/05 23:49:25 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ static void		preallocated(t_vars *vars)
 	vars->fd[0] = dup(0);
 	vars->fd[1] = dup(1);
 	vars->prompt = NULL;
+	vars->global_r_code = 0;
 }
 
 int				main(int argc, char **argv, char **envp)

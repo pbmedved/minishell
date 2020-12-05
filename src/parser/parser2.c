@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:01:08 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/05 18:01:05 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/05 20:34:35 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void 			parse_escape(t_command *comm, t_parse *prs, char *buff)
 		prs->i += 2;
 	}
 }
+
 
 int				command_write(t_command *comm, char *buff, t_env *env)
 {

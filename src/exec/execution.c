@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/05 18:01:56 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/06 00:22:33 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char		*try_find_prog(char *name, t_vars *vars)
 	int 	i;
 
 	i = 0;
-	if ((fd = open(name, O_RDONLY)) > 0)
+	if ((fd = open(name, O_RDONLY)) > 0) // TODO: уточнить зачем нужна эта проверка
 	{
 		close(fd);
 		return (ft_strdup(name));
@@ -51,35 +51,36 @@ char		*try_find_prog(char *name, t_vars *vars)
 **
 **
 */
-int		try_recode(t_command *comm, t_vars *vars)
+int		try_recode(t_command *comm, t_vars **vars)
 {
 	if (!ft_strncmp_revers(comm->command, "echo", 4))
-		return (ft_echo(comm));
+		return (ft_echo(comm, vars));
 	else if (!ft_strncmp(comm->command, "cd", 2))
 		return (ft_cd(vars, comm));
 	else if (!ft_strncmp(comm->command, "pwd", 3))
-		return(ft_pwd(vars, comm));
+		return(ft_pwd(*vars, comm));
 	else if (!ft_strncmp(comm->command, "export", 6))
-		return(ft_export(comm, vars));
+		return(ft_export(comm, *vars));
 	else if (!ft_strncmp(comm->command, "unset", 5))
-		return (ft_unset(comm, vars));
+		return (ft_unset(comm, *vars));
 	else if (!ft_strncmp(comm->command, "env", 3))
-		return (env_print(vars->env));
+		return (env_print((*vars)->env));
 	else if (!ft_strncmp(comm->command, "exit", 4))
 		exit_handler(comm);
-	return 0;
+	return (0);
 }
 
-int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
+int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
 {
 	t_exe exe;
 	pid_t pid;
 	int fd [2];
 
 	pipe(fd);
+	errno = 0;
 //	dup2(comm->fd_out, 1);
 	dup2(comm->fd_in, 0);
-	get_exe(comm, &exe, vars);
+	get_exe(comm, &exe, *vars);
 	if (exe.prog && !try_recode_prog(comm->command))
 	{
 
@@ -104,13 +105,13 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 	return 1;
 }
 
-int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
+int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars **vars)
 {
 	t_exe exe;
 	pid_t pid;
 	int fd [2];
 
-	get_exe(comm, &exe, vars);
+	get_exe(comm, &exe, *vars);
 	pipe(fd);
 	pid = fork();
 	if (pid == 0)
@@ -160,7 +161,7 @@ int 		try_recode_prog(char *name)
 	return (0);
 }
 
-void		executable(t_command *comm, t_vars *vars, char **envp)
+void		executable(t_command *comm, t_vars **vars, char **envp)
 {
 		if (comm->state == 3)
 			call_extern_prog_pipe(comm, envp, vars);

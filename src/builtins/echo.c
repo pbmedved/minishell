@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:01:11 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/03 23:58:03 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/06 00:00:55 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 
 // }
 
-int 		ft_echo(t_command *comm) {
+int 		ft_echo(t_command *comm, t_vars **vars) {
 	t_args *arg;
 	char *s;
 	int n;
@@ -62,5 +62,6 @@ int 		ft_echo(t_command *comm) {
 	if (s)
 		write(comm->fd_out, s, ft_strlen(s));
 	free(s);
+	(*vars)->global_r_code = 0;
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:13:44 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/03 14:34:58 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/05 23:49:57 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ int 		check_redirect(t_command *command)
 
 /*
 ** Обрабатывает команды из списка с командами.
-** 
+**
 **
 */
-void 		command_handler(t_command *comm, t_vars *vars, char **envp)
+void 		command_handler(t_command *comm, t_vars **vars, char **envp)
 {
 	while (comm)
 	{

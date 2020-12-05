@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/04 00:06:55 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/06 00:42:55 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ static void		print_prompt(t_vars *vars)
 	write(1, "$ ", 2);
 }
 
-void 		command_set_state(t_command *comm)
+void 			command_set_state(t_command *comm)
 {
-	t_command *res;
-	t_args    *args;
+	t_command	*res;
+	t_args		*args;
 
 	res = comm;
 	while (res)
@@ -91,6 +91,10 @@ void 			newline_error()
 	write(2,"-bash: syntax error near unexpected token `newline'\n", 53);
 }
 
+/*
+** Определяет тип редиректа и вызывает соотвествующую функцию.
+**
+*/
 int			redirect_fd_choose(t_command *comm, t_args *args)
 {
 	if (!args->next)
@@ -149,6 +153,7 @@ void		command_fix(t_command **comm)
 /*
 ** Основной цикл шелла.
 ** Читает и выполняет команды.
+** Читает посимвольно и пересоздает буфер, куда записывает комаду.
 */
 void 		command_getter(t_vars *vars, char **envp)
 {
@@ -157,6 +162,7 @@ void 		command_getter(t_vars *vars, char **envp)
 	while(vars->state)
 	{
 		print_prompt(vars);
+		printf("Errno = %d\n", vars->global_r_code);
 		if (!vars->buff)
 		{
 			if (!(vars->buff = ft_calloc(1,1)))
@@ -166,7 +172,7 @@ void 		command_getter(t_vars *vars, char **envp)
 		}
 		buff_parser(vars, vars->buff);
 		command_fix(&vars->comm);
-		command_handler(vars->comm, vars, envp);
+		command_handler(vars->comm, &vars, envp);
 		dell_all_command(&vars->comm);
 		free(vars->buff);
 		vars->buff = NULL;
