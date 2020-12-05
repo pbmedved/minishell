@@ -15,7 +15,8 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <string.h>
-
+# include <limits.h>
+# include <sys/wait.h>
 
 
 /*
@@ -170,5 +171,5 @@ int				token_error(char *err);
 void 			which_token_err(char *buf);
 void 			exit_error(char *s, int err);
 void 			print_command_error(t_command *comm);
-int			print_file_error(char *s);
-#endif //MINISHELL_MINISHELL_H
+int				print_file_error(char *s);
+#endif

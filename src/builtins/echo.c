@@ -3,32 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:01:11 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/02 00:35:40 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/03 23:58:03 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void 			print_by_state(char *s, t_args *args)
-{
-	if (args) {
-//		if (args->state == 1)
-//			ft_printf("%s", s);
-		if (args->state == 3)
-			write_in_file(s, args->next);
-		else if (args->state == 5)
-			save_write_in_file(s, args->next);
-	}
-	else if (s)
-	{
-		s = str_reallocpy(s, '\04');
-		ft_putstr_fd(s, 1);
-	}
+// static void 			print_by_state(char *s, t_args *args)
+// {
+// 	if (args) {
+// //		if (args->state == 1)
+// //			ft_printf("%s", s);
+// 		if (args->state == 3)
+// 			write_in_file(s, args->next);
+// 		else if (args->state == 5)
+// 			save_write_in_file(s, args->next);
+// 	}
+// 	else if (s)
+// 	{
+// 		s = str_reallocpy(s, '\04');
+// 		ft_putstr_fd(s, 1);
+// 	}
 
-}
+// }
 
 int 		ft_echo(t_command *comm) {
 	t_args *arg;

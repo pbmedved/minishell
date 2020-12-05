@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/02 08:34:01 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/04 00:06:55 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void 			permission_error(char *prog, char *file)
 void 			command_set_fd_out(t_command *comm, char redir, char *file)
 {
 	int fd;
+	redir++; // TODO: убрать заглушку. нужна т.к. переменная не используется
 
 	if ((fd = open(file, O_CREAT | O_TRUNC | O_RDWR, 0644)) < 0)
 	{
@@ -64,6 +65,7 @@ void 			command_set_fd_in(t_command *comm, char redir, char *file)
 {
 	int fd;
 
+	redir++; // TODO: убрать заглушку. нужна т.к. переменная не используется
 	if ((fd = open(file, O_RDWR, 0644)) < 0)
 	{
 		permission_error(comm->command, file);
@@ -143,6 +145,11 @@ void		command_fix(t_command **comm)
 		res = res->next;
 	}
 }
+
+/*
+** Основной цикл шелла.
+** Читает и выполняет команды.
+*/
 void 		command_getter(t_vars *vars, char **envp)
 {
 	char 	b;

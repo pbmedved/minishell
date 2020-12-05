@@ -6,11 +6,12 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/02 21:30:08 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/04 00:03:36 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <limits.h>
 
 int 		ft_export(t_command *comm, t_vars *vars)
 {
@@ -70,15 +71,21 @@ int 		ft_cd(t_vars *vars, t_command *comm)
 	if (dir == -1)
 		return (print_file_error(comm->args->arg));
 	env_add_or_change(&vars->env, "OLDPWD", env_take(vars->env, "PWD"));
-	getwd(s); // TODO: getwd - deprecated надо использовать getcwd()
+	// getwd(s); // TODO: getwd - deprecated надо использовать getcwd()
+	getcwd(s, PATH_MAX);
 	env_add_or_change(&vars->env, "PWD", s);
 	return (1);
 }
 
 int 		ft_pwd(t_vars *vars, t_command *command)
 {
-	char pwd[PATH_MAX];
-
+	char		pwd[PATH_MAX];
+	t_vars		*tmp_v;
+	t_command	*tmp_c;
+	tmp_v = vars; // заглушка, т.к. *vars пока нигде не используется
+	tmp_c = command;
+	tmp_c++;
+	tmp_v++;
 	if (!getcwd(pwd, PATH_MAX))
 		exit_error("GETCWD ERROR", errno);
 	write(1, pwd, ft_strlen(pwd));

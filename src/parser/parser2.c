@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:01:08 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/27 07:01:18 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/04 00:04:02 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int				command_write(t_command *comm, char *buff)
 {
 	t_parse prs;
 
-	prs = (t_parse){0,0, 0, 0};
+	prs = (t_parse){0, 0, 0};
 	while(buff[prs.i] && check_end(&prs, buff[prs.i]))
 	{
 		if (buff[prs.i] == '"' || buff[prs.i] == '\'')

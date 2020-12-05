@@ -6,42 +6,63 @@
 #    By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/15 22:40:53 by iadrien           #+#    #+#              #
-#    Updated: 2020/12/02 00:01:49 by amayor           ###   ########.fr        #
+#    Updated: 2020/12/03 23:56:59 by amayor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
+CFLAGS = -Wall -Wextra -Werror -g3
+COMPILER = clang
+LIBS = -L$(LIBFT_PATH) -L$(FT_PRINTF_PATH) -lft -lftprintf
+HEADER_DIR = includes
+LIBFT_PATH = libft
+FT_PRINTF_PATH = ft_printf
+# OBJ_DIR = obj
+SRC_FILES = 	main.c \
+				src/command/command.c \
+				src/utils/utils.c \
+				src/args/arg.c \
+				src/errors/errors.c \
+				src/env/env.c \
+				src/builtins/echo.c \
+				src/env/env2.c \
+				src/parser/parser.c \
+				src/redirect/redirect.c \
+				src/builtins/builtins.c \
+				src/parser/parser2.c \
+				src/parser/parse3.c \
+				src/exec/execution.c \
+				src/exec/execution2.c \
+				src/command/command2.c \
+				src/builtins/exit.c
 
-SRC = 	main.c \
-		includes/minishell.h \
-		src/command/command.c \
-		src/utils/utils.c \
-		src/args/arg.c \
-		src/errors/errors.c \
-		src/env/env.c \
-		src/builtins/echo.c \
-		src/env/env2.c \
-		src/parser/parser.c \
-		src/redirect/redirect.c \
-		src/builtins/builtins.c \
-		src/parser/parser2.c \
-		src/parser/parse3.c \
-		src/exec/execution.c \
-		src/exec/execution2.c \
-		src/command/command2.c \
-		src/builtins/exit.c
+OBJ_FILES = $(SRC_FILES:.c=.o)
 
-LIBFT_PATH = libft/libft.a
-FT_PRINTF_PATH = ft_printf/libftprintf.a
 
-OBJ = $(SRC:.c=.o)
+all: $(OBJ) $(NAME)
 
-all: $(OBJ)
-	$(MAKE) -C libft
-	$(MAKE) -C ft_printf
-	gcc -Wall -Wextra -Werror -o $(NAME) $(OBJ) $(LIBFT_PATH) $(FT_PRINTF_PATH)
+$(NAME): $(OBJ_FILES)
+	@$(MAKE) -C libft
+	@echo "Complile libft!"
+	@$(MAKE) -C ft_printf
+	@echo "Complile ft_printf!"
+	$(COMPILER) $(CFLAGS) $(OBJ_FILES) -I $(HEADER_DIR) $(LIBS) -o $(NAME)
+
+# $< - исходный файл
+# $@ - целевой файл
+
+# VPATH = src
+# %.o: %.c
+# 	@echo "** Compile obj files! **"
+# 	$(COMPILER) $(FLAGS) -I $(HEADER_FILES_DIR) -c $^ -o $@
+
+# $(OBJ_DIR):
+# 	@mkdir $(OBJ_DIR)
 
 clean:
-	$(MAKE) -C libft clean
-	$(MAKE) -C ft_printf clean
-	rm -f a.out
+	rm $(OBJ_FILES)
+	# $(MAKE) -C libft clean
+	# $(MAKE) -C ft_printf clean
+	rm -f $(NAME)
+
+re: clean all

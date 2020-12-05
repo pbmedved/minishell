@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/02 08:52:06 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/03 21:43:51 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,10 @@ char		*try_find_prog(char *name, t_vars *vars)
 	return (NULL);
 }
 
+/*
+** 
+**
+*/
 int		try_recode(t_command *comm, t_vars *vars)
 {
 	if (!ft_strncmp_revers(comm->command, "echo", 4))
@@ -128,6 +132,7 @@ int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
 	clean_exe(&exe);
 	return 1;
 }
+
 int 		ft_strcmp(char *s1, char *s2)
 {
 	if (ft_strlen(s1) != ft_strlen(s2))

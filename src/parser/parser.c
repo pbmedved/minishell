@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/30 12:28:14 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/03 23:58:51 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int				arg_write(t_env *env, t_args *args, char *buff)
 {
 	t_parse prs;
 
-	prs = (t_parse){0,0, 0, 0};
+	prs = (t_parse){0, 0, 0};
 	while(buff[prs.i] && check_end(&prs, buff[prs.i])) {
 		if (buff[prs.i] == '"' || buff[prs.i] == '\'')
 			parse_bracks_arg(args, &prs, buff[prs.i]);

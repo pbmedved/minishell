@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:45:26 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/27 07:43:23 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/02 21:59:41 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*str_reallocpy(char *old, char c)
 		cur_size = 0;
 	else
 		cur_size = ft_strlen(old);
-	if (!(young = calloc(cur_size+2, 1)))
+	if (!(young = ft_calloc(cur_size + 2, 1)))
 		exit_error("Malloc error", 1);
 	ft_strlcpy(young, old, cur_size+1);
 	young[cur_size] = c;
