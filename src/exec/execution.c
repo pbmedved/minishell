@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/06 00:22:33 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/06 20:36:30 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,13 @@ char		*try_find_prog(char *name, t_vars *vars)
 */
 int		try_recode(t_command *comm, t_vars **vars)
 {
+	errno = 0;
 	if (!ft_strncmp_revers(comm->command, "echo", 4))
 		return (ft_echo(comm, vars));
 	else if (!ft_strncmp(comm->command, "cd", 2))
 		return (ft_cd(vars, comm));
 	else if (!ft_strncmp(comm->command, "pwd", 3))
-		return(ft_pwd(*vars, comm));
+		return(ft_pwd(vars, comm));
 	else if (!ft_strncmp(comm->command, "export", 6))
 		return(ft_export(comm, *vars));
 	else if (!ft_strncmp(comm->command, "unset", 5))
@@ -77,7 +78,6 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
 	int fd [2];
 
 	pipe(fd);
-	errno = 0;
 //	dup2(comm->fd_out, 1);
 	dup2(comm->fd_in, 0);
 	get_exe(comm, &exe, *vars);
@@ -85,11 +85,14 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
 	{
 
 		pid = fork();
-		if (pid == 0) {
+		if (pid == 0)
+		{
 			dup2(comm->fd_out, 1);
 			execve(exe.prog, exe.ar, envp);
-			exit(0);
-		} else {
+			exit(0); // TODO: нужен ли этот exit если execve не возвращает управление при успешном выполнении
+		}
+		else
+		{
 //			dup2(comm->fd_in, 0);
 			wait(&pid);
 		}
@@ -99,9 +102,6 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
 	clean_exe(&exe);
 //	close(comm->fd_out);
 //	close(comm->fd_in);
-
-
-
 	return 1;
 }
 

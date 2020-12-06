@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/06 00:42:55 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/06 19:58:38 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ void 		command_getter(t_vars *vars, char **envp)
 	while(vars->state)
 	{
 		print_prompt(vars);
-		printf("Errno = %d\n", vars->global_r_code);
+		printf("Errno = %d\n", vars->global_r_code); //TODO: отладочный вывод. зачистить
 		if (!vars->buff)
 		{
 			if (!(vars->buff = ft_calloc(1,1)))

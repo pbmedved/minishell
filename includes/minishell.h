@@ -124,7 +124,7 @@ int 			ft_export(t_command *comm, t_vars *vars);
 int 			ft_unset(t_command *comm, t_vars *vars);
 int 			env_print(t_env *env);
 int 		ft_cd(t_vars **vars, t_command *comm);
-int 			ft_pwd(t_vars *vars, t_command *command);
+int 		ft_pwd(t_vars **vars, t_command *command);
 int 			ft_echo(t_command *comm, t_vars **vars);
 void			exit_handler(t_command *comm);
 

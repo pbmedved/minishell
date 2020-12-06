@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:01:11 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/06 00:00:55 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/06 20:36:40 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int 		ft_echo(t_command *comm, t_vars **vars) {
 
 	s = NULL;
 	n = 0;
-
 	arg = comm->args;
 	while (arg && !ft_strncmp(arg->arg, "-n", ft_strlen(arg->arg)))
 	{
