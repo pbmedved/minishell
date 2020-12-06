@@ -6,14 +6,41 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/06 20:36:48 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/06 23:55:38 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include <limits.h>
 
-int 		ft_export(t_command *comm, t_vars *vars)
+/*
+** Проверяет валидность ключа при выполнении команды export.
+** 1. Ключ может начинаться либо с буквы либо с _
+** 2. В ключе не должно быть скобок - '(' или ')'
+*/
+static int	check_export(char *key, char *value, t_vars **vars)
+{
+	char	*res;
+
+	if (!(ft_isalnum(key[0]) || key[0] == '_'))
+	{
+		(*vars)->global_r_code = 1;
+		return (export_error(key, value));
+	}
+	else if ((res = ft_strchr(key, '(')) || (res = ft_strchr(key, ')')))
+	{
+		(*vars)->global_r_code = 2;
+		res++;
+		*res = '\0'; // TODO: сделал так чтобы не менять твою token_error. Может эту строку надо переделать.т.к. изврат
+		return (token_error(--res));
+	}
+	else
+		return (1);
+}
+
+// TODO: добавить обработку ключа начинающегося с цифр и та же вставить изменение
+// vars->global_r_code, при ошибке
+int 		ft_export(t_command *comm, t_vars **vars)
 {
 	char	*key;
 	char	*value;
@@ -32,8 +59,13 @@ int 		ft_export(t_command *comm, t_vars *vars)
 			command++;
 		while (*command)
 			value = str_reallocpy(value, *command++);
+		if (check_export(key, value, vars) == 0)
+				return (0);
 		if (key && value)
-			env_add_or_change(&vars->env, key, value);
+		{
+			env_add_or_change(&(*vars)->env, key, value); // TODO: для экономии строк здесь можно поместить изменение global_r_code в эту функцию
+			(*vars)->global_r_code = errno;
+		}
 		return (1);
 	}
 	return (0);
@@ -74,7 +106,7 @@ int 		ft_cd(t_vars **vars, t_command *comm)
 		return (print_file_error(comm->args->arg));
 	}
 	env_add_or_change(&(*vars)->env, "OLDPWD", env_take((*vars)->env, "PWD"));
-	getcwd(s, PATH_MAX);
+	getcwd(s, PATH_MAX); //TODO: возможно надо добавить обработку ошибки?
 	(*vars)->global_r_code = errno;
 	env_add_or_change(&(*vars)->env, "PWD", s);
 	return (1);
@@ -87,12 +119,12 @@ int 		ft_pwd(t_vars **vars, t_command *command)
 
 	tmp_c = command; // TODO: убрать заглушку или параметр функции. не используется пока
 	tmp_c++;
-	errno = 0;
 	if (!getcwd(pwd, PATH_MAX))
 	{
-		(*vars)->global_r_code = errno;
-		exit_error("GETCWD ERROR", errno);
+		;
+		// exit_error("GETCWD ERROR", errno); // TODO: думаю надо убрать, т.к. это не совпадает с поведением стандартной функции pwd
 	}
+	(*vars)->global_r_code = errno;
 	write(1, pwd, ft_strlen(pwd));
 	write(1, "\n", 1);
 	return (1);

@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:50:19 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/06 00:40:22 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/06 23:11:41 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,10 @@ int		print_file_error(char *s)
 	write(2, s, ft_strlen(s));
 	write(2, ": No such file or directory\n",28);
 	return (1);
+}
+
+int		export_error(char *key, char *value)
+{
+	ft_printf("minishell: export: `%s=%s': not a valid identifier\n", key, value);
+	return (0);
 }

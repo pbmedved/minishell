@@ -120,7 +120,7 @@ int 			whitespace_remove(char *s);
  * 		BUILTINS
  */
 
-int 			ft_export(t_command *comm, t_vars *vars);
+int 		ft_export(t_command *comm, t_vars **vars);
 int 			ft_unset(t_command *comm, t_vars *vars);
 int 			env_print(t_env *env);
 int 		ft_cd(t_vars **vars, t_command *comm);
@@ -175,4 +175,5 @@ void 			which_token_err(char *buf);
 void 			exit_error(char *s, int err);
 void 			print_command_error(t_command *comm);
 int				print_file_error(char *s);
+int				export_error(char *key, char *value);
 #endif
