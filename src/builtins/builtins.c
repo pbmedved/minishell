@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/07 20:24:42 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/07 21:16:27 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,11 @@ static int	check_export(char *key, char *value, t_vars **vars)
 		return (1);
 }
 
-// TODO: добавить обработку ключа начинающегося с цифр и та же вставить изменение
-// vars->global_r_code, при ошибке
+/*
+** Реализация стандартной команды export.
+** Считывает из команды ключ значение, потом валидирует и добавляет или
+** заменяет текущий. Изменяет глобальный код возврата.
+*/
 int 		ft_export(t_command *comm, t_vars **vars)
 {
 	char	*key;
@@ -62,10 +65,8 @@ int 		ft_export(t_command *comm, t_vars **vars)
 		if (check_export(key, value, vars) == 0)
 				return (0);
 		if (key && value)
-		{
-			env_add_or_change(&(*vars)->env, key, value); // TODO: для экономии строк здесь можно поместить изменение global_r_code в эту функцию
-			(*vars)->global_r_code = errno;
-		}
+			env_add_or_change(&(*vars)->env, key, value);
+		(*vars)->global_r_code = errno;
 		return (1);
 	}
 	return (0);
