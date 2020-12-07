@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/06 23:13:02 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/07 22:31:24 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char		*try_find_prog(char *name, t_vars *vars)
 	int 	i;
 
 	i = 0;
-	if ((fd = open(name, O_RDONLY)) > 0) // TODO: уточнить зачем нужна эта проверка
+	if (name[0] == '.' && (fd = open(name, O_RDONLY)) > 0) // TODO: уточнить зачем нужна эта проверка
 	{
 		close(fd);
 		return (ft_strdup(name));
@@ -83,7 +83,6 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
 	get_exe(comm, &exe, *vars);
 	if (exe.prog && !try_recode_prog(comm->command))
 	{
-
 		pid = fork();
 		if (pid == 0)
 		{
@@ -94,6 +93,7 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
 		else
 		{
 //			dup2(comm->fd_in, 0);
+			close(0);
 			wait(&pid);
 		}
 	}

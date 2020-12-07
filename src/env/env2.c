@@ -13,34 +13,34 @@
 #include "../../includes/minishell.h"
 
 
-char			*take_env_by_arg(t_vars *vars, char *s)
-{
-	char *key;
-	char *new_s;
-	char *value;
-	int 	i;
-
-	i = 0;
-	new_s = NULL;
-	key = NULL;
-
-	while(s[i])
-	{
-		if (s[i] == '$')
-		{
-			i++;
-			while (s[i] && s[i] != ' ')
-				key = str_reallocpy(key, s[i++]);
-			value = env_take(vars->env, key);
-			new_s = str_reallocpy_str(new_s, value);
-			key = NULL;
-		}
-		else
-			new_s = str_reallocpy(new_s, s[i++]);
-	}
-	return (new_s);
-
-}
+//char			*take_env_by_arg(t_vars *vars, char *s)
+//{
+//	char *key;
+//	char *new_s;
+//	char *value;
+//	int 	i;
+//
+//	i = 0;
+//	new_s = NULL;
+//	key = NULL;
+//
+//	while(s[i])
+//	{
+//		if (s[i] == '$')
+//		{
+//			i++;
+//			while (s[i] && s[i] != ' ')
+//				key = str_reallocpy(key, s[i++]);
+//			value = env_take(vars->env, key);
+//			new_s = str_reallocpy_str(new_s, value);
+//			key = NULL;
+//		}
+//		else
+//			new_s = str_reallocpy(new_s, s[i++]);
+//	}
+//	return (new_s);
+//
+//}
 
 t_env			*env_take_ptr(t_env *env, const char *key)
 {
