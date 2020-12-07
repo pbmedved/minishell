@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/06 23:55:38 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/07 20:24:42 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	check_export(char *key, char *value, t_vars **vars)
 {
 	char	*res;
 
-	if (!(ft_isalnum(key[0]) || key[0] == '_'))
+	if (!(ft_isalpha(key[0]) || key[0] == '_'))
 	{
 		(*vars)->global_r_code = 1;
 		return (export_error(key, value));
