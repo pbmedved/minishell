@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/07 21:16:27 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/08 22:59:30 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,11 @@ int 		ft_cd(t_vars **vars, t_command *comm)
 	return (1);
 }
 
+/*
+** Возвращает полный путь к директории из которой запущена.
+** global_r_code устанавливает = 0 потому что штатная даже
+** в удаленной папке не изменяет значение переменной ? в обычном bash
+*/
 int 		ft_pwd(t_vars **vars, t_command *command)
 {
 	char		pwd[PATH_MAX];
@@ -125,7 +130,7 @@ int 		ft_pwd(t_vars **vars, t_command *command)
 		;
 		// exit_error("GETCWD ERROR", errno); // TODO: думаю надо убрать, т.к. это не совпадает с поведением стандартной функции pwd
 	}
-	(*vars)->global_r_code = errno;
+	(*vars)->global_r_code = 0;
 	write(1, pwd, ft_strlen(pwd));
 	write(1, "\n", 1);
 	return (1);

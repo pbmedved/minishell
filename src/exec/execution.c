@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/08 21:59:20 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/08 22:38:47 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,8 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
 			// wait(&pid);
 			waitpid(pid, &status, WUNTRACED);
 			if (WIFEXITED(status) != 0)
-				printf("status from waitpid = %d\n", WEXITSTATUS(status));
+				(*vars)->global_r_code = WEXITSTATUS(status);
+				// printf("status from waitpid = %d\n", WEXITSTATUS(status));
 			// exit(0);
 			// close(fd[1]);
 		}
