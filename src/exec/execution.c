@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/06 23:13:02 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/08 21:50:18 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
 	t_exe exe;
 	pid_t pid;
 	int fd [2];
+	int	status = 0;
 
 	pipe(fd);
 //	dup2(comm->fd_out, 1);
@@ -94,7 +95,12 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
 		else
 		{
 //			dup2(comm->fd_in, 0);
-			wait(&pid);
+			// wait(&pid);
+			waitpid(pid, &status, WUNTRACED);
+			if (WIFEXITED(status) != 0)
+				printf("status from waitpid = %d\n", WEXITSTATUS(status));
+			// exit(0);
+			// close(fd[1]);
 		}
 	}
 	else
