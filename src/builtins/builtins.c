@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/08 22:59:30 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/08 23:06:01 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,11 @@ int 		ft_export(t_command *comm, t_vars **vars)
 	return (0);
 }
 
-int 		ft_unset(t_command *comm, t_vars *vars)
+int 		ft_unset(t_command *comm, t_vars **vars)
 {
 	if (comm->args)
-		env_del_by_key(&vars->env, comm->args->arg);
+		env_del_by_key(&(*vars)->env, comm->args->arg);
+	(*vars)->global_r_code = 0;
 	return (1);
 }
 

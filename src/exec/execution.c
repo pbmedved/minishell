@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/08 22:38:47 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/08 23:05:49 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int		try_recode(t_command *comm, t_vars **vars)
 	else if (!ft_strncmp(comm->command, "export", 6))
 		return(ft_export(comm, vars));
 	else if (!ft_strncmp(comm->command, "unset", 5))
-		return (ft_unset(comm, *vars));
+		return (ft_unset(comm, vars));
 	else if (!ft_strncmp(comm->command, "env", 3))
 		return (env_print((*vars)->env));
 	else if (!ft_strncmp(comm->command, "exit", 4))
