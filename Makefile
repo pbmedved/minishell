@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME = minishell
-CFLAGS = -Wall -Wextra -Werror -g3
+CFLAGS = -Wall -Wextra -Werror -g
 COMPILER = clang
 LIBS = -L$(LIBFT_PATH) -L$(FT_PRINTF_PATH) -lft -lftprintf
 HEADER_DIR = includes
