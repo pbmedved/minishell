@@ -18,7 +18,7 @@
 # include <limits.h>
 # include <sys/wait.h>
 # include <errno.h>
-
+# include <stddef.h>
 
 /*
  * REDIRECT STATE
