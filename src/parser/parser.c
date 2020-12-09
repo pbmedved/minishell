@@ -6,14 +6,14 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/05 18:00:14 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/10 00:14:27 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 
-void 	parse_dollar_comm(t_command *comm, t_parse *prs, char *buff, t_env *env)
+void 	parse_dollar_comm(t_command *comm, t_parse *prs, char *buff, t_vars *vars)
 {
 	char *new;
 	int valid;
@@ -36,12 +36,12 @@ void 	parse_dollar_comm(t_command *comm, t_parse *prs, char *buff, t_env *env)
 		if (valid)
 			comm->command = str_reallocpy_str(comm->command, new);
 		else
-			comm->command = str_reallocpy_str(comm->command, env_take(env, new));
+			comm->command = str_reallocpy_str(comm->command, env_take(vars, new));
 	}
 	free(new);
 }
 
-void 	parse_dollar_arg(t_args *args, t_parse *prs, char *buff, t_env *env)
+void 	parse_dollar_arg(t_args *args, t_parse *prs, char *buff, t_vars *vars)
 {
 	char *new;
 	int valid;
@@ -54,17 +54,26 @@ void 	parse_dollar_arg(t_args *args, t_parse *prs, char *buff, t_env *env)
 	else
 	{
 		prs->i++;
-		if (!ft_isalpha(buff[prs->i]))
+		if (!ft_isalpha(buff[prs->i]) && buff[prs->i] != '?')
 		{
 			valid = 1;
 			prs->i++;
 		}
+		if (buff[prs->i] == '?' && buff[prs->i - 1] == '$')
+		{
+			args->arg = str_reallocpy_str(args->arg, env_take(vars, "?"));
+			valid = 1;
+			prs->i++;
+		}
 		while (ft_isalnum(buff[prs->i]))
+		// while (ft_isalnum(buff[prs->i]) ||
+		// 			(buff[prs->i] == '?' && buff[prs->i - 1] == '$'))
+
 			new = str_reallocpy(new, buff[prs->i++]);
 		if (valid)
 			args->arg = str_reallocpy_str(args->arg, new);
 		else
-			args->arg = str_reallocpy_str(args->arg, env_take(env, new));
+			args->arg = str_reallocpy_str(args->arg, env_take(vars, new));
 	}
 	free(new);
 }
@@ -100,7 +109,7 @@ int			parse_redirect(t_args *args, t_parse *prs, char *buff)
 	}
 }
 
-int				arg_write(t_env *env, t_args *args, char *buff)
+int				arg_write(t_vars *vars, t_args *args, char *buff)
 {
 	t_parse prs;
 
@@ -111,7 +120,7 @@ int				arg_write(t_env *env, t_args *args, char *buff)
 		else if (buff[prs.i] == '\\')
 			parse_escape_arg(args, &prs, buff);
 		else if (buff[prs.i] == '$')
-			parse_dollar_arg(args, &prs, buff, env);
+			parse_dollar_arg(args, &prs, buff, vars);
 		else if (buff[prs.i] == ';' || buff[prs.i] == '|')
 			parse_semicolon(args, &prs, buff);
 		else if (ft_strchr("<>", buff[prs.i]))
@@ -177,7 +186,7 @@ void			buff_parser(t_vars *vars, char *buff)
 				break;
 			}
 			new_arg = arg_new();
-			buff += arg_write(vars->env, new_arg, buff);
+			buff += arg_write(vars, new_arg, buff);
 			arg_add(&new_comm->args, new_arg);
 			buff += whitespace_remove(buff);
 		}

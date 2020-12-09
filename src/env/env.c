@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 19:02:28 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/20 17:21:17 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/09 23:53:33 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,15 +63,17 @@ void		env_save(t_vars *vars, char **envp)
 	}
 }
 
-char			*env_take(t_env *env, const char *key)
+char			*env_take(t_vars *vars, const char *key)
 {
 	t_env		*res;
 
-	res = env;
+	res = vars->env;
 	while (res)
 	{
 		if (!ft_strncmp(key, res->key, ft_strlen(res->key)))
 			return (res->value);
+		else if (*key == '?')
+			return (ft_itoa(vars->global_r_code));
 		res = res->next;
 	}
 	return (NULL);

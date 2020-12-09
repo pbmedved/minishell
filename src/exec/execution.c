@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/09 21:00:38 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/09 23:28:36 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char		*try_find_prog(char *name, t_vars *vars)
 		return (ft_strdup(name));
 	}
 	add = ft_calloc(1, 1);
-	path = env_take(vars->env, "PATH");
+	path = env_take(vars, "PATH");
 	while (*path)
 	{
 		if ((fd = open(add, O_RDONLY)) > 0)

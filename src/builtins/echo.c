@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:01:11 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/06 20:36:40 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/09 23:15:53 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ int 		ft_echo(t_command *comm, t_vars **vars) {
 			arg = arg->next;
 			if (arg && arg->state <= 2)
 				s = str_reallocpy(s, ' ');
-
 		}
 		else
 			arg = arg->next;

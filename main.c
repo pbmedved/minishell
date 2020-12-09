@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/05 23:49:25 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/09 23:27:42 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int				main(int argc, char **argv, char **envp)
 	if (argc == 3 && argv[1][0] == '-' && argv[1][1] == 'c' && !argv[1][2])
 		vars.buff = str_reallocpy_str(vars.buff, argv[2]);
 	env_save(&vars, envp);
-	vars.prompt = ft_strdup(env_take(vars.env, "USER"));
+	vars.prompt = ft_strdup(env_take(&vars, "USER"));
 	command_getter(&vars, envp);
 	free(vars.prompt);
 	free(vars.buff);
