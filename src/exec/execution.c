@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/09 00:20:25 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/09 21:00:38 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char		*try_find_prog(char *name, t_vars *vars)
 	int 	i;
 
 	i = 0;
-	if (name[0] == '.' && (fd = open(name, O_RDONLY)) > 0) // TODO: уточнить зачем нужна эта проверка
+	if (name[0] == '.' && (fd = open(name, O_RDONLY)) > 0)
 	{
 		close(fd);
 		return (ft_strdup(name));
@@ -44,13 +44,10 @@ char		*try_find_prog(char *name, t_vars *vars)
 		i = 0;
 	}
 	close(fd);
+	vars->global_r_code = 127;
 	return (NULL);
 }
 
-/*
-**
-**
-*/
 int		try_recode(t_command *comm, t_vars **vars)
 {
 	errno = 0;
