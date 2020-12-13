@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/17 07:17:35 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/26 20:49:38 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,8 +159,9 @@ void 		command_getter(t_vars *vars, char **envp)
 
 	while(vars->state)
 	{
+		signal(SIGINT, handler_sigint);
+		signal(SIGQUIT, SIG_IGN);
 		print_prompt(vars);
-		// printf("global_error = %d\n", vars->global_r_code); //TODO: отладочный вывод. зачистить
 		if (!vars->buff)
 		{
 			if (!(vars->buff = ft_calloc(1,1)))

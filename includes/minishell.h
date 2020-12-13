@@ -20,6 +20,8 @@
 # include <errno.h>
 # include <stddef.h>
 
+extern int				SIGNAL_FLAG;
+extern char				*USERNAME;
 /*
  * REDIRECT STATE
  *    > 3
@@ -176,4 +178,9 @@ void 			exit_error(char *s, int err);
 void 			print_command_error(t_command *comm);
 int				print_file_error(char *s);
 int				export_error(char *key, char *value);
+
+/*
+** SIGNALS
+*/
+void			handler_sigint(int sig);
 #endif
