@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/10 00:02:06 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/12 00:22:35 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,8 +161,9 @@ void 		command_getter(t_vars *vars, char **envp)
 
 	while(vars->state)
 	{
+		signal(SIGINT, handler_sigint);
+		signal(SIGQUIT, SIG_IGN);
 		print_prompt(vars);
-		// printf("global_error = %d\n", vars->global_r_code); //TODO: отладочный вывод. зачистить
 		if (!vars->buff)
 		{
 			if (!(vars->buff = ft_calloc(1,1)))
