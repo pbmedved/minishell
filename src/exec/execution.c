@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/26 20:53:03 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/26 20:56:18 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,19 +87,17 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 		{
 			dup2(comm->fd_out, 1);
 			execve(exe.prog, exe.ar, envp);
-			exit(0); // TODO: нужен ли этот exit если execve не возвращает управление при успешном выполнении
+			// exit(0); // TODO: нужен ли этот exit если execve не возвращает управление при успешном выполнении
 		}
 		else
 		{
 //			dup2(comm->fd_in, 0);
-			// wait(&pid);
 			waitpid(pid, &status, WUNTRACED);
 			if (WIFEXITED(status) != 0)
-				// (*vars)->global_r_code = WEXITSTATUS(status);
 				GLOBAL_R_CODE = WEXITSTATUS(status);
-				// printf("status from waitpid = %d\n", WEXITSTATUS(status));
-			// exit(0);
-			// close(fd[1]);
+			if (WIFSIGNALED(status))
+				if (WTERMSIG(status) == 2)
+					GLOBAL_R_CODE = 130;
 		}
 	}
 	else
