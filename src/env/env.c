@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 19:02:28 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/09 23:53:33 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/14 10:38:09 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ char			*env_take(t_vars *vars, const char *key)
 		if (!ft_strncmp(key, res->key, ft_strlen(key)))
 			return (res->value);
 		else if (*key == '?')
-			return (ft_itoa(vars->global_r_code));
+			return (ft_itoa(GLOBAL_R_CODE));
+			// return (ft_itoa(vars->global_r_code)); //TODO: старая реализация, надо удалить если оставляем новую
 		res = res->next;
 	}
 	return (NULL);

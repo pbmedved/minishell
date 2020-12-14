@@ -22,6 +22,7 @@
 
 extern int				SIGNAL_FLAG;
 extern char				*USERNAME;
+extern int				GLOBAL_R_CODE;
 /*
  * REDIRECT STATE
  *    > 3

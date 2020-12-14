@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/17 07:03:43 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/26 20:54:32 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,14 @@ static int	check_export(char *key, char *value, t_vars *vars)
 
 	if (!(ft_isalpha(key[0]) || key[0] == '_'))
 	{
-		vars->global_r_code = 1;
+		// (*vars)->global_r_code = 1;
+		GLOBAL_R_CODE = 1;
 		return (export_error(key, value));
 	}
 	else if ((res = ft_strchr(key, '(')) || (res = ft_strchr(key, ')')))
 	{
-		vars->global_r_code = 2;
+		(*vars)->global_r_code = 2; // TODO: убрать потом вместе с vars
+		GLOBAL_R_CODE = 2;
 		res++;
 		*res = '\0'; // TODO: сделал так чтобы не менять твою token_error. Может эту строку надо переделать.т.к. изврат
 		return (token_error(--res));
@@ -96,11 +98,11 @@ int 		ft_export(t_command *comm, t_vars *vars)
 				value = str_reallocpy(value, *command++);
 			if (check_export(key, value, vars) == 0)
 				return (0);
-			if (key && value)
-				env_add_or_change(&vars->env, key, value);
-			vars->global_r_code = errno;
-			args = args->next;
-		}
+		if (key && value)
+			env_add_or_change(&(*vars)->env, key, value);
+		// (*vars)->global_r_code = errno;
+		GLOBAL_R_CODE = errno;
+		return (1);
 	}
 	return (1);
 }
@@ -108,8 +110,9 @@ int 		ft_export(t_command *comm, t_vars *vars)
 int 		ft_unset(t_command *comm, t_vars *vars)
 {
 	if (comm->args)
-		env_del_by_key(&vars->env, comm->args->arg);
-	vars->global_r_code = 0;
+		env_del_by_key(&(*vars)->env, comm->args->arg);
+	// (*vars)->global_r_code = 0;
+	GLOBAL_R_CODE = 0;
 	return (1);
 }
 
@@ -123,7 +126,8 @@ int 		env_print(t_env *env, t_vars *vars, char *prefix)
 		ft_printf("%s%s=%s\n", prefix, node->key, node->value);
 		node = node->next;
 	}
-	vars->global_r_code = 0;
+	(*vars)->global_r_code = 0; // TODO: убрать вместе с vars
+	GLOBAL_R_CODE = 0;
 	return (1);
 }
 
@@ -138,13 +142,15 @@ int 		ft_cd(t_vars *vars, t_command *comm)
 		dir = chdir(comm->args->arg);
 	if (dir == -1)
 	{
-		vars->global_r_code = errno;
+		// (*vars)->global_r_code = errno;
+		GLOBAL_R_CODE = 1;
 		return (print_file_error(comm->args->arg));
 	}
 	env_add_or_change(&vars->env, "OLDPWD", env_take(vars, "PWD"));
 	getcwd(s, PATH_MAX); //TODO: возможно надо добавить обработку ошибки?
-	vars->global_r_code = errno;
-	env_add_or_change(&vars->env, "PWD", s);
+	(*vars)->global_r_code = errno; //TODO: потом убрать вместе с vars
+	GLOBAL_R_CODE = errno;
+	env_add_or_change(&(*vars)->env, "PWD", s);
 	return (1);
 }
 
@@ -158,7 +164,12 @@ int 		ft_pwd(t_vars *vars, t_command *command)
 	char		pwd[PATH_MAX];
 
 	if (!getcwd(pwd, PATH_MAX))
-	vars->global_r_code = 0;
+	{
+		;
+		// exit_error("GETCWD ERROR", errno); // TODO: думаю надо убрать, т.к. это не совпадает с поведением стандартной функции pwd
+	}
+	(*vars)->global_r_code = 0; // TODO: убрать вместе с vars
+	GLOBAL_R_CODE = 0;
 	write(1, pwd, ft_strlen(pwd));
 	write(1, "\n", 1);
 	return (1);

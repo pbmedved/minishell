@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/17 06:50:35 by iadrien          ###   ########.fr       */
+/*   Updated: 2020/12/26 20:53:03 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ char		*try_find_prog(char *name, t_vars *vars)
 		i = 0;
 	}
 	close(fd);
-	vars->global_r_code = 127;
+	// vars->global_r_code = 127;
+	GLOBAL_R_CODE = 127;
 	return (NULL);
 }
 
@@ -94,7 +95,8 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 			// wait(&pid);
 			waitpid(pid, &status, WUNTRACED);
 			if (WIFEXITED(status) != 0)
-				vars->global_r_code = WEXITSTATUS(status);
+				// (*vars)->global_r_code = WEXITSTATUS(status);
+				GLOBAL_R_CODE = WEXITSTATUS(status);
 				// printf("status from waitpid = %d\n", WEXITSTATUS(status));
 			// exit(0);
 			// close(fd[1]);
