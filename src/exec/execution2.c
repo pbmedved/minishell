@@ -47,7 +47,7 @@ int 		check_redirect(t_command *command)
 **
 **
 */
-void 		command_handler(t_command *comm, t_vars **vars, char **envp)
+void 		command_handler(t_command *comm, t_vars *vars, char **envp)
 {
 	while (comm)
 	{

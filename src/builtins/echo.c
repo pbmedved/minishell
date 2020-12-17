@@ -30,7 +30,7 @@
 
 // }
 
-int 		ft_echo(t_command *comm, t_vars **vars) {
+int 		ft_echo(t_command *comm, t_vars *vars) {
 	t_args *arg;
 	char *s;
 	int n;
@@ -60,6 +60,6 @@ int 		ft_echo(t_command *comm, t_vars **vars) {
 	if (s)
 		write(comm->fd_out, s, ft_strlen(s));
 	free(s);
-	(*vars)->global_r_code = 0;
+	vars->global_r_code = 0;
 	return (1);
 }

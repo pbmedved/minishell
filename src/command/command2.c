@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/10 00:02:06 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/17 07:17:35 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void 			permission_error(char *prog, char *file)
 void 			command_set_fd_out(t_command *comm, char redir, char *file)
 {
 	int fd;
-	redir++; // TODO: убрать заглушку. нужна т.к. переменная не используется
 
 	if ((fd = open(file, O_CREAT | O_TRUNC | O_RDWR, 0644)) < 0)
 	{
@@ -65,7 +64,6 @@ void 			command_set_fd_in(t_command *comm, char redir, char *file)
 {
 	int fd;
 
-	redir++; // TODO: убрать заглушку. нужна т.к. переменная не используется
 	if ((fd = open(file, O_RDWR, 0644)) < 0)
 	{
 		permission_error(comm->command, file);
@@ -170,10 +168,10 @@ void 		command_getter(t_vars *vars, char **envp)
 			while((read(vars->fd[0], &b, 1)) && b != '\n')
 				vars->buff = str_reallocpy(vars->buff, b);
 		}
-		buff_parser(vars, vars->buff);
-		command_fix(&vars->comm);
-		command_handler(vars->comm, &vars, envp);
-		dell_all_command(&vars->comm);
+		buff_parser(vars, vars->buff, envp);
+//		command_fix(&vars->comm);
+//		command_handler(vars->comm, vars, envp);
+//		dell_all_command(&vars->comm);
 		free(vars->buff);
 		vars->buff = NULL;
 	}

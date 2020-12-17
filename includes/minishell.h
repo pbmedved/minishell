@@ -120,12 +120,12 @@ int 			whitespace_remove(char *s);
  * 		BUILTINS
  */
 
-int 		ft_export(t_command *comm, t_vars **vars);
-int 			ft_unset(t_command *comm, t_vars **vars);
-int 		env_print(t_env *env, t_vars **vars);
-int 		ft_cd(t_vars **vars, t_command *comm);
-int 		ft_pwd(t_vars **vars, t_command *command);
-int 			ft_echo(t_command *comm, t_vars **vars);
+int 		ft_export(t_command *comm, t_vars *vars);
+int 			ft_unset(t_command *comm, t_vars *vars);
+int 		env_print(t_env *env, t_vars *vars, char *prefix);
+int 		ft_cd(t_vars *vars, t_command *comm);
+int 		ft_pwd(t_vars *vars, t_command *command);
+int 			ft_echo(t_command *comm, t_vars *vars);
 void			exit_handler(t_command *comm);
 
 
@@ -140,7 +140,7 @@ int				set_bracks(t_parse *prs, char c);
 int 			brack_status(t_parse *prs);
 void			parse_bracks(t_command *comm, t_parse *prs, char c);
 void 			parse_escape(t_command *comm, t_parse *prs, char *buff);
-int				command_write(t_command *comm, char *buff, t_env *env);
+int				command_write(t_command *comm, char *buff, t_vars *vars);
 void			parse_bracks_arg(t_args *args, t_parse *prs, char c);
 void 			parse_escape_arg(t_args *args, t_parse *prs, char *buff);
 void 	parse_dollar_arg(t_args *args, t_parse *prs, char *buff, t_vars *vars);
@@ -148,20 +148,20 @@ void 			parse_semicolon(t_args *args, t_parse *prs, char *buff);
 int				parse_redirect(t_args *args, t_parse *prs, char *buff);
 int				arg_write(t_vars *vars, t_args *args, char *buff);
 int 			pipe_write(t_args *args, char *buff);
-void			buff_parser(t_vars *vars, char *buff);
+void			buff_parser(t_vars *vars, char *buff, char **envp);
 
 
 /*
  * 		EXEC
  */
-void 		command_handler(t_command *comm, t_vars **vars, char **envp);
+void 		command_handler(t_command *comm, t_vars *vars, char **envp);
 void 		get_exe(t_command *comm, t_exe *exe, t_vars *vars);
 void		clean_exe(t_exe *exe);
 char		*try_find_prog(char *name, t_vars *vars);
-int		try_recode(t_command *comm, t_vars **vars);
-int		call_extern_prog(t_command *comm, char **envp, t_vars **vars);
-int			call_extern_prog_pipe(t_command *comm, char **envp, t_vars **vars);
-void		executable(t_command *comm, t_vars **vars, char **envp);
+int		try_recode(t_command *comm, t_vars *vars);
+int		call_extern_prog(t_command *comm, char **envp, t_vars *vars);
+int			call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars);
+void		executable(t_command *comm, t_vars *vars, char **envp);
 int 		try_recode_prog(char *name);
 
 

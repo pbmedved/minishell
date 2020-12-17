@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/09 23:28:36 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/17 06:50:35 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ char		*try_find_prog(char *name, t_vars *vars)
 	return (NULL);
 }
 
-int		try_recode(t_command *comm, t_vars **vars)
+int		try_recode(t_command *comm, t_vars *vars)
 {
 	errno = 0;
 	if (!ft_strncmp_revers(comm->command, "echo", 4))
@@ -62,13 +62,13 @@ int		try_recode(t_command *comm, t_vars **vars)
 	else if (!ft_strncmp(comm->command, "unset", 5))
 		return (ft_unset(comm, vars));
 	else if (!ft_strncmp(comm->command, "env", 3))
-		return (env_print((*vars)->env, vars));
+		return (env_print(vars->env, vars, ""));
 	else if (!ft_strncmp(comm->command, "exit", 4))
 		exit_handler(comm);
 	return (0);
 }
 
-int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
+int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 {
 	t_exe exe;
 	pid_t pid;
@@ -78,7 +78,7 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
 	pipe(fd);
 //	dup2(comm->fd_out, 1);
 	dup2(comm->fd_in, 0);
-	get_exe(comm, &exe, *vars);
+	get_exe(comm, &exe, vars);
 	if (exe.prog && !try_recode_prog(comm->command))
 	{
 		pid = fork();
@@ -94,7 +94,7 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
 			// wait(&pid);
 			waitpid(pid, &status, WUNTRACED);
 			if (WIFEXITED(status) != 0)
-				(*vars)->global_r_code = WEXITSTATUS(status);
+				vars->global_r_code = WEXITSTATUS(status);
 				// printf("status from waitpid = %d\n", WEXITSTATUS(status));
 			// exit(0);
 			// close(fd[1]);
@@ -108,13 +108,13 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars **vars)
 	return 1;
 }
 
-int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars **vars)
+int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
 {
 	t_exe exe;
 	pid_t pid;
 	int fd [2];
 
-	get_exe(comm, &exe, *vars);
+	get_exe(comm, &exe, vars);
 	pipe(fd);
 	pid = fork();
 	if (pid == 0)
@@ -164,7 +164,7 @@ int 		try_recode_prog(char *name)
 	return (0);
 }
 
-void		executable(t_command *comm, t_vars **vars, char **envp)
+void		executable(t_command *comm, t_vars *vars, char **envp)
 {
 		if (comm->state == 3)
 			call_extern_prog_pipe(comm, envp, vars);

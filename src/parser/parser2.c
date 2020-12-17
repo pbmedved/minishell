@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:01:08 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/05 20:34:35 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/16 22:16:33 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void 			parse_escape(t_command *comm, t_parse *prs, char *buff)
 }
 
 
-int				command_write(t_command *comm, char *buff, t_env *env)
+int				command_write(t_command *comm, char *buff, t_vars *vars)
 {
 	t_parse prs;
 
@@ -47,7 +47,7 @@ int				command_write(t_command *comm, char *buff, t_env *env)
 		else if (buff[prs.i] == '\\')
 			parse_escape(comm, &prs, buff);
 		else if (buff[prs.i] == '$')
-			parse_dollar_comm(comm, &prs, buff, env);
+			parse_dollar_comm(comm, &prs, buff, vars);
 		else
 			comm->command = str_reallocpy(comm->command, buff[prs.i++]);
 	}

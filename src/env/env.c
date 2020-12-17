@@ -70,7 +70,7 @@ char			*env_take(t_vars *vars, const char *key)
 	res = vars->env;
 	while (res)
 	{
-		if (!ft_strncmp(key, res->key, ft_strlen(res->key)))
+		if (!ft_strncmp(key, res->key, ft_strlen(key)))
 			return (res->value);
 		else if (*key == '?')
 			return (ft_itoa(vars->global_r_code));

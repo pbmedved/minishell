@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/09 23:29:24 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/17 07:03:43 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,18 @@
 ** 1. Ключ может начинаться либо с буквы либо с _
 ** 2. В ключе не должно быть скобок - '(' или ')'
 */
-static int	check_export(char *key, char *value, t_vars **vars)
+static int	check_export(char *key, char *value, t_vars *vars)
 {
 	char	*res;
 
 	if (!(ft_isalpha(key[0]) || key[0] == '_'))
 	{
-		(*vars)->global_r_code = 1;
+		vars->global_r_code = 1;
 		return (export_error(key, value));
 	}
 	else if ((res = ft_strchr(key, '(')) || (res = ft_strchr(key, ')')))
 	{
-		(*vars)->global_r_code = 2;
+		vars->global_r_code = 2;
 		res++;
 		*res = '\0'; // TODO: сделал так чтобы не менять твою token_error. Может эту строку надо переделать.т.к. изврат
 		return (token_error(--res));
@@ -43,75 +43,108 @@ static int	check_export(char *key, char *value, t_vars **vars)
 ** Считывает из команды ключ значение, потом валидирует и добавляет или
 ** заменяет текущий. Изменяет глобальный код возврата.
 */
-int 		ft_export(t_command *comm, t_vars **vars)
+//int 		ft_export(t_command *comm, t_vars *vars)
+//{
+//	char	*key;
+//	char	*value;
+//	char	*command;
+//
+//	key = NULL;
+//	value = NULL;
+//	command = NULL;
+//	while (comm->args) {
+//		command = comm->args->arg;
+//		if (command) {
+//			while (*command && *command != '=')
+//				key = str_reallocpy(key, *command++);
+//			if (*command == '=')
+//				command++;
+//			while (*command)
+//				value = str_reallocpy(value, *command++);
+//			if (check_export(key, value, vars) == 0)
+//				return (0);
+//			if (key && value)
+//				env_add_or_change(&vars->env, key, value);
+//			vars->global_r_code = errno;
+//			return (1);
+//		}
+//	}
+//	return (0);
+//}
+int 		ft_export(t_command *comm, t_vars *vars)
 {
 	char	*key;
 	char	*value;
 	char	*command;
+	t_args		*args;
 
+	args = comm->args;
 	key = NULL;
 	value = NULL;
 	command = NULL;
-	if (comm->args)
-		command = comm->args->arg;
-	if (command)
+	if (!args)
+		env_print(vars->env, vars, "declare -x ");
+	while (args)
 	{
-		while (*command && *command != '=')
-			key = str_reallocpy(key, *command++);
-		if (*command == '=')
-			command++;
-		while (*command)
-			value = str_reallocpy(value, *command++);
-		if (check_export(key, value, vars) == 0)
+		command = args->arg;
+		if (command) {
+			while (*command && *command != '=')
+				key = str_reallocpy(key, *command++);
+			if (*command == '=')
+				command++;
+			while (*command)
+				value = str_reallocpy(value, *command++);
+			if (check_export(key, value, vars) == 0)
 				return (0);
-		if (key && value)
-			env_add_or_change(&(*vars)->env, key, value);
-		(*vars)->global_r_code = errno;
-		return (1);
+			if (key && value)
+				env_add_or_change(&vars->env, key, value);
+			vars->global_r_code = errno;
+			args = args->next;
+		}
 	}
-	return (0);
-}
-
-int 		ft_unset(t_command *comm, t_vars **vars)
-{
-	if (comm->args)
-		env_del_by_key(&(*vars)->env, comm->args->arg);
-	(*vars)->global_r_code = 0;
 	return (1);
 }
 
-int 		env_print(t_env *env, t_vars **vars)
+int 		ft_unset(t_command *comm, t_vars *vars)
+{
+	if (comm->args)
+		env_del_by_key(&vars->env, comm->args->arg);
+	vars->global_r_code = 0;
+	return (1);
+}
+
+int 		env_print(t_env *env, t_vars *vars, char *prefix)
 {
 	t_env  *node;
 
 	node = env;
 	while (node)
 	{
-		ft_printf("%s=%s\n", node->key, node->value);
+		ft_printf("%s%s=%s\n", prefix, node->key, node->value);
 		node = node->next;
 	}
-	(*vars)->global_r_code = 0;
+	vars->global_r_code = 0;
 	return (1);
 }
 
-int 		ft_cd(t_vars **vars, t_command *comm)
+int 		ft_cd(t_vars *vars, t_command *comm)
 {
 	char s[PATH_MAX];
 	int		dir;
 
 	if (!comm->args || comm->args->state == 7)
-		dir = chdir(env_take(*vars, "HOME"));
+		dir = chdir(env_take(vars, "HOME"));
 	else
 		dir = chdir(comm->args->arg);
 	if (dir == -1)
 	{
-		(*vars)->global_r_code = errno;
+		vars->global_r_code = errno;
 		return (print_file_error(comm->args->arg));
 	}
-	env_add_or_change(&(*vars)->env, "OLDPWD", env_take(*vars, "PWD"));
+	env_add_or_change(&vars->env, "OLDPWD", env_take(vars, "PWD"));
 	getcwd(s, PATH_MAX); //TODO: возможно надо добавить обработку ошибки?
-	(*vars)->global_r_code = errno;
-	env_add_or_change(&(*vars)->env, "PWD", s);
+	vars->global_r_code = errno;
+	env_add_or_change(&vars->env, "PWD", s);
 	return (1);
 }
 
@@ -120,19 +153,12 @@ int 		ft_cd(t_vars **vars, t_command *comm)
 ** global_r_code устанавливает = 0 потому что штатная даже
 ** в удаленной папке не изменяет значение переменной ? в обычном bash
 */
-int 		ft_pwd(t_vars **vars, t_command *command)
+int 		ft_pwd(t_vars *vars, t_command *command)
 {
 	char		pwd[PATH_MAX];
-	t_command	*tmp_c;
 
-	tmp_c = command; // TODO: убрать заглушку или параметр функции. не используется пока
-	tmp_c++;
 	if (!getcwd(pwd, PATH_MAX))
-	{
-		;
-		// exit_error("GETCWD ERROR", errno); // TODO: думаю надо убрать, т.к. это не совпадает с поведением стандартной функции pwd
-	}
-	(*vars)->global_r_code = 0;
+	vars->global_r_code = 0;
 	write(1, pwd, ft_strlen(pwd));
 	write(1, "\n", 1);
 	return (1);

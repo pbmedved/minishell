@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/10 00:14:27 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/17 07:19:15 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ int 			pipe_write(t_args *args, char *buff)
 	return (ft_strlen(args->arg));
 }
 
-void			buff_parser(t_vars *vars, char *buff)
+void			buff_parser(t_vars *vars, char *buff, char **envp)
 {
 	t_command 	*new_comm;
 	t_args		*new_arg;
@@ -173,7 +173,7 @@ void			buff_parser(t_vars *vars, char *buff)
 	{
 		buff += whitespace_remove(buff);
 		new_comm = command_new();
-		buff += command_write(new_comm, buff, vars->env);
+		buff += command_write(new_comm, buff, vars);
 		buff += whitespace_remove(buff);
 		while (*buff && *buff != ' ')
 		{
@@ -190,6 +190,9 @@ void			buff_parser(t_vars *vars, char *buff)
 			arg_add(&new_comm->args, new_arg);
 			buff += whitespace_remove(buff);
 		}
-		command_add(&vars->comm, new_comm);
+		command_fix(&new_comm);
+		command_handler(new_comm, vars, envp);
+		dell_all_command(&new_comm);
+//		command_add(&vars->comm, new_comm);
 	}
 }
