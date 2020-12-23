@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 21:59:03 by amayor            #+#    #+#             */
-/*   Updated: 2020/12/16 21:49:25 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/22 23:03:37 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,4 +22,11 @@ void	handler_sigint(int sig)
 		SIGNAL_FLAG = 2;
 		GLOBAL_R_CODE = 130;
 	}
+}
+
+// TODO: возможно не нужна, тогда убрать
+void	handler_sigquit(int sig)
+{
+	if(sig == SIGQUIT)
+		ft_putstr_fd("\b\b  \b\b", 1);
 }
