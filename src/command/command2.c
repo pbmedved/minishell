@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/26 20:56:44 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/26 20:58:19 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,15 @@ void		command_fix(t_command **comm)
 		res = res->next;
 	}
 }
-
+// static int check_sigquit(char *b)
+// {
+// 	if (*b == '^')
+// 	{
+// 		*b = ' ';
+// 		return (0);
+// 	}
+// 	return (1);
+// }
 /*
 ** Основной цикл шелла.
 ** Читает и выполняет команды.
@@ -159,7 +167,7 @@ void		command_fix(t_command **comm)
 ** печатается приглашение, для обработки SIGINT аналогично башу, когда просто
 ** пустая строка.
 ** Если не делать флаг, то приглашение командной строки может печататься
-** два раза в случае перехвата его в дочерне процессе,
+** два раза в случае перехвата его в дочернем процессе,
 ** например cat
 */
 void 		command_getter(t_vars *vars, char **envp)
@@ -168,7 +176,8 @@ void 		command_getter(t_vars *vars, char **envp)
 
 	while(vars->state)
 	{
-		signal(SIGQUIT, SIG_IGN);
+		// signal(SIGQUIT, SIG_IGN);
+		signal(SIGQUIT, handler_sigquit);
 		signal(SIGINT, handler_sigint);
 		if (SIGNAL_FLAG == 0)
 			print_prompt(vars);

@@ -184,4 +184,5 @@ int				export_error(char *key, char *value);
 ** SIGNALS
 */
 void			handler_sigint(int sig);
+void			handler_sigquit(int sig);
 #endif

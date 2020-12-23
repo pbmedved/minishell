@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/26 20:57:05 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/26 20:57:55 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,14 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 		if (pid == 0)
 		{
 			dup2(comm->fd_out, 1);
+			// signal(SIGQUIT, SIG_DFL);
 			execve(exe.prog, exe.ar, envp);
 			// exit(0); // TODO: нужен ли этот exit если execve не возвращает управление при успешном выполнении
 		}
 		else
 		{
 //			dup2(comm->fd_in, 0);
+			// signal(SIGQUIT, SIG_IGN);
 			waitpid(pid, &status, WUNTRACED);
 			if (WIFEXITED(status) != 0)
 				GLOBAL_R_CODE = WEXITSTATUS(status);
