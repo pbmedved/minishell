@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/26 20:58:37 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/26 20:58:57 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,28 @@ int		try_recode(t_command *comm, t_vars *vars)
 	return (0);
 }
 
+<<<<<<< HEAD
 int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
+=======
+static void wait_child(pid_t pid, int status)
+{
+	waitpid(pid, &status, WUNTRACED);
+	if (WIFEXITED(status) != 0)
+		GLOBAL_R_CODE = WEXITSTATUS(status);
+	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == 2)
+			GLOBAL_R_CODE = 130;
+		else if (WTERMSIG(status) == 3)
+		{
+			ft_putstr_fd("^\\Quit (core dumped)\n", 1);
+			GLOBAL_R_CODE = 131;
+		}
+	}
+}
+
+int			call_extern_prog(t_command *comm, char **envp, t_vars **vars)
+>>>>>>> some refactoring call_extern_prog func
 {
 	t_exe exe;
 	pid_t pid;
@@ -88,31 +109,15 @@ int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 			dup2(comm->fd_out, 1);
 			signal(SIGQUIT, SIG_DFL);
 			execve(exe.prog, exe.ar, envp);
-			// exit(0); // TODO: нужен ли этот exit если execve не возвращает управление при успешном выполнении
 		}
 		else
-		{
-//			dup2(comm->fd_in, 0);
-			waitpid(pid, &status, WUNTRACED);
-			if (WIFEXITED(status) != 0)
-				GLOBAL_R_CODE = WEXITSTATUS(status);
-			if (WIFSIGNALED(status))
-			{
-				if (WTERMSIG(status) == 2)
-					GLOBAL_R_CODE = 130;
-				else if (WTERMSIG(status) == 3)
-				{
-					ft_putstr_fd("^\\Quit (core dumped)\n", 1);
-					GLOBAL_R_CODE = 131;
-				}
-			}
-		}
+			wait_child(pid, status);
 	}
 	else
 		try_recode(comm, vars);
 	clean_exe(&exe);
 //	close(comm->fd_out);
-//	close(comm->fd_in);
+	close(comm->fd_in);
 	return 1;
 }
 
