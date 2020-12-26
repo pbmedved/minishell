@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/26 20:58:19 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/26 22:28:00 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void 			permission_error(char *prog, char *file)
 	write(2, ": Permission denied\n", 21);
 }
 
-void 			command_set_fd_out(t_command *comm, char redir, char *file)
+void 			command_set_fd_out(t_command *comm, char *file)
 {
 	int fd;
 
@@ -60,7 +60,7 @@ void 			command_set_fd_out(t_command *comm, char redir, char *file)
 	comm->fd_out = fd;
 }
 
-void 			command_set_fd_in(t_command *comm, char redir, char *file)
+void 			command_set_fd_in(t_command *comm, char *file)
 {
 	int fd;
 
@@ -102,9 +102,9 @@ int			redirect_fd_choose(t_command *comm, t_args *args)
 	}
 	args->next->state = 2;
 	if(!ft_strncmp(args->arg, ">", ft_strlen(args->arg)))
-		command_set_fd_out(comm, '>', args->next->arg);
+		command_set_fd_out(comm, args->next->arg);
 	else if(!ft_strncmp(args->arg, "<", ft_strlen(args->arg)))
-		command_set_fd_in(comm, '<', args->next->arg);
+		command_set_fd_in(comm, args->next->arg);
 	else if(!ft_strncmp(args->arg, ">>", ft_strlen(args->arg)))
 		command_set_fd_out_end(comm, args->next->arg);
 	return (1);

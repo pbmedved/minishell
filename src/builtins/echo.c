@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:01:11 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/26 20:54:43 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/26 21:02:14 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 
 // }
 
-int 		ft_echo(t_command *comm, t_vars *vars) {
+int 		ft_echo(t_command *comm) {
 	t_args *arg;
 	char *s;
 	int n;
@@ -60,7 +60,6 @@ int 		ft_echo(t_command *comm, t_vars *vars) {
 	if (s)
 		write(comm->fd_out, s, ft_strlen(s));
 	free(s);
-	(*vars)->global_r_code = 0; // TODO: убрать если делаем глобальный код ошибки через глобальную переменную
 	GLOBAL_R_CODE = 0;
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/26 20:54:32 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/26 21:44:21 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,17 @@
 ** 1. Ключ может начинаться либо с буквы либо с _
 ** 2. В ключе не должно быть скобок - '(' или ')'
 */
-static int	check_export(char *key, char *value, t_vars *vars)
+static int	check_export(char *key, char *value)
 {
 	char	*res;
 
 	if (!(ft_isalpha(key[0]) || key[0] == '_'))
 	{
-		// (*vars)->global_r_code = 1;
 		GLOBAL_R_CODE = 1;
 		return (export_error(key, value));
 	}
 	else if ((res = ft_strchr(key, '(')) || (res = ft_strchr(key, ')')))
 	{
-		(*vars)->global_r_code = 2; // TODO: убрать потом вместе с vars
 		GLOBAL_R_CODE = 2;
 		res++;
 		*res = '\0'; // TODO: сделал так чтобы не менять твою token_error. Может эту строку надо переделать.т.к. изврат
@@ -85,22 +83,23 @@ int 		ft_export(t_command *comm, t_vars *vars)
 	value = NULL;
 	command = NULL;
 	if (!args)
-		env_print(vars->env, vars, "declare -x ");
+		env_print(vars->env, "declare -x ");
 	while (args)
 	{
 		command = args->arg;
-		if (command) {
+		if (command)
+		{
 			while (*command && *command != '=')
 				key = str_reallocpy(key, *command++);
 			if (*command == '=')
 				command++;
 			while (*command)
 				value = str_reallocpy(value, *command++);
-			if (check_export(key, value, vars) == 0)
+			if (check_export(key, value) == 0)
 				return (0);
+		}
 		if (key && value)
-			env_add_or_change(&(*vars)->env, key, value);
-		// (*vars)->global_r_code = errno;
+			env_add_or_change(&vars->env, key, value);
 		GLOBAL_R_CODE = errno;
 		return (1);
 	}
@@ -110,13 +109,12 @@ int 		ft_export(t_command *comm, t_vars *vars)
 int 		ft_unset(t_command *comm, t_vars *vars)
 {
 	if (comm->args)
-		env_del_by_key(&(*vars)->env, comm->args->arg);
-	// (*vars)->global_r_code = 0;
+		env_del_by_key(&vars->env, comm->args->arg);
 	GLOBAL_R_CODE = 0;
 	return (1);
 }
 
-int 		env_print(t_env *env, t_vars *vars, char *prefix)
+int 		env_print(t_env *env, char *prefix)
 {
 	t_env  *node;
 
@@ -126,7 +124,6 @@ int 		env_print(t_env *env, t_vars *vars, char *prefix)
 		ft_printf("%s%s=%s\n", prefix, node->key, node->value);
 		node = node->next;
 	}
-	(*vars)->global_r_code = 0; // TODO: убрать вместе с vars
 	GLOBAL_R_CODE = 0;
 	return (1);
 }
@@ -142,15 +139,13 @@ int 		ft_cd(t_vars *vars, t_command *comm)
 		dir = chdir(comm->args->arg);
 	if (dir == -1)
 	{
-		// (*vars)->global_r_code = errno;
 		GLOBAL_R_CODE = 1;
 		return (print_file_error(comm->args->arg));
 	}
 	env_add_or_change(&vars->env, "OLDPWD", env_take(vars, "PWD"));
 	getcwd(s, PATH_MAX); //TODO: возможно надо добавить обработку ошибки?
-	(*vars)->global_r_code = errno; //TODO: потом убрать вместе с vars
 	GLOBAL_R_CODE = errno;
-	env_add_or_change(&(*vars)->env, "PWD", s);
+	env_add_or_change(&vars->env, "PWD", s);
 	return (1);
 }
 
@@ -159,16 +154,14 @@ int 		ft_cd(t_vars *vars, t_command *comm)
 ** global_r_code устанавливает = 0 потому что штатная даже
 ** в удаленной папке не изменяет значение переменной ? в обычном bash
 */
-int 		ft_pwd(t_vars *vars, t_command *command)
+int 		ft_pwd(void)
 {
 	char		pwd[PATH_MAX];
 
-	if (!getcwd(pwd, PATH_MAX))
+	if (!getcwd(pwd, PATH_MAX)) // TODO: может надо добавить обработку ошибки
 	{
 		;
-		// exit_error("GETCWD ERROR", errno); // TODO: думаю надо убрать, т.к. это не совпадает с поведением стандартной функции pwd
 	}
-	(*vars)->global_r_code = 0; // TODO: убрать вместе с vars
 	GLOBAL_R_CODE = 0;
 	write(1, pwd, ft_strlen(pwd));
 	write(1, "\n", 1);

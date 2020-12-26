@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/26 20:58:57 by amayor           ###   ########.fr       */
+/*   Updated: 2020/12/26 21:48:08 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,25 +53,22 @@ int		try_recode(t_command *comm, t_vars *vars)
 {
 	errno = 0;
 	if (!ft_strncmp_revers(comm->command, "echo", 4))
-		return (ft_echo(comm, vars));
+		return (ft_echo(comm));
 	else if (!ft_strncmp(comm->command, "cd", 2))
 		return (ft_cd(vars, comm));
 	else if (!ft_strncmp(comm->command, "pwd", 3))
-		return(ft_pwd(vars, comm));
+		return(ft_pwd());
 	else if (!ft_strncmp(comm->command, "export", 6))
 		return(ft_export(comm, vars));
 	else if (!ft_strncmp(comm->command, "unset", 5))
 		return (ft_unset(comm, vars));
 	else if (!ft_strncmp(comm->command, "env", 3))
-		return (env_print(vars->env, vars, ""));
+		return (env_print(vars->env, ""));
 	else if (!ft_strncmp(comm->command, "exit", 4))
 		exit_handler(comm);
 	return (0);
 }
 
-<<<<<<< HEAD
-int		call_extern_prog(t_command *comm, char **envp, t_vars *vars)
-=======
 static void wait_child(pid_t pid, int status)
 {
 	waitpid(pid, &status, WUNTRACED);
@@ -89,8 +86,7 @@ static void wait_child(pid_t pid, int status)
 	}
 }
 
-int			call_extern_prog(t_command *comm, char **envp, t_vars **vars)
->>>>>>> some refactoring call_extern_prog func
+int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 {
 	t_exe exe;
 	pid_t pid;
