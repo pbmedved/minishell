@@ -147,15 +147,21 @@ void		command_fix(t_command **comm)
 		res = res->next;
 	}
 }
-// static int check_sigquit(char *b)
-// {
-// 	if (*b == '^')
-// 	{
-// 		*b = ' ';
-// 		return (0);
-// 	}
-// 	return (1);
-// }
+
+void input_handler(int res, char b, t_vars *vars)
+{
+	if (res == 0 && !ft_strlen(vars->buff))
+	{
+		write(1, "exit\n", 5);
+		exit(0);
+	}
+	else
+	{
+		vars->buff = str_reallocpy(vars->buff, b);
+		b = '\0';
+	}
+}
+
 /*
 ** Основной цикл шелла.
 ** Читает и выполняет команды.
@@ -177,7 +183,6 @@ void 		command_getter(t_vars *vars, char **envp)
 
 	while(vars->state)
 	{
-		// signal(SIGQUIT, SIG_IGN);
 		signal(SIGQUIT, handler_sigquit);
 		signal(SIGINT, handler_sigint);
 		if (SIGNAL_FLAG == 0)
@@ -188,15 +193,7 @@ void 		command_getter(t_vars *vars, char **envp)
 			if (!(vars->buff = ft_calloc(1,1)))
 				exit_error("Malloc error", errno);
 			while(((res = read(vars->fd[0], &b, 1)) && b != '\n') || res == 0)
-			{
-				if (res == 0 && !ft_strlen(vars->buff))
-					exit(0);
-				else
-				{
-					vars->buff = str_reallocpy(vars->buff, b);
-					b = '\0';
-				}
-			}
+				input_handler(res, b, vars);
 		}
 		buff_parser(vars, vars->buff, envp);
 //		command_fix(&vars->comm);
