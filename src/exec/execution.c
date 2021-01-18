@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/26 21:48:08 by amayor           ###   ########.fr       */
+/*   Updated: 2021/01/18 23:58:53 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ static void wait_child(pid_t pid, int status)
 	}
 }
 
+
 int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 {
 	t_exe exe;
@@ -95,14 +96,15 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 
 	pipe(fd);
 //	dup2(comm->fd_out, 1);
-	dup2(comm->fd_in, 0);
+	// dup2(comm->fd_in, 0); // убрал, зачем здесь это надо?
 	get_exe(comm, &exe, vars);
+	// signal(SIGCHLD, sig_chld);
 	if (exe.prog && !try_recode_prog(comm->command))
 	{
 		pid = fork();
 		if (pid == 0)
 		{
-			dup2(comm->fd_out, 1);
+			// dup2(comm->fd_out, 1); // я пока убрал, т.к. не понимаю зачем это делать в дочернем процессе
 			signal(SIGQUIT, SIG_DFL);
 			execve(exe.prog, exe.ar, envp);
 		}
@@ -113,7 +115,7 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 		try_recode(comm, vars);
 	clean_exe(&exe);
 //	close(comm->fd_out);
-	close(comm->fd_in);
+	// close(comm->fd_in); // и это убрал, т.к. зачем оно надо?
 	return 1;
 }
 

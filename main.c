@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/13 18:17:37 by amayor           ###   ########.fr       */
+/*   Updated: 2021/01/18 21:32:12 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int				main(int argc, char **argv, char **envp)
 	command_getter(&vars, envp);
 	free(vars.prompt);
 	free(vars.buff);
+	vars.buff = 0;
 	dell_all_env(&vars.env);
 	return (0);
 }

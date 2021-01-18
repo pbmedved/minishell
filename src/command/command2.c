@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/30 23:54:29 by amayor           ###   ########.fr       */
+/*   Updated: 2021/01/18 23:59:11 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,6 +193,7 @@ void 		command_getter(t_vars *vars, char **envp)
 			if (!(vars->buff = ft_calloc(1,1)))
 				exit_error("Malloc error", errno);
 			while(((res = read(vars->fd[0], &b, 1)) && b != '\n') || res == 0)
+				// vars->buff = str_reallocpy(vars->buff, b);
 				input_handler(res, b, vars);
 		}
 		buff_parser(vars, vars->buff, envp);
