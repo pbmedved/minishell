@@ -159,6 +159,7 @@ void input_handler(int res, char b, t_vars *vars)
 	{
 		vars->buff = str_reallocpy(vars->buff, b);
 		b = '\0';
+		//  TODO: убирать выводимый "^D" в заполненной строке при нажатии Ctrl-D
 	}
 }
 
@@ -192,6 +193,7 @@ void 		command_getter(t_vars *vars, char **envp)
 		{
 			if (!(vars->buff = ft_calloc(1,1)))
 				exit_error("Malloc error", errno);
+			// while(((res = read(vars->fd[0], &b, 1)) && b != '\n') || res == 0)
 			while(((res = read(vars->fd[0], &b, 1)) && b != '\n') || res == 0)
 				// vars->buff = str_reallocpy(vars->buff, b);
 				input_handler(res, b, vars);
