@@ -1,0 +1,376 @@
+Список кейсов которые я проверил и которые надо поправить.
+Проверял по чеклисту.
+======================================================================
+cat > test.txt
+в нашем случае создается файл пустой, но в него не записываются данные которые ты пишешь в cat
+======================================================================
+exit 1
+Ожидаемый результат в баше на маке если внутри стандартного zsh мы запускаем bash и в нем вводим:
+exit
+В нашем случае:
+"exit" не печатается и просто закрывается шелл
+======================================================================
+добавляется лишний слэш при выводе ошибки где есть путь:
+//bin/ls: illegal option -- [
+======================================================================
+/bin/ls;/bin/cat и нажать Ctrl-C
+В баше на маке:
+перенос на следующую строку после печати ^C
+У нас:
+^Camayor$ - нет переноса на следующую строку
+======================================================================
+Одинокий пайп вместе с grep:
+Вводим grep | и нажимаем Enter, потом нажимаем Ctrl-D
+В баше:
+---
+bash-3.2$ grep |
+> bash: syntax error: unexpected end of file
+bash-3.2$
+---
+У нас:
+---
+amayor$ grep |
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+	[-e pattern] [-f file] [--binary-files=value] [--color=when]
+	[--context[=num]] [--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+amayor$
+---
+Видимо не очень корректно отрабатывают пайпы. Надо разобраться и поправить.
+======================================================================
+Вводим "/bin/sh\" потом нажимаем CTRL-D.
+Тут сразу два кейса - обратный слэш и потом проверка переменной $?
+Вывод в баше:
+---
+bash-3.2$ "/bin/sh\"
+> bash: unexpected EOF while looking for matching `"'
+bash: syntax error: unexpected end of file
+bash-3.2$ echo $?
+258
+bash-3.2$
+---
+У нас:
+---
+amayor$ "/bin/sh\"
+bash: -bash: /bin/sh\: command not found
+amayor$
+---
+Возможно мы некорректно обрабатываем обратный слэш или что то еще?...
+======================================================================
+Не работает команда set
+Ожидается что она будет выводить список переменных командной оболочки в баше
+У нас выводит:
+amayor$ set
+bash: -bash: set: command not found
+======================================================================
+Некорректно работает запуск wc без аргументов
+На баше запускается и ждет, нажимаем CTRL-C и получаем такой вывод:
+---
+bash-3.2$ wc
+^C
+bash-3.2$
+---
+У нас:
+---
+amayor$ wc
+       0       0       0
+amayor$
+---
+Как будто отрабатывает и что то считает, хотя на баше ведет себя по другому. Разобраться почему так.
+======================================================================
+Очень странное поведение с кейсом из чеклиста про unset PATH:
+В баше если сделать unset PATH а потом вызывать какие то стандартные программы то получаем ошибку:
+---
+bash-3.2$ unset PATH
+bash-3.2$ echo $PATH
+
+bash-3.2$ ls
+bash: ls: No such file or directory
+---
+У нас после unset первый вызов стандартной программы ничего не выводит, а потом PATH появляется и все начинает работать:
+---
+amayor$ echo $PATH
+/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki
+amayor$ unset PATH
+amayor$ echo $PATH
+amayor$ ls
+amayor$ ls
+CMakeLists.txt	all		ft_printf	libft		main.o		src
+Makefile	docs		includes	main.c		minishell
+amayor$ echo $PATH
+/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki
+amayor$
+---
+Видимо где то в цикле шелла у нас каждый раз обновляется список env или конкретно PATH. Надо поправить.
+======================================================================
+
+
+
+
+Сигналы:
+CTRL-C на пустой строке:
+В баше:
+Просто переход на новую строку и печать приглашения командой строки
+У нас:
+Переход на новую строку и печать на новой строке ^C после приглашения командной строки
+
+CTRL-C на введенной строке:
+В баше:
+Сброс строки и переход на новую строку и печать приглашения командной строки
+У нас:
+Дописывает к текущей строке ^C и переходит на новую строку с печатью приглашения командной строки
+
+CTRL-\ при введенной строке:
+В баше:
+Вводим строку, нажимаем CTRL+\, потом нажимаем Enter:
+---
+bash-3.2$ some stuf
+bash: some: command not found
+---
+У нас:
+Вводим строку, нажимаем CTRL+\, потом нажимаем Enter:
+---
+amayor$ some stuf
+amayor$
+---
+Т.е. как введенная строка как будто сбрасывается. Поведение не соответствует башу, надо поправить.
+
+
+CTRL-C для операций блокирующих текущий поток ввода:
+Запускаем например cat потом нажимаем CTRL-C:
+В баше:
+---
+bash-3.2$ cat
+^C
+bash-3.2$
+---
+У нас:
+---
+amayor$ cat
+^Camayor$
+---
+Т.е. нет перехода на новую строку, надо поправить для соответствия башу в этом пункте.
+
+
+CTRL-\ для операций блокирующих текущий поток:
+В баше:
+---
+bash-3.2$ cat
+^\Quit: 3
+bash-3.2$
+---
+У нас:
+---
+amayor$ cat
+^\^\Quit (core dumped)
+amayor$
+---
+======================================================================
+Вводим просто слэш - /
+Баш:
+---
+bash-3.2$ /
+bash: /: is a directory
+---
+У нас:
+---
+amayor$ /
+amayor$
+---
+Надо понять почему обычный баш так реагирует на просто слэш и почему у нас не так.
+======================================================================
+
+
+
+Кавычки.
+Баш:
+---
+bash-3.2$ "/bin/ls;"
+bash: /bin/ls;: No such file or directory
+bash-3.2$
+---
+У нас:
+---
+amayor$ "/bin/ls;"
+bash: -bash: /bin/ls;: command not found
+amayor$
+---
+
+Пробел перед закрывающими кавычками:
+Баш:
+---
+bash-3.2$ "/bin/ls "
+bash: /bin/ls : No such file or directory
+bash-3.2$
+---
+У нас:
+---
+amayor$ "/bin/ls "
+bash: -bash: /bin/ls : command not found
+amayor$
+---
+
+
+Пробел после открывающихся кавычек:
+Баш:
+---
+bash-3.2$ " /bin/ls"
+bash:  /bin/ls: No such file or directory
+bash-3.2$
+---
+У нас:
+---
+amayor$ " /bin/ls"
+bash: -bash:  /bin/ls: command not found
+amayor$
+---
+
+
+Выполнение команды внутри одинарных кавычек.
+Баш:
+---
+bash-3.2$ '/bin/ls -ls'
+bash: /bin/ls -ls: No such file or directory
+bash-3.2$
+---
+У нас:
+---
+amayor$ '/bin/ls -ls'
+bash: -bash: /bin/ls -ls: command not found
+amayor$
+---
+
+Выполнение echo c одинарными кавычками без пробела
+Баш:
+---
+bash-3.2$ echo ''
+
+bash-3.2$
+---
+У нас:
+---
+amayor$ echo ''
+amayor$
+---
+
+
+
+=====================================================
+
+Переменные окружения:
+
+Странная ошибка при экспорте и выводе переменной
+Баш:
+---
+bash-3.2$ export TEST_ENV=pipiska
+bash-3.2$ echo $TEST_ENV
+pipiska
+bash-3.2$
+---
+У нас:
+---
+amayor$ export TEST_ENV=pipiska
+amayor$ echo $TEST_ENV
+pipiska_ENV
+amayor$
+---
+Непонятно откуда берется приписка ENV в конце переменной. Проверить
+=======================================================
+
+Перенаправления:
+Не работает перенаправление поток ввода
+Баш:
+---
+bash-3.2$ grep 1 < 123.txt
+123
+bash-3.2$
+---
+У нас:
+---
+amayor$ grep 1 < 123.txt
+amayor$
+---
+
+
+Не работает вот такое сочетание пайпа и перенаправления:
+Баш:
+---
+bash-3.2$ echo 123 > 123.txt | ls -l > 123.txt
+bash-3.2$ cat 123.txt
+total 144
+-rw-r--r--   1 amayor  student      0 Mar  4 19:55 123.txt
+-rw-r--r--   1 amayor  student    568 Jan 16 15:47 CMakeLists.txt
+-rw-r--r--   1 amayor  student   2153 Jan 16 15:47 Makefile
+-rw-r--r--   1 amayor  student      0 Jan 16 15:47 all
+drwxr-xr-x   5 amayor  student    170 Mar  4 16:50 docs
+drwxr-xr-x  29 amayor  student    986 Jan 16 15:49 ft_printf
+drwxr-xr-x   5 amayor  student    170 Jan 16 15:47 includes
+drwxr-xr-x  82 amayor  student   2788 Jan 16 15:49 libft
+-rw-r--r--   1 amayor  student   1740 Mar  2 18:38 main.c
+-rw-r--r--   1 amayor  student   4812 Mar  2 18:38 main.o
+-rwxr-xr-x   1 amayor  student  53236 Mar  4 16:36 minishell
+drwxr-xr-x  12 amayor  student    408 Jan 16 15:47 src
+bash-3.2$
+---
+У нас:
+---
+amayor$ echo 123 > 123.txt | ls -l > 123.txt
+total 144
+-rw-r--r--   1 amayor  student      0 Mar  4 19:55 123.txt
+-rw-r--r--   1 amayor  student    568 Jan 16 15:47 CMakeLists.txt
+-rw-r--r--   1 amayor  student   2153 Jan 16 15:47 Makefile
+-rw-r--r--   1 amayor  student      0 Jan 16 15:47 all
+drwxr-xr-x   5 amayor  student    170 Mar  4 16:50 docs
+drwxr-xr-x  29 amayor  student    986 Jan 16 15:49 ft_printf
+drwxr-xr-x   5 amayor  student    170 Jan 16 15:47 includes
+drwxr-xr-x  82 amayor  student   2788 Jan 16 15:49 libft
+-rw-r--r--   1 amayor  student   1740 Mar  2 18:38 main.c
+-rw-r--r--   1 amayor  student   4812 Mar  2 18:38 main.o
+-rwxr-xr-x   1 amayor  student  53236 Mar  4 16:36 minishell
+drwxr-xr-x  12 amayor  student    408 Jan 16 15:47 src
+amayor$ cat 123.txt
+amayor$
+---
+Получается что у нас только создается файл, потом выполняется ls -l с выводом в стдаут. Видимо неправильно обрабатываются пайпы или перенаправления??
+
+
+Некорректно выполняется вот такой кейс:
+Баш:
+---
+bash-3.2$ yes n | head | wc -l
+      10
+bash-3.2$
+---
+У нас (зависает в ожидании, приходится нажимать CTRL-C чтобы прервать выполнение и получить результат):
+---
+amayor$ yes n | head | wc -l
+
+
+
+
+
+
+
+^C
+amayor$       10
+---
+Предположительно это связано с некорректным возвратом сигнала из дочернего процесса родительскому. Надо проверить.
+
+
+
+Странные кейсы которые ненятно как надо отрабатывать:
+=====================================================
+Баш:
+---
+bash-3.2$ !!!
+bash: !: event not found
+bash-3.2$
+---
+У нас:
+---
+amayor$ !!!
+bash: -bash: !!!: command not found
+amayor$
+---
+=====================================================
+
