@@ -106,10 +106,17 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 		{
 			// dup2(comm->fd_out, 1); // я пока убрал, т.к. не понимаю зачем это делать в дочернем процессе
 			signal(SIGQUIT, SIG_DFL);
+			signal(SIGINT, SIG_DFL);
 			execve(exe.prog, exe.ar, envp);
 		}
 		else
+		{
+			signal(SIGINT, SIG_IGN);
+			signal(SIGQUIT, SIG_IGN);
 			wait_child(pid, status);
+			signal(SIGQUIT, handler_sigquit);
+			signal(SIGINT, handler_sigint);
+		}
 	}
 	else
 		try_recode(comm, vars);
