@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:50:19 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 11:08:00 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/10 16:27:56 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,17 @@ int		export_error(char *key, char *value)
 {
 	ft_printf("minishell: export: `%s=%s': not a valid identifier\n", key, value);
 	return (0);
+}
+
+void 			permission_error(char *prog, char *file)
+{
+	write(2, prog, ft_strlen(prog));
+	write(2, ":", 1);
+	write(2, file, ft_strlen(file));
+	write(2, ": Permission denied\n", 21);
+}
+
+void 				newline_error(void)
+{
+	write(2,"-bash: syntax error near unexpected token `newline'\n", 53);
 }

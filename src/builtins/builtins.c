@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 14:09:27 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/10 16:14:56 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,33 +52,40 @@ static int		check_export(char *key, char *value)
 ** заменяет текущий. Изменяет глобальный код возврата.
 */
 
+int				ft_export_take(t_args *args, char **key, char **value)
+{
+	char		*command;
+
+	command = args->arg;
+	if (command)
+	{
+		while (*command && *command != '=')
+			*key = str_reallocpy(*key, *command++);
+		if (*command == '=')
+			command++;
+		while (*command)
+			*value = str_reallocpy(*value, *command++);
+		if (check_export(*key, *value) == 0)
+			return (0);
+	}
+	return (1);
+}
+
 int				ft_export(t_command *comm, t_vars *vars)
 {
 	char		*key;
 	char		*value;
-	char		*command;
 	t_args		*args;
 
 	args = comm->args;
 	key = NULL;
 	value = NULL;
-	command = NULL;
 	if (!args)
 		env_print(vars->env, "declare -x ");
 	while (args)
 	{
-		command = args->arg;
-		if (command)
-		{
-			while (*command && *command != '=')
-				key = str_reallocpy(key, *command++);
-			if (*command == '=')
-				command++;
-			while (*command)
-				value = str_reallocpy(value, *command++);
-			if (check_export(key, value) == 0)
-				return (0);
-		}
+		if (!(ft_export_take(args, &key, &value)))
+			return (0);
 		if (key && value)
 			env_add_or_change(&vars->env, key, value);
 		g_r_code = errno;
@@ -106,28 +113,5 @@ int				env_print(t_env *env, char *prefix)
 		node = node->next;
 	}
 	g_r_code = 0;
-	return (1);
-}
-
-
-
-/*
-** Возвращает полный путь к директории из которой запущена.
-** g_r_code устанавливает = 0 потому что штатная даже
-** в удаленной папке не изменяет значение переменной ? в обычном bash
-*/
-
-int				ft_pwd(void)
-{
-	char		pwd[PATH_MAX];
-
-	if (!getcwd(pwd, PATH_MAX))
-	{
-		write(2, "getcwd error\n", 13);
-		return (0);
-	}
-	g_r_code = 0;
-	write(1, pwd, ft_strlen(pwd));
-	write(1, "\n", 1);
 	return (1);
 }
