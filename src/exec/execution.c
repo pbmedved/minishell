@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2021/01/18 23:58:53 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/10 12:34:13 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ char		*try_find_prog(char *name, t_vars *vars)
 	int 	i;
 
 	i = 0;
-	if (name[0] == '.' && (fd = open(name, O_RDONLY)) > 0)
+	if ((fd = open(name, O_RDONLY)) > 0)
 	{
-		close(fd);
-		return (ft_strdup(name));
+			close(fd);
+			return (ft_strdup(name));
 	}
 	add = ft_calloc(1, 1);
 	path = env_take(vars, "PATH");
@@ -44,8 +44,8 @@ char		*try_find_prog(char *name, t_vars *vars)
 		i = 0;
 	}
 	close(fd);
-	// vars->global_r_code = 127;
-	GLOBAL_R_CODE = 127;
+	// vars->g_r_code = 127;
+	g_r_code = 127;
 	return (NULL);
 }
 
@@ -73,15 +73,15 @@ static void wait_child(pid_t pid, int status)
 {
 	waitpid(pid, &status, WUNTRACED);
 	if (WIFEXITED(status) != 0)
-		GLOBAL_R_CODE = WEXITSTATUS(status);
+		g_r_code = WEXITSTATUS(status);
 	if (WIFSIGNALED(status))
 	{
 		if (WTERMSIG(status) == 2)
-			GLOBAL_R_CODE = 130;
+			g_r_code = 130;
 		else if (WTERMSIG(status) == 3)
 		{
 			ft_putstr_fd("^\\Quit (core dumped)\n", 1);
-			GLOBAL_R_CODE = 131;
+			g_r_code = 131;
 		}
 	}
 }
@@ -96,7 +96,7 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 
 	pipe(fd);
 //	dup2(comm->fd_out, 1);
-	// dup2(comm->fd_in, 0); // убрал, зачем здесь это надо?
+//	 dup2(comm->fd_in, 0); // убрал, зачем здесь это надо?
 	get_exe(comm, &exe, vars);
 	// signal(SIGCHLD, sig_chld);
 	if (exe.prog && !try_recode_prog(comm->command))
@@ -104,7 +104,7 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 		pid = fork();
 		if (pid == 0)
 		{
-			// dup2(comm->fd_out, 1); // я пока убрал, т.к. не понимаю зачем это делать в дочернем процессе
+//			dup2(comm->fd_out, 1); // я пока убрал, т.к. не понимаю зачем это делать в дочернем процессе
 			signal(SIGQUIT, SIG_DFL);
 			signal(SIGINT, SIG_DFL);
 			execve(exe.prog, exe.ar, envp);
@@ -122,7 +122,7 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 		try_recode(comm, vars);
 	clean_exe(&exe);
 //	close(comm->fd_out);
-	// close(comm->fd_in); // и это убрал, т.к. зачем оно надо?
+//	 close(comm->fd_in); // и это убрал, т.к. зачем оно надо?
 	return 1;
 }
 
@@ -152,7 +152,7 @@ int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
 //		dup2(fd[0], 0);
 		dup2(fd[0], comm->fd_in);
 		close(fd[1]);
-		wait(&pid);
+//		wait(&pid);
 		close(fd[0]);
 	}
 	clean_exe(&exe);

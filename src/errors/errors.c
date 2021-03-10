@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:50:19 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/06 23:11:41 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/10 11:08:00 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void 		print_command_error(t_command *comm)
 	write(2, comm->command, ft_strlen(comm->command));
 	write(2, ": command not found\n",20);
 }
+
 
 int		print_file_error(char *s)
 {

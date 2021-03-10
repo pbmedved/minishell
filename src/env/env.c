@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 19:02:28 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/14 10:38:09 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/10 12:34:13 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ char			*env_take(t_vars *vars, const char *key)
 		if (!ft_strncmp(key, res->key, ft_strlen(key)))
 			return (res->value);
 		else if (*key == '?')
-			return (ft_itoa(GLOBAL_R_CODE));
-			// return (ft_itoa(vars->global_r_code)); //TODO: старая реализация, надо удалить если оставляем новую
+			return (ft_itoa(g_r_code));
+			// return (ft_itoa(vars->g_r_code)); //TODO: старая реализация, надо удалить если оставляем новую
 		res = res->next;
 	}
 	return (NULL);

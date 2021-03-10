@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2021/01/18 21:32:12 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/10 12:34:31 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,24 +24,24 @@ static void		preallocated(t_vars *vars)
 	vars->global_r_code = 0;
 }
 
-int				SIGNAL_FLAG;
-char 			*USERNAME;
-int				GLOBAL_R_CODE;
+int				g_signal_flag;
+char			*g_username;
+int				g_r_code;
 
 int				main(int argc, char **argv, char **envp)
 {
 	t_vars		vars;
 
 	preallocated(&vars);
-	SIGNAL_FLAG = 0;
-	GLOBAL_R_CODE = 0;
+	g_signal_flag = 0;
+	g_r_code = 0;
 	if (argc != 1 && argc != 3)
 		exit_error("bad param", -1);
 	if (argc == 3 && argv[1][0] == '-' && argv[1][1] == 'c' && !argv[1][2])
 		vars.buff = str_reallocpy_str(vars.buff, argv[2]);
 	env_save(&vars, envp);
 	vars.prompt = ft_strdup(env_take(&vars, "USER"));
-	USERNAME = vars.prompt;
+	g_username = vars.prompt;
 	command_getter(&vars, envp);
 	free(vars.prompt);
 	free(vars.buff);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:13:44 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/05 23:49:57 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/10 11:12:03 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,9 @@ void 	get_exe(t_command *comm, t_exe *exe, t_vars *vars)
 		exe->prog = ft_strdup(comm->command);
 	else
 		exe->prog = try_find_prog(comm->command, vars);
-	if (!exe->prog)
+	if (!exe->prog && ft_strchr("./", comm->command[0]))
+		print_file_error(comm->command);
+	else if (!exe->prog)
 		print_command_error(comm);
 	exe->ar[i] = exe->prog;
 	i++;

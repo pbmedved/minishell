@@ -20,9 +20,9 @@
 # include <errno.h>
 # include <stddef.h>
 
-extern int				SIGNAL_FLAG;
-extern char				*USERNAME;
-extern int				GLOBAL_R_CODE;
+extern int				g_signal_flag;
+extern char				*g_username;
+extern int				g_r_code;
 /*
  * REDIRECT STATE
  *    > 3

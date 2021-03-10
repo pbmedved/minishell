@@ -35,7 +35,8 @@ SRC_FILES = 	main.c \
 				src/exec/execution2.c \
 				src/command/command2.c \
 				src/builtins/exit.c \
-				src/signals/signals_handlers.c
+				src/signals/signals_handlers.c \
+				src/builtins/cd.c
 
 OBJ_FILES = $(SRC_FILES:.c=.o)
 
