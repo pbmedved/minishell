@@ -6,17 +6,17 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:13:44 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 11:12:03 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/10 18:37:15 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int 		check_redirect(t_command *command)
+int				check_redirect(t_command *command)
 {
 	t_command 	*comm;
 	t_args		*args;
-	char *buf;
+	char		*buf;
 
 	comm = command;
 	buf = NULL;
@@ -47,6 +47,7 @@ int 		check_redirect(t_command *command)
 **
 **
 */
+
 void 		command_handler(t_command *comm, t_vars *vars, char **envp)
 {
 	while (comm)
@@ -99,6 +100,5 @@ void	clean_exe(t_exe *exe)
 	i = 0;
 	while (exe->ar[i])
 		free(exe->ar[i++]);
-
 	free(exe->ar);
 }

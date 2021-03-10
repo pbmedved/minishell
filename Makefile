@@ -23,6 +23,7 @@ SRC_FILES = 	main.c \
 				src/utils/utils.c \
 				src/args/arg.c \
 				src/errors/errors.c \
+				src/errors/errors2.c \
 				src/env/env.c \
 				src/builtins/echo.c \
 				src/env/env2.c \

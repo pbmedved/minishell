@@ -3,44 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   env2.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 17:20:53 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/07 20:41:49 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/10 18:02:19 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-
-//char			*take_env_by_arg(t_vars *vars, char *s)
-//{
-//	char *key;
-//	char *new_s;
-//	char *value;
-//	int 	i;
-//
-//	i = 0;
-//	new_s = NULL;
-//	key = NULL;
-//
-//	while(s[i])
-//	{
-//		if (s[i] == '$')
-//		{
-//			i++;
-//			while (s[i] && s[i] != ' ')
-//				key = str_reallocpy(key, s[i++]);
-//			value = env_take(vars->env, key);
-//			new_s = str_reallocpy_str(new_s, value);
-//			key = NULL;
-//		}
-//		else
-//			new_s = str_reallocpy(new_s, s[i++]);
-//	}
-//	return (new_s);
-//
-//}
 
 t_env			*env_take_ptr(t_env *env, const char *key)
 {
@@ -82,10 +52,10 @@ void			env_del_by_key(t_env **env, char *key)
 	del = NULL;
 }
 
-void 		env_add_or_change(t_env **env, char *key, char *value)
+void			env_add_or_change(t_env **env, char *key, char *value)
 {
-	t_env *res;
-	t_env *new;
+	t_env		*res;
+	t_env		*new;
 
 	res = env_take_ptr(*env, key);
 	if (!res)

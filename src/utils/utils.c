@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:45:26 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/29 23:57:33 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/10 18:20:14 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,4 +81,28 @@ int 		whitespace_remove(char *s)
 	while (s[i] == ' ')
 		i++;
 	return (i);
+}
+
+int			ft_strcmp(char *s1, char *s2)
+{
+	if (ft_strlen(s1) != ft_strlen(s2))
+		return (0);
+	while (*s1)
+	{
+		if (*s1++ != *s2++)
+			return (0);
+	}
+	return (1);
+}
+
+int			ft_exists(char *name)
+{
+	int fd;
+
+	if ((fd = open(name, O_RDONLY)) > 0)
+	{
+		close(fd);
+		return (1);
+	}
+	return (0);
 }

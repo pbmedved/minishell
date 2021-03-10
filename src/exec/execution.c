@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 12:34:13 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/10 18:32:59 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,62 +14,29 @@
 
 char		*try_find_prog(char *name, t_vars *vars)
 {
-	char 	*path;
-	char 	*add;
-	int		fd;
-	int 	i;
+	char	*path;
+	char	*add;
 
-	i = 0;
-	if ((fd = open(name, O_RDONLY)) > 0)
-	{
-			close(fd);
-			return (ft_strdup(name));
-	}
+	if (ft_exists(name))
+		return (ft_strdup(name));
 	add = ft_calloc(1, 1);
 	path = env_take(vars, "PATH");
 	while (*path)
 	{
-		if ((fd = open(add, O_RDONLY)) > 0)
-		{
-			close(fd);
+		if (ft_exists(name))
 			return (add);
-		}
-		ft_bzero(add,ft_strlen(add));
+		ft_bzero(add, ft_strlen(add));
 		while (*path && *path != ':')
 			add = str_reallocpy(add, *path++);
 		add = str_reallocpy(add, '/');
 		path++;
-		while (name[i])
-			add = str_reallocpy(add, name[i++]);
-		i = 0;
+		add = str_reallocpy_str(add, name);
 	}
-	close(fd);
-	// vars->g_r_code = 127;
 	g_r_code = 127;
 	return (NULL);
 }
 
-int		try_recode(t_command *comm, t_vars *vars)
-{
-	errno = 0;
-	if (!ft_strncmp_revers(comm->command, "echo", 4))
-		return (ft_echo(comm));
-	else if (!ft_strncmp(comm->command, "cd", 2))
-		return (ft_cd(vars, comm));
-	else if (!ft_strncmp(comm->command, "pwd", 3))
-		return(ft_pwd());
-	else if (!ft_strncmp(comm->command, "export", 6))
-		return(ft_export(comm, vars));
-	else if (!ft_strncmp(comm->command, "unset", 5))
-		return (ft_unset(comm, vars));
-	else if (!ft_strncmp(comm->command, "env", 3))
-		return (env_print(vars->env, ""));
-	else if (!ft_strncmp(comm->command, "exit", 4))
-		exit_handler(comm);
-	return (0);
-}
-
-static void wait_child(pid_t pid, int status)
+static void	wait_child(pid_t pid, int status)
 {
 	waitpid(pid, &status, WUNTRACED);
 	if (WIFEXITED(status) != 0)
@@ -86,25 +53,21 @@ static void wait_child(pid_t pid, int status)
 	}
 }
 
-
 int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 {
-	t_exe exe;
-	pid_t pid;
-	int fd [2];
-	int	status = 0;
+	t_exe	exe;
+	pid_t	pid;
+	int		fd[2];
+	int		status;
 
+	status = 0;
 	pipe(fd);
-//	dup2(comm->fd_out, 1);
-//	 dup2(comm->fd_in, 0); // убрал, зачем здесь это надо?
 	get_exe(comm, &exe, vars);
-	// signal(SIGCHLD, sig_chld);
 	if (exe.prog && !try_recode_prog(comm->command))
 	{
 		pid = fork();
 		if (pid == 0)
 		{
-//			dup2(comm->fd_out, 1); // я пока убрал, т.к. не понимаю зачем это делать в дочернем процессе
 			signal(SIGQUIT, SIG_DFL);
 			signal(SIGINT, SIG_DFL);
 			execve(exe.prog, exe.ar, envp);
@@ -121,25 +84,20 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 	else
 		try_recode(comm, vars);
 	clean_exe(&exe);
-//	close(comm->fd_out);
-//	 close(comm->fd_in); // и это убрал, т.к. зачем оно надо?
-	return 1;
+	return (1);
 }
 
-int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
+int			call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
 {
-	t_exe exe;
-	pid_t pid;
-	int fd [2];
+	t_exe	exe;
+	pid_t	pid;
+	int		fd[2];
 
 	get_exe(comm, &exe, vars);
 	pipe(fd);
 	pid = fork();
 	if (pid == 0)
 	{
-//		dup2(fd[1], 1);
-//		if (comm->fd_out > 1)
-		dup2(comm->fd_out, 1);
 		dup2(fd[1], comm->fd_out);
 		close(fd[0]);
 		if (!try_recode(comm, vars))
@@ -149,44 +107,10 @@ int		call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
 	}
 	else
 	{
-//		dup2(fd[0], 0);
 		dup2(fd[0], comm->fd_in);
 		close(fd[1]);
-//		wait(&pid);
 		close(fd[0]);
 	}
 	clean_exe(&exe);
-	return 1;
-}
-
-int 		ft_strcmp(char *s1, char *s2)
-{
-	if (ft_strlen(s1) != ft_strlen(s2))
-		return (0);
-	while (*s1)
-	{
-		if (*s1++ != *s2++)
-			return (0);
-	}
 	return (1);
 }
-
-int 		try_recode_prog(char *name)
-{
-
-	if (ft_strcmp("echo", name) || ft_strcmp("cd", name) \
-	|| ft_strcmp("pwd", name) || ft_strcmp("export", name) \
-	|| ft_strcmp("unset", name) || ft_strcmp("env", name) \
-	|| ft_strcmp("exit", name))
-		return (1);
-	return (0);
-}
-
-void		executable(t_command *comm, t_vars *vars, char **envp)
-{
-		if (comm->state == 3)
-			call_extern_prog_pipe(comm, envp, vars);
-		else
-			call_extern_prog(comm, envp, vars);
-}
-

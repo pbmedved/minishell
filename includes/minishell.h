@@ -121,7 +121,8 @@ char			*str_reallocpy(char *old, char c);
 int				ft_strncmp_revers(char *in, char *this, size_t n);
 char			*str_reallocpy_str(char *old, char *new);
 int 			whitespace_remove(char *s);
-
+int			ft_strcmp(char *s1, char *s2);
+int			ft_exists(char *name);
 /*
  * 		BUILTINS
  */
