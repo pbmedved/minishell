@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 18:32:59 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/11 21:20:41 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ char		*try_find_prog(char *name, t_vars *vars)
 
 static void	wait_child(pid_t pid, int status)
 {
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, &status, WUNTRACED);
 	if (WIFEXITED(status) != 0)
 		g_r_code = WEXITSTATUS(status);
@@ -51,6 +53,8 @@ static void	wait_child(pid_t pid, int status)
 			g_r_code = 131;
 		}
 	}
+	signal(SIGQUIT, handler_sigquit);
+	signal(SIGINT, handler_sigint);
 }
 
 int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
@@ -73,13 +77,7 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 			execve(exe.prog, exe.ar, envp);
 		}
 		else
-		{
-			signal(SIGINT, SIG_IGN);
-			signal(SIGQUIT, SIG_IGN);
 			wait_child(pid, status);
-			signal(SIGQUIT, handler_sigquit);
-			signal(SIGINT, handler_sigint);
-		}
 	}
 	else
 		try_recode(comm, vars);

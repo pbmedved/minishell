@@ -6,7 +6,7 @@
 #    By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/15 22:40:53 by iadrien           #+#    #+#              #
-#    Updated: 2020/12/11 22:01:18 by amayor           ###   ########.fr        #
+#    Updated: 2021/03/10 23:57:29 by amayor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ SRC_FILES = 	main.c \
 				src/parser/parse3.c \
 				src/exec/execution.c \
 				src/exec/execution2.c \
+				src/exec/execution3.c \
 				src/command/command2.c \
 				src/builtins/exit.c \
 				src/signals/signals_handlers.c \
