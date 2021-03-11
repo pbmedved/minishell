@@ -23,7 +23,7 @@ char		*try_find_prog(char *name, t_vars *vars)
 	path = env_take(vars, "PATH");
 	while (*path)
 	{
-		if (ft_exists(name))
+		if (ft_exists(add))
 			return (add);
 		ft_bzero(add, ft_strlen(add));
 		while (*path && *path != ':')
@@ -68,6 +68,7 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 		pid = fork();
 		if (pid == 0)
 		{
+			dup2(comm->fd_out, 1);
 			signal(SIGQUIT, SIG_DFL);
 			signal(SIGINT, SIG_DFL);
 			execve(exe.prog, exe.ar, envp);

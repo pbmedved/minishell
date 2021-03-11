@@ -34,6 +34,7 @@ SRC_FILES = 	main.c \
 				src/parser/parse3.c \
 				src/exec/execution.c \
 				src/exec/execution2.c \
+				src/exec/execution3.c \
 				src/command/command2.c \
 				src/builtins/exit.c \
 				src/signals/signals_handlers.c \
