@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:19:51 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 12:43:52 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/12 23:43:48 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@
 void		exit_handler(t_command *comm)
 {
 	if (comm->args)
+	{
+		ft_putstr_fd("exit\n", 1);
 		exit(ft_atoi(comm->args->arg));
+	}
 	exit(0);
 }
