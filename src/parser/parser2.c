@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:01:08 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/16 22:16:33 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/13 18:16:53 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void			parse_bracks(t_command *comm, t_parse *prs, char c)
 
 void 			parse_escape(t_command *comm, t_parse *prs, char *buff)
 {
-	if (brack_status(prs))
+	if (prs->brack)
 	{
 		comm->command = str_reallocpy(comm->command, '\\');
 		prs->i++;
@@ -34,8 +34,7 @@ void 			parse_escape(t_command *comm, t_parse *prs, char *buff)
 	}
 }
 
-
-int				command_write(t_command *comm, char *buff, t_vars *vars)
+int				 command_write(t_command *comm, char *buff, t_vars *vars)
 {
 	t_parse prs;
 
@@ -51,6 +50,7 @@ int				command_write(t_command *comm, char *buff, t_vars *vars)
 		else
 			comm->command = str_reallocpy(comm->command, buff[prs.i++]);
 	}
+	//TODO проверка if (prs->brack || prs->brack_2) token_error(кобка); end_off_parse();
 	return (prs.i);
 }
 
