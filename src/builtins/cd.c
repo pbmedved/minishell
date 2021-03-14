@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 15:41:28 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 15:41:50 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/15 00:18:41 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ int				ft_cd(t_vars *vars, t_command *comm)
 	if (dir == -1)
 	{
 		g_r_code = 1;
+		if (!comm->args)
+			return (no_home_error());
 		return (print_file_error(comm->args->arg)); // TODO А ЕСЛИ НЕТ АРГУМЕНТА?! СЕГА!
 	}
 	env_add_or_change(&vars->env, "OLDPWD", env_take(vars, "PWD"));

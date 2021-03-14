@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 18:05:14 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 18:10:05 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/15 00:17:49 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,10 @@ void			permission_error(char *prog, char *file)
 void			newline_error(void)
 {
 	write(2, "-bash: syntax error near unexpected token `newline'\n", 53);
+}
+
+int			no_home_error(void)
+{
+	write(1, "minishell: cd: HOME not set\n", 29);
+	return 1;
 }

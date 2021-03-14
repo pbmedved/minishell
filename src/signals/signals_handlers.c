@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 21:59:03 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/11 23:40:31 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/14 23:59:26 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	handler_sigint(int sig)
 	}
 }
 
-// TODO: возможно не нужна, тогда убрать
 void	handler_sigquit(int sig)
 {
 	if(sig == SIGQUIT)

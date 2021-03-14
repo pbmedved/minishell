@@ -134,7 +134,7 @@ int 		env_print(t_env *env, char *prefix);
 int 		ft_cd(t_vars *vars, t_command *comm);
 int 		ft_pwd(void);
 int 		ft_echo(t_command *comm);
-void			exit_handler(t_command *comm);
+void		exit_handler(t_command *comm);
 
 
 /*
@@ -151,7 +151,7 @@ void 			parse_escape(t_command *comm, t_parse *prs, char *buff);
 int				command_write(t_command *comm, char *buff, t_vars *vars);
 void			parse_bracks_arg(t_args *args, t_parse *prs, char c);
 void 			parse_escape_arg(t_args *args, t_parse *prs, char *buff);
-void 		parse_dollar_arg(t_args *args, t_parse *prs, char *buff, t_vars *vars);
+void 			parse_dollar_arg(t_args *args, t_parse *prs, char *buff, t_vars *vars);
 void 			parse_semicolon(t_args *args, t_parse *prs, char *buff);
 int				parse_redirect(t_args *args, t_parse *prs, char *buff);
 int				arg_write(t_vars *vars, t_args *args, char *buff);
@@ -186,6 +186,7 @@ int				print_file_error(char *s);
 int				export_error(char *key, char *value);
 void 			permission_error(char *prog, char *file);
 void 			newline_error(void);
+int				no_home_error(void);
 
 /*
 ** SIGNALS
