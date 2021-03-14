@@ -25,7 +25,7 @@ int				ft_cd(t_vars *vars, t_command *comm)
 	if (dir == -1)
 	{
 		g_r_code = 1;
-		return (print_file_error(comm->args->arg));
+		return (print_file_error(comm->args->arg)); // TODO А ЕСЛИ НЕТ АРГУМЕНТА?! СЕГА!
 	}
 	env_add_or_change(&vars->env, "OLDPWD", env_take(vars, "PWD"));
 	if (!(getcwd(s, PATH_MAX)))

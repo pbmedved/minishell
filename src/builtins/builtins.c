@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 16:14:56 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/14 23:07:09 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,12 @@ int				ft_export(t_command *comm, t_vars *vars)
 		return (1);
 	}
 	return (1);
-}
+}//TODO  Не добавляет несколько переменных в одной команде, возможно проблема в ретерне внутри цикла
+// TODO не работает добавление переменной без ключа
 
 int				ft_unset(t_command *comm, t_vars *vars)
 {
-	if (comm->args)
+	if (comm->args) //TODO не работает с несколькими аргументами, добавить цикл
 		env_del_by_key(&vars->env, comm->args->arg);
 	g_r_code = 0;
 	return (1);
