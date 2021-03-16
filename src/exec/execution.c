@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/11 22:54:02 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/16 22:55:25 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,10 @@ static void	wait_child(pid_t pid, int status)
 	if (WIFSIGNALED(status))
 	{
 		if (WTERMSIG(status) == 2)
+		{
 			g_r_code = 130;
+			write(1, "\n", 1);
+		}
 		else if (WTERMSIG(status) == 3)
 		{
 			ft_putstr_fd("^\\Quit (core dumped)\n", 1);
@@ -55,7 +58,6 @@ static void	wait_child(pid_t pid, int status)
 	}
 	signal(SIGQUIT, handler_sigquit);
 	signal(SIGINT, handler_sigint);
-	write(1, "\n", 1);
 }
 
 int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
@@ -79,7 +81,9 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 			execve(exe.prog, exe.ar, envp);
 		}
 		else
+		{
 			wait_child(pid, status);
+		}
 	}
 	else
 		try_recode(comm, vars);
