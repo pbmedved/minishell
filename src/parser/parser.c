@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2021/01/16 22:19:42 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/16 23:52:49 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ int				arg_write(t_vars *vars, t_args *args, char *buff)
 			parse_bracks_arg(args, &prs, buff[prs.i]);
 		else if (buff[prs.i] == '\\')
 			parse_escape_arg(args, &prs, buff);
-		else if (buff[prs.i] == '$')
+		else if (buff[prs.i] == '$' && buff[prs.i + 1] != '"')
 			parse_dollar_arg(args, &prs, buff, vars);
 		else if (buff[prs.i] == ';' || buff[prs.i] == '|')
 			parse_semicolon(args, &prs, buff);
