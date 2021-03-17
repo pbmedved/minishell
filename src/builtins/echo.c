@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:01:11 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 13:55:31 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/17 21:59:45 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ int				ft_echo(t_command *comm)
 	{
 		s = str_reallocpy_str(s, arg->arg);
 		arg = arg->next;
-		if (arg && arg->state <= 2)
-			s = str_reallocpy(s, ' ');
+		// if (arg && arg->state <= 2)
+			// s = str_reallocpy(s, ' '); // TODO: убрал пока, т.к. в кейсе echo $ywywtasdt hello - ставился в выводе лишний пробел перед hello
 	}
 	if (!n)
 		s = str_reallocpy(s, '\n');
