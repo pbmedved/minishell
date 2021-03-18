@@ -187,6 +187,7 @@ int				export_error(char *key, char *value);
 void 			permission_error(char *prog, char *file);
 void 			newline_error(void);
 int				no_home_error(void);
+void			file_not_found(char *prog, char *file);
 
 /*
 ** SIGNALS

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:45:26 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 18:20:14 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/18 22:45:48 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ char	*str_reallocpy(char *old, char c)
 		exit_error("Malloc error", 1);
 	ft_strlcpy(young, old, cur_size+1);
 	young[cur_size] = c;
+	young[cur_size + 1] = '\0';
 	free(old);
 	return (young);
 }

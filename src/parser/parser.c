@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/16 23:52:49 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/18 22:52:03 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int			parse_redirect(t_args *args, t_parse *prs, char *buff)
 	}
 	else
 	{
-		while(ft_strchr("<>", buff[prs->i]))
+		while(ft_strchr("<>", buff[prs->i]) && buff[prs->i])
 			args->arg = str_reallocpy(args->arg, buff[prs->i++]);
 		args->state = 2;
 		return (1);
