@@ -6,7 +6,7 @@
 #    By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/15 22:40:53 by iadrien           #+#    #+#              #
-#    Updated: 2021/03/10 23:57:29 by amayor           ###   ########.fr        #
+#    Updated: 2021/03/18 23:37:13 by amayor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,8 @@ SRC_FILES = 	main.c \
 				src/redirect/redirect.c \
 				src/builtins/builtins.c \
 				src/parser/parser2.c \
-				src/parser/parse3.c \
+				src/parser/parser3.c \
+				src/parser/parser4.c \
 				src/exec/execution.c \
 				src/exec/execution2.c \
 				src/exec/execution3.c \

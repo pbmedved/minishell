@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 21:59:03 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/14 23:59:26 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/18 23:25:00 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,6 @@ void	handler_sigint(int sig)
 
 void	handler_sigquit(int sig)
 {
-	if(sig == SIGQUIT)
+	if (sig == SIGQUIT)
 		ft_putstr_fd("\b\b  \b\b", 1);
 }

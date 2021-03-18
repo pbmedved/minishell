@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parser2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:01:08 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/13 18:16:53 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/18 23:45:40 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
 
 void			parse_bracks(t_command *comm, t_parse *prs, char c)
 {
@@ -20,7 +19,7 @@ void			parse_bracks(t_command *comm, t_parse *prs, char c)
 	prs->i++;
 }
 
-void 			parse_escape(t_command *comm, t_parse *prs, char *buff)
+void			parse_escape(t_command *comm, t_parse *prs, char *buff)
 {
 	if (prs->brack)
 	{
@@ -34,12 +33,12 @@ void 			parse_escape(t_command *comm, t_parse *prs, char *buff)
 	}
 }
 
-int				 command_write(t_command *comm, char *buff, t_vars *vars)
+int				command_write(t_command *comm, char *buff, t_vars *vars)
 {
-	t_parse prs;
+	t_parse		prs;
 
 	prs = (t_parse){0, 0, 0};
-	while(buff[prs.i] && check_end(&prs, buff[prs.i]))
+	while (buff[prs.i] && check_end(&prs, buff[prs.i]))
 	{
 		if (buff[prs.i] == '"' || buff[prs.i] == '\'')
 			parse_bracks(comm, &prs, buff[prs.i]);
@@ -61,7 +60,7 @@ void			parse_bracks_arg(t_args *args, t_parse *prs, char c)
 	prs->i++;
 }
 
-void 			parse_escape_arg(t_args *args, t_parse *prs, char *buff)
+void			parse_escape_arg(t_args *args, t_parse *prs, char *buff)
 {
 	if (brack_status(prs))
 	{
@@ -74,4 +73,3 @@ void 			parse_escape_arg(t_args *args, t_parse *prs, char *buff)
 		prs->i += 2;
 	}
 }
-

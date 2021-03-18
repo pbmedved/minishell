@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse3.c                                           :+:      :+:    :+:   */
+/*   parser3.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:03:45 by iadrien           #+#    #+#             */
-/*   Updated: 2020/11/30 09:56:24 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/18 23:47:59 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int			check_token_symb(char c)
+int				check_token_symb(char c)
 {
 	if (c == ';' || c == '|' || c == '<' || c == '>')
 		return (1);
 	return (0);
 }
 
-int			check_pipes(t_command *command)
+int				check_pipes(t_command *command)
 {
-	t_command 	*comm;
+	t_command	*comm;
 	t_args		*args;
-	char *buf;
+	char		*buf;
 
 	comm = command;
 	buf = NULL;
@@ -32,7 +32,8 @@ int			check_pipes(t_command *command)
 		args = comm->args;
 		while (args)
 		{
-			if (args->state == 7 || args->state == 8) {
+			if (args->state == 7 || args->state == 8)
+			{
 				if (ft_strlen(args->arg) == 1 && !comm->command[0])
 					buf = str_reallocpy(buf, args->arg[0]);
 				else if (ft_strlen(args->arg) > 1)
@@ -61,7 +62,6 @@ int				check_end(t_parse *parse, char c)
 	return (1);
 }
 
-
 int				set_bracks(t_parse *prs, char c)
 {
 	if (c == '"')
@@ -81,7 +81,7 @@ int				set_bracks(t_parse *prs, char c)
 	return (1);
 }
 
-int 			brack_status(t_parse *prs)
+int				brack_status(t_parse *prs)
 {
 	if (prs->brack_2 || prs->brack)
 		return (1);
