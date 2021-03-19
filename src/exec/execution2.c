@@ -6,11 +6,41 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:13:44 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/19 22:48:01 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/19 23:08:14 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+static void		set_exe_arg(t_exe **ext_exe, t_command *comm)
+{
+	t_exe		*exe;
+	t_args		*arg;
+	int			i;
+
+	i = 0;
+	arg = comm->args;
+	exe = *ext_exe;
+	exe->ar[i] = exe->prog;
+	i++;
+	while (arg && arg->state != 7 && arg->state != 8)
+	{
+		if (arg->state == 1)
+		{
+			exe->ar[i] = ft_strdup(arg->arg);
+			i++;
+		}
+		arg = arg->next;
+	}
+	exe->ar[i] = NULL;
+}
+
+static int		print_err_for_check_redirect(char *buf)
+{
+	which_token_err(buf);
+	free(buf);
+	return (0);
+}
 
 int				check_redirect(t_command *command)
 {
@@ -38,48 +68,7 @@ int				check_redirect(t_command *command)
 	}
 	if (!buf)
 		return (1);
-	which_token_err(buf);
-	free(buf);
-	return (0);
-}
-
-/*
-** Обрабатывает команды из списка с командами.
-*/
-
-void			command_handler(t_command *comm, t_vars *vars, char **envp)
-{
-	while (comm)
-	{
-		if (!check_pipes(comm) && !check_redirect(comm))
-			break ;
-		else
-			executable(comm, vars, envp);
-		comm = comm->next;
-	}
-}
-
-static void		set_exe_arg(t_exe **ext_exe, t_command *comm)
-{
-	t_exe		*exe;
-	t_args		*arg;
-	int			i;
-
-	i = 0;
-	arg = comm->args;
-	exe = *ext_exe;
-	exe->ar[i] = exe->prog;
-	i++;
-	while (arg && arg->state != 7 && arg->state != 8)
-	{
-		if (arg->state == 1)
-		{
-			exe->ar[i] = ft_strdup(arg->arg);
-			i++;
-		}
-		arg = arg->next;
-	}
-	exe->ar[i] = NULL;
+	return (print_err_for_check_redirect(buf));
 }
 
 void			get_exe(t_command *comm, t_exe *exe, t_vars *vars)

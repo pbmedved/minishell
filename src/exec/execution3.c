@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execution3.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 18:19:30 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 18:20:28 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/19 22:55:13 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
 
 int				try_recode_prog(char *name)
 {
@@ -31,7 +30,7 @@ void			executable(t_command *comm, t_vars *vars, char **envp)
 		call_extern_prog(comm, envp, vars);
 }
 
-int			try_recode(t_command *comm, t_vars *vars)
+int				try_recode(t_command *comm, t_vars *vars)
 {
 	errno = 0;
 	if (!ft_strncmp_revers(comm->command, "echo", 4))
@@ -49,4 +48,20 @@ int			try_recode(t_command *comm, t_vars *vars)
 	else if (!ft_strncmp(comm->command, "exit", 4))
 		exit_handler(comm);
 	return (0);
+}
+
+/*
+** Обрабатывает команды из списка с командами.
+*/
+
+void			command_handler(t_command *comm, t_vars *vars, char **envp)
+{
+	while (comm)
+	{
+		if (!check_pipes(comm) && !check_redirect(comm))
+			break ;
+		else
+			executable(comm, vars, envp);
+		comm = comm->next;
+	}
 }
