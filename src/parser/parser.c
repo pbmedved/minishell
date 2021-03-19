@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/19 23:30:18 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/19 23:44:52 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,6 @@ void			buff_parser(t_vars *vars, char *buff, char **envp)
 			dell_all_command(&new_comm);
 			return ;
 		}
-
 		buff += i;
 		buff += whitespace_remove(buff);
 		while (*buff && *buff != ' ')
@@ -138,8 +137,14 @@ void			buff_parser(t_vars *vars, char *buff, char **envp)
 				break ;
 			}
 			new_arg = arg_new();
-			buff += arg_write(vars, new_arg, buff);
+			i = arg_write(vars, new_arg, buff);
 			arg_add(&new_comm->args, new_arg);
+			if (i < 0)
+			{
+				dell_all_command(&new_comm);
+				return ;
+			}
+			buff += i;
 			buff += whitespace_remove(buff);
 		}
 		command_fix(&new_comm);

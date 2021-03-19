@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 23:35:42 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/19 23:39:40 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/19 23:40:14 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,11 @@ int				arg_write(t_vars *vars, t_args *args, char *buff)
 			args->arg = str_reallocpy(args->arg, buff[prs.i++]);
 		if (ft_strchr("<>", buff[prs.i]) && !brack_status(&prs))
 			return (prs.i);
+	}
+	if (brack_status(&prs))
+	{
+		end_of_file_error();
+		prs.i = -404;
 	}
 	return (prs.i);
 }
