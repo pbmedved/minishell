@@ -6,7 +6,7 @@
 #    By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/15 22:40:53 by iadrien           #+#    #+#              #
-#    Updated: 2021/03/18 23:37:13 by amayor           ###   ########.fr        #
+#    Updated: 2021/03/19 22:19:30 by amayor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,7 @@ SRC_FILES = 	main.c \
 				src/exec/execution2.c \
 				src/exec/execution3.c \
 				src/command/command2.c \
+				src/command/command3.c \
 				src/builtins/exit.c \
 				src/signals/signals_handlers.c \
 				src/builtins/cd.c

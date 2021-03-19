@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:13:44 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 18:37:15 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/19 22:48:01 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int				check_redirect(t_command *command)
 {
-	t_command 	*comm;
+	t_command	*comm;
 	t_args		*args;
 	char		*buf;
 
@@ -25,7 +25,8 @@ int				check_redirect(t_command *command)
 		args = comm->args;
 		while (args)
 		{
-			if (args->state == 7 || args->state == 8) {
+			if (args->state == 7 || args->state == 8)
+			{
 				if (ft_strlen(args->arg) == 1 && !comm->command[0])
 					buf = str_reallocpy(buf, args->arg[0]);
 				else if (ft_strlen(args->arg) > 1)
@@ -44,39 +45,29 @@ int				check_redirect(t_command *command)
 
 /*
 ** Обрабатывает команды из списка с командами.
-**
-**
 */
 
-void 		command_handler(t_command *comm, t_vars *vars, char **envp)
+void			command_handler(t_command *comm, t_vars *vars, char **envp)
 {
 	while (comm)
 	{
 		if (!check_pipes(comm) && !check_redirect(comm))
-			break;
+			break ;
 		else
 			executable(comm, vars, envp);
 		comm = comm->next;
 	}
 }
 
-void 	get_exe(t_command *comm, t_exe *exe, t_vars *vars)
+static void		set_exe_arg(t_exe **ext_exe, t_command *comm)
 {
-	t_args *arg;
-	int i;
+	t_exe		*exe;
+	t_args		*arg;
+	int			i;
 
 	i = 0;
 	arg = comm->args;
-	if (!(exe->ar = malloc((arg_count(comm) + 2) * sizeof(char *))))
-		exit_error("Malloc error", 1);
-	if (try_recode_prog(comm->command))
-		exe->prog = ft_strdup(comm->command);
-	else
-		exe->prog = try_find_prog(comm->command, vars);
-	if (!exe->prog && ft_strchr("./", comm->command[0]))
-		print_file_error(comm->command);
-	else if (!exe->prog)
-		print_command_error(comm);
+	exe = *ext_exe;
 	exe->ar[i] = exe->prog;
 	i++;
 	while (arg && arg->state != 7 && arg->state != 8)
@@ -87,15 +78,29 @@ void 	get_exe(t_command *comm, t_exe *exe, t_vars *vars)
 			i++;
 		}
 		arg = arg->next;
-
 	}
 	exe->ar[i] = NULL;
+}
+
+void			get_exe(t_command *comm, t_exe *exe, t_vars *vars)
+{
+	if (!(exe->ar = malloc((arg_count(comm) + 2) * sizeof(char *))))
+		exit_error("Malloc error", 1);
+	if (try_recode_prog(comm->command))
+		exe->prog = ft_strdup(comm->command);
+	else
+		exe->prog = try_find_prog(comm->command, vars);
+	if (!exe->prog && ft_strchr("./", comm->command[0]))
+		print_file_error(comm->command);
+	else if (!exe->prog)
+		print_command_error(comm);
+	set_exe_arg(&exe, comm);
 	comm->state = 1;
 }
 
-void	clean_exe(t_exe *exe)
+void			clean_exe(t_exe *exe)
 {
-	int i;
+	int			i;
 
 	i = 0;
 	while (exe->ar[i])

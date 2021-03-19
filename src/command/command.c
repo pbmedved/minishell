@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:43:18 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/18 21:28:56 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/19 22:19:00 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,24 +26,6 @@ t_command			*command_new(void)
 	new_comm->fd_out = 1;
 	new_comm->state = 1;
 	return (new_comm);
-}
-
-void				dell_all_command(t_command **command)
-{
-	t_command		*main;
-	t_command		*res;
-
-	main = *command;
-	while (main)
-	{
-		dell_all_args(&main->args);
-		res = main->next;
-		free(main->command);
-		main->command = NULL;
-		free(main);
-		main = res;
-	}
-	*command = NULL;
 }
 
 void				command_set_state(t_command *comm)
@@ -87,8 +69,8 @@ static int			check_redirect_args(t_command *comm)
 	args = comm->args;
 	while (ft_strchr(args->arg, '<') || ft_strchr(args->arg, '>'))
 		args = args->next;
-	if(ft_isalpha(*(args->arg)))
-			return (1);
+	if (ft_isalpha(*(args->arg)))
+		return (1);
 	return (0);
 }
 
@@ -103,7 +85,6 @@ void				command_set_fd_in(t_command *comm, char *file)
 	}
 	if ((fd = open(file, O_RDWR, 0644)) < 0)
 	{
-		// permission_error(comm->command, file);
 		file_not_found(comm->command, file);
 		return ;
 	}
