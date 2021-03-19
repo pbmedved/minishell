@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:04:25 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/19 23:04:27 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/19 23:25:33 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,6 +196,7 @@ void					permission_error(char *prog, char *file);
 void					newline_error(void);
 int						no_home_error(void);
 void					file_not_found(char *prog, char *file);
+void					end_of_file_error(void);
 
 /*
 ** SIGNALS

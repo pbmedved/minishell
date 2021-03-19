@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/18 23:42:41 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/19 23:30:18 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,12 +112,20 @@ void			buff_parser(t_vars *vars, char *buff, char **envp)
 {
 	t_command	*new_comm;
 	t_args		*new_arg;
+	int			i;
 
 	while (*buff)
 	{
 		buff += whitespace_remove(buff);
 		new_comm = command_new();
-		buff += command_write(new_comm, buff, vars);
+		i = command_write(new_comm, buff, vars);
+		if (i < 0)
+		{
+			dell_all_command(&new_comm);
+			return ;
+		}
+
+		buff += i;
 		buff += whitespace_remove(buff);
 		while (*buff && *buff != ' ')
 		{

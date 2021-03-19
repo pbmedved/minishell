@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:01:08 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/18 23:45:40 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/19 23:30:49 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,11 @@ int				command_write(t_command *comm, char *buff, t_vars *vars)
 		else
 			comm->command = str_reallocpy(comm->command, buff[prs.i++]);
 	}
-	//TODO проверка if (prs->brack || prs->brack_2) token_error(кобка); end_off_parse();
+	if (brack_status(&prs))
+	{
+		end_of_file_error();
+		prs.i = -404;
+	}
 	return (prs.i);
 }
 
