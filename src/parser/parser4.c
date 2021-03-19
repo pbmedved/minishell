@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser4.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 23:35:42 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/18 23:36:27 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/19 22:07:56 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ int				arg_write(t_vars *vars, t_args *args, char *buff)
 			parse_dollar_arg(args, &prs, buff, vars);
 		else if (buff[prs.i] == ';' || buff[prs.i] == '|')
 			parse_semicolon(args, &prs, buff);
-		else if (ft_strchr("<>", buff[prs.i]))
+		else if (ft_strchr("<>", buff[prs.i]) && !brack_status(&prs))
 		{
 			if (parse_redirect(args, &prs, buff))
 				return (prs.i);
 		}
 		else
 			args->arg = str_reallocpy(args->arg, buff[prs.i++]);
-		if (ft_strchr("<>", buff[prs.i]))
+		if (ft_strchr("<>", buff[prs.i]) && !brack_status(&prs))
 			return (prs.i);
 	}
 	return (prs.i);
