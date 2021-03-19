@@ -15,8 +15,9 @@ src/parser/parser.c
 src/redirect/redirect.c 
 src/builtins/builtins.c 
 src/parser/parser2.c 
-src/parser/parse3.c 
-src/exec/execution.c 
+src/parser/parser3.c
+src/parser/parser4.c
+src/exec/execution.c
 src/exec/execution2.c 
 src/command/command2.c 
 src/builtins/exit.c 

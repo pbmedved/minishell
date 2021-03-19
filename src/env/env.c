@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/16 19:02:28 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 16:36:06 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/19 22:15:10 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,8 @@ t_env			*env_create(void)
 
 	if (!(env = malloc(sizeof(t_env))))
 		exit_error("Malloc error", 1);
-	env->key = calloc(1, 1);
-	env->value = calloc(1, 1);
-	if (!env->key || !env->value)
-		exit_error("Calloc error", 1);
+	env->key = NULL;
+	env->value = NULL;
 	env->next = NULL;
 	return (env);
 }

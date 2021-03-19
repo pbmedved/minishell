@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 17:20:53 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 18:02:19 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/19 22:29:05 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void			env_add_or_change(t_env **env, char *key, char *value)
 	{
 		new = env_create();
 		new->key = ft_strdup(key);
-		new->value = ft_strdup(value);
+		new->value = ft_strdup(value ? value : "");
 		env_add(env, new);
 	}
 	else

@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/22 10:48:52 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/14 23:07:09 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/19 22:24:13 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,14 @@ int				ft_export(t_command *comm, t_vars *vars)
 	{
 		if (!(ft_export_take(args, &key, &value)))
 			return (0);
-		if (key && value)
+		if (key)
 			env_add_or_change(&vars->env, key, value);
 		g_r_code = errno;
-		return (1);
+		free(key);
+		free(value);
+		key = NULL;
+		value = NULL;
+		args = args->next;
 	}
 	return (1);
 }//TODO  Не добавляет несколько переменных в одной команде, возможно проблема в ретерне внутри цикла
