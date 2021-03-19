@@ -27,7 +27,7 @@ int				ft_cd(t_vars *vars, t_command *comm)
 		g_r_code = 1;
 		if (!comm->args)
 			return (no_home_error());
-		return (print_file_error(comm->args->arg)); // TODO А ЕСЛИ НЕТ АРГУМЕНТА?! СЕГА!
+		return (print_file_error(comm->args->arg));
 	}
 	env_add_or_change(&vars->env, "OLDPWD", env_take(vars, "PWD"));
 	if (!(getcwd(s, PATH_MAX)))

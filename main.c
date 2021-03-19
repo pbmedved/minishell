@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/12 23:31:20 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/19 22:56:54 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,21 +43,25 @@ int				g_r_code;
 ** два раза в случае перехвата его в дочернем процессе,
 ** например cat
 */
+static void			prompt_print(t_vars *vars)
+{
+	if (g_signal_flag == 0)
+	{
+		ft_putstr_fd(vars->prompt, 1);
+		write(1, "$ ", 2);
+	}
+}
 
 void			command_getter(t_vars *vars, char **envp)
 {
 	char		b;
 	ssize_t		res;
 
+	prompt_print(vars);
 	while (vars->state)
 	{
 		signal(SIGQUIT, handler_sigquit);
 		signal(SIGINT, handler_sigint);
-		if (g_signal_flag == 0)
-		{
-			ft_putstr_fd(vars->prompt, 1);
-			write(1, "$ ", 2);
-		}
 		g_signal_flag = 0;
 		if (!vars->buff)
 		{
@@ -69,6 +73,7 @@ void			command_getter(t_vars *vars, char **envp)
 		buff_parser(vars, vars->buff, envp);
 		free(vars->buff);
 		vars->buff = NULL;
+		prompt_print(vars);
 	}
 }
 

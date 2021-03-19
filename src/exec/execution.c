@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/19 22:23:32 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/19 23:03:56 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,10 @@ char		*try_find_prog(char *name, t_vars *vars)
 		while (*path && *path != ':')
 			add = str_reallocpy(add, *path++);
 		add = str_reallocpy(add, '/');
-		path++;
+		*path ? path++ : 0;
 		add = str_reallocpy_str(add, name);
 	}
+	free(add);
 	g_r_code = 127;
 	return (NULL);
 }

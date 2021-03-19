@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:13:44 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/19 22:48:01 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/19 23:08:32 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,16 +84,22 @@ static void		set_exe_arg(t_exe **ext_exe, t_command *comm)
 
 void			get_exe(t_command *comm, t_exe *exe, t_vars *vars)
 {
-	if (!(exe->ar = malloc((arg_count(comm) + 2) * sizeof(char *))))
-		exit_error("Malloc error", 1);
 	if (try_recode_prog(comm->command))
 		exe->prog = ft_strdup(comm->command);
 	else
 		exe->prog = try_find_prog(comm->command, vars);
 	if (!exe->prog && ft_strchr("./", comm->command[0]))
+	{
 		print_file_error(comm->command);
+		return ;
+	}
 	else if (!exe->prog)
+	{
 		print_command_error(comm);
+		return ;
+	}
+	if (!(exe->ar = malloc((arg_count(comm) + 2) * sizeof(char *))))
+		exit_error("Malloc error", 1);
 	set_exe_arg(&exe, comm);
 	comm->state = 1;
 }
@@ -103,7 +109,10 @@ void			clean_exe(t_exe *exe)
 	int			i;
 
 	i = 0;
-	while (exe->ar[i])
-		free(exe->ar[i++]);
-	free(exe->ar);
+	if (exe->prog)
+	{
+		while (exe->ar[i])
+			free(exe->ar[i++]);
+		free(exe->ar);
+	}
 }

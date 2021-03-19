@@ -20,6 +20,7 @@ src/parser/parser4.c
 src/exec/execution.c
 src/exec/execution2.c 
 src/command/command2.c 
-src/builtins/exit.c 
+src/command/command3.c
+src/builtins/exit.c
 src/signals/signals_handlers.c src/builtins/cd.c src/errors/errors2.c src/exec/execution3.c)
 target_link_libraries(minishell ${CMAKE_SOURCE_DIR}/libft/libft.a ${CMAKE_SOURCE_DIR}/ft_printf/libftprintf.a)
