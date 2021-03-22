@@ -67,8 +67,6 @@ void				ft_prf_itoa_hex_p(unsigned long n, int base, char *buf)
 
 	dict = "0123456789ABCDEFG";
 	i = ft_numlen_uns(n, base);
-	// if (n < 0 && (n *= -1))
-	// 	base == 10 ? buf[0] = '-' : 0;
 	buf[i--] = '\0';
 	while ((n / base))
 	{
