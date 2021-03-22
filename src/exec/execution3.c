@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution3.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 18:19:30 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/22 20:35:17 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/22 22:36:31 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int				try_recode(t_command *comm, t_vars *vars)
 	else if (!ft_strncmp(comm->command, "env", 3))
 		return (env_print(vars->env, ""));
 	else if (!ft_strncmp(comm->command, "exit", 4))
-		exit_handler(comm);
+		exit_handler(comm, vars);
 	return (0);
 }
 

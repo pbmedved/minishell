@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/19 22:56:54 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/22 22:25:42 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ int				g_r_code;
 ** два раза в случае перехвата его в дочернем процессе,
 ** например cat
 */
-static void			prompt_print(t_vars *vars)
+
+static void		prompt_print(t_vars *vars)
 {
 	if (g_signal_flag == 0)
 	{

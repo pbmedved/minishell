@@ -6,7 +6,7 @@
 #    By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/15 22:40:53 by iadrien           #+#    #+#              #
-#    Updated: 2021/03/19 22:19:30 by amayor           ###   ########.fr        #
+#    Updated: 2021/03/22 22:04:17 by amayor           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,6 @@ LIBS = -L$(LIBFT_PATH) -L$(FT_PRINTF_PATH) -lft -lftprintf
 HEADER_DIR = includes
 LIBFT_PATH = libft
 FT_PRINTF_PATH = ft_printf
-# OBJ_DIR = obj
 SRC_FILES = 	main.c \
 				src/command/command.c \
 				src/utils/utils.c \
@@ -50,27 +49,28 @@ OBJ_FILES = $(SRC_FILES:.c=.o)
 all: $(OBJ) $(NAME)
 
 $(NAME): $(OBJ_FILES)
+	@echo "Run building minishell"
 	@$(MAKE) -C libft
 	@echo "Complile libft!"
 	@$(MAKE) -C ft_printf
 	@echo "Complile ft_printf!"
-	$(COMPILER) $(CFLAGS) $(OBJ_FILES) -I $(HEADER_DIR) $(LIBS) -o $(NAME)
-
-# $< - исходный файл
-# $@ - целевой файл
-
-# VPATH = src
-# %.o: %.c
-# 	@echo "** Compile obj files! **"
-# 	$(COMPILER) $(FLAGS) -I $(HEADER_FILES_DIR) -c $^ -o $@
-
-# $(OBJ_DIR):
-# 	@mkdir $(OBJ_DIR)
+	@$(COMPILER) $(CFLAGS) $(OBJ_FILES) -I $(HEADER_DIR) $(LIBS) -o $(NAME)
+	@echo "Complile minishell finish!"
 
 clean:
-	rm $(OBJ_FILES)
-	# $(MAKE) -C libft clean
-	# $(MAKE) -C ft_printf clean
-	rm -f $(NAME)
+	@echo "Run clean"
+	@rm -rf $(OBJ_FILES)
+	@echo "Delete object files : [$(OBJ_FILES)]!"
+	@$(MAKE) -C libft clean
+	@echo "Clean libft files"
+	@$(MAKE) -C ft_printf clean
+	@echo "Clean ft_printf files"
+
+fclean: clean
+	@rm -rf $(NAME)
+	@echo "Delete binary $(NAME)"
 
 re: clean all
+
+run:
+	./minishell

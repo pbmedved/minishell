@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:04:25 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/22 20:54:31 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/22 22:37:10 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,28 +39,28 @@ extern int				g_r_code;
 **    <  5
 */
 
-typedef struct 			s_exe {
+typedef struct			s_exe {
 	char				*prog;
-	char 				**ar;
+	char				**ar;
 }						t_exe;
 
-typedef struct 			s_parse {
-	int 				i;
-	int 				brack;
-	int 				brack_2;
+typedef struct			s_parse {
+	int					i;
+	int					brack;
+	int					brack_2;
 }						t_parse;
 
-typedef struct 			s_args {
+typedef struct			s_args {
 	char				*arg;
-	int 				state;
-	struct s_args 		*next;
+	int					state;
+	struct s_args		*next;
 }						t_args;
 
-typedef struct	 		s_command {
-	char 				*command;
+typedef struct			s_command {
+	char				*command;
 	int					state;
 	int					fd_out;
-	int 				fd_in;
+	int					fd_in;
 	struct s_args		*args;
 	struct s_command	*next;
 }						t_command;
@@ -71,37 +71,36 @@ typedef struct			s_env {
 	struct s_env		*next;
 }						t_env;
 
-typedef struct 			s_vars {
+typedef struct			s_vars {
 	t_env				*env;
-	char 				*buff;
+	char				*buff;
 	int					state;
-	int 				fd[2];
+	int					fd[2];
 	char				*prompt;
 	struct s_command	*comm;
 	int					global_r_code;
 }						t_vars;
 
 /*
- * 		PARSER
- */
+**		PARSER
+*/
 t_command				*command_new();
 void					command_add(t_command **comm, t_command *new);
 void					dell_all_command(t_command **command);
 void					command_set_state(t_command *comm);
 void					command_fix(t_command **comm);
 void					command_getter(t_vars *vars, char **envp);
-void					parse_dollar_comm(t_command *comm, t_parse *prs, char *buff, t_vars *vars);
+void					parse_dollar_comm(t_command *comm, t_parse *prs,
+												char *buff, t_vars *vars);
 void					command_set_fd_out(t_command *comm, char *file);
 void					command_set_fd_in(t_command *comm, char *file);
 void					input_handler(int res, char b, t_vars *vars);
 
 t_args					*arg_new();
-void 					arg_add(t_args **arg, t_args *new);
+void					arg_add(t_args **arg, t_args *new);
 void					dell_all_args(t_args **arg);
-int 					arg_count(t_command *comm);
+int						arg_count(t_command *comm);
 int						check_pipes(t_command *command);
-
-
 
 t_env					*env_create();
 void					env_add(t_env **main, t_env *new);
@@ -114,16 +113,15 @@ void					env_add_or_change(t_env **env, char *key, char *value);
 void					env_del_one(t_env *del);
 char					*take_env_by_arg(t_vars *vars, char *s);
 
-
 /*
- * 		REDIRECT
- */
+** 		REDIRECT
+*/
 
 void					save_write_in_file(char *s, t_args *arg);
 void					write_in_file(char *s, t_args *arg);
 /*
- * 		UTILS
- */
+** 		UTILS
+*/
 
 char					*str_reallocpy(char *old, char c);
 int						ft_strncmp_revers(char *in, char *this, size_t n);
@@ -132,8 +130,8 @@ int						whitespace_remove(char *s);
 int						ft_strcmp(char *s1, char *s2);
 int						ft_exists(char *name);
 /*
- * 		BUILTINS
- */
+** 		BUILTINS
+*/
 
 int						ft_export(t_command *comm, t_vars *vars);
 int						ft_unset(t_command *comm, t_vars *vars);
@@ -141,55 +139,57 @@ int						env_print(t_env *env, char *prefix);
 int						ft_cd(t_vars *vars, t_command *comm);
 int						ft_pwd(void);
 int						ft_echo(t_command *comm);
-void					exit_handler(t_command *comm);
-
+void					exit_handler(t_command *comm, t_vars *vars);
 
 /*
- * 		PARSER
- */
-
-
+** 		PARSER
+*/
 
 int						check_end(t_parse *parse, char c);
 int						set_bracks(t_parse *prs, char c);
 int						brack_status(t_parse *prs);
 void					parse_bracks(t_command *comm, t_parse *prs, char c);
 void					parse_escape(t_command *comm, t_parse *prs, char *buff);
-int						command_write(t_command *comm, char *buff, t_vars *vars);
+int						command_write(t_command *comm, char *buff,
+														t_vars *vars);
 void					parse_bracks_arg(t_args *args, t_parse *prs, char c);
-void					parse_escape_arg(t_args *args, t_parse *prs, char *buff);
-void					parse_dollar_arg(t_args *args, t_parse *prs, char *buff, t_vars *vars);
+void					parse_escape_arg(t_args *args, t_parse *prs,
+														char *buff);
+void					parse_dollar_arg(t_args *args, t_parse *prs,
+											char *buff, t_vars *vars);
 void					parse_semicolon(t_args *args, t_parse *prs, char *buff);
 int						parse_redirect(t_args *args, t_parse *prs, char *buff);
 int						arg_write(t_vars *vars, t_args *args, char *buff);
 int						pipe_write(t_args *args, char *buff);
 void					buff_parser(t_vars *vars, char *buff, char **envp);
-void			check_pipes_state_ch(t_args *args, t_command *comm, char **buf);
-int			parse_dollar_arg_valid(t_vars *vars, t_args *args,
-									  t_parse *prs, char *buff);
-int 			buff_parser_command(char *buff, t_command *new_comm,\
-t_vars *vars);
-
+void					check_pipes_state_ch(t_args *args, t_command *comm,
+															char **buf);
+int						parse_dollar_arg_valid(t_vars *vars, t_args *args,
+									t_parse *prs, char *buff);
+int						buff_parser_command(char *buff, t_command *new_comm,
+											t_vars *vars);
 
 /*
- * 		EXEC
- */
-void					command_handler(t_command *comm, t_vars *vars, char **envp);
+** 		EXEC
+*/
+
+void					command_handler(t_command *comm, t_vars *vars,
+														char **envp);
 void					get_exe(t_command *comm, t_exe *exe, t_vars *vars);
 void					clean_exe(t_exe *exe);
 char					*try_find_prog(char *name, t_vars *vars);
 int						try_recode(t_command *comm, t_vars *vars);
-int						call_extern_prog(t_command *comm, char **envp, t_vars *vars);
-int						call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars);
+int						call_extern_prog(t_command *comm, char **envp,
+														t_vars *vars);
+int						call_extern_prog_pipe(t_command *comm, char **envp,
+														t_vars *vars);
 void					executable(t_command *comm, t_vars *vars, char **envp);
 int						try_recode_prog(char *name);
 int						check_redirect(t_command *command);
 
-
-
 /*
- * 		ERRORS
- */
+** 		ERRORS
+*/
 int						check_token_symb(char c);
 int						token_error(char *err);
 void					which_token_err(char *buf);
@@ -206,6 +206,7 @@ void					end_of_file_error(void);
 /*
 ** SIGNALS
 */
+
 void					handler_sigint(int sig);
 void					handler_sigquit(int sig);
 #endif
