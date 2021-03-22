@@ -105,7 +105,7 @@ int				ft_unset(t_command *comm, t_vars *vars)
 	args = comm->args;
 	while (args)
 	{
-		env_del_by_key(&vars->env, comm->args->arg);
+		env_del_by_key(&vars->env, args->arg);
 		args = args->next;
 	}
 	g_r_code = 0;
