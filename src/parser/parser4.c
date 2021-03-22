@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 23:35:42 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/22 20:31:28 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/22 21:22:02 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,9 @@ int				arg_write(t_vars *vars, t_args *args, char *buff)
 			parse_dollar_arg(args, &prs, buff, vars);
 		else if (buff[prs.i] == ';' || buff[prs.i] == '|')
 			parse_semicolon(args, &prs, buff);
-		else if (ft_strchr("<>", buff[prs.i]) && !brack_status(&prs))
-		{
-			if (parse_redirect(args, &prs, buff))
-				return (prs.i);
-		}
+		else if (ft_strchr("<>", buff[prs.i]) && !brack_status(&prs) \
+		&& parse_redirect(args, &prs, buff))
+			return (prs.i);
 		else
 			args->arg = str_reallocpy(args->arg, buff[prs.i++]);
 		if (ft_strchr("<>", buff[prs.i]) && !brack_status(&prs))
@@ -68,4 +66,39 @@ int				pipe_write(t_args *args, char *buff)
 		buff++;
 	}
 	return (ft_strlen(args->arg));
+}
+
+int				parse_redirect(t_args *args, t_parse *prs, char *buff)
+{
+	if (brack_status(prs))
+	{
+		while (ft_strchr("<>", buff[prs->i]))
+			args->arg = str_reallocpy(args->arg, buff[prs->i++]);
+		return (0);
+	}
+	else
+	{
+		while (ft_strchr("<>", buff[prs->i]) && buff[prs->i])
+			args->arg = str_reallocpy(args->arg, buff[prs->i++]);
+		args->state = 2;
+		return (1);
+	}
+}
+
+int				buff_parser_command(char *buff, t_command *new_comm,\
+t_vars *vars)
+{
+	int			i;
+	int			d;
+
+	i = 0;
+	d = whitespace_remove(buff);
+	buff += d;
+	i += d;
+	d = command_write(new_comm, buff, vars);
+	buff += d;
+	i += d;
+	d = whitespace_remove(buff);
+	i += d;
+	return (i);
 }

@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/22 20:32:35 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/22 21:21:22 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,21 @@ void			parse_dollar_comm(t_command *comm, t_parse *prs,
 	free(new);
 }
 
+int				parse_dollar_arg_valid(t_vars *vars, t_args *args, \
+t_parse *prs, char *buff)
+{
+	if (!ft_isalpha(buff[prs->i]) && buff[prs->i] != '?')
+	{
+		return (1);
+	}
+	if (buff[prs->i] == '?' && buff[prs->i - 1] == '$')
+	{
+		args->arg = str_reallocpy_str(args->arg, env_take(vars, "?"));
+		return (1);
+	}
+	return (0);
+}
+
 void			parse_dollar_arg(t_args *args, t_parse *prs,
 									char *buff, t_vars *vars)
 {
@@ -56,14 +71,8 @@ void			parse_dollar_arg(t_args *args, t_parse *prs,
 	else
 	{
 		prs->i++;
-		if (!ft_isalpha(buff[prs->i]) && buff[prs->i] != '?')
+		if (parse_dollar_arg_valid(vars, args, prs, buff))
 		{
-			valid = 1;
-			prs->i++;
-		}
-		if (buff[prs->i] == '?' && buff[prs->i - 1] == '$')
-		{
-			args->arg = str_reallocpy_str(args->arg, env_take(vars, "?"));
 			valid = 1;
 			prs->i++;
 		}
@@ -91,23 +100,6 @@ void			parse_semicolon(t_args *args, t_parse *prs, char *buff)
 	}
 }
 
-int				parse_redirect(t_args *args, t_parse *prs, char *buff)
-{
-	if (brack_status(prs))
-	{
-		while (ft_strchr("<>", buff[prs->i]))
-			args->arg = str_reallocpy(args->arg, buff[prs->i++]);
-		return (0);
-	}
-	else
-	{
-		while (ft_strchr("<>", buff[prs->i]) && buff[prs->i])
-			args->arg = str_reallocpy(args->arg, buff[prs->i++]);
-		args->state = 2;
-		return (1);
-	}
-}
-
 void			buff_parser(t_vars *vars, char *buff, char **envp)
 {
 	t_command	*new_comm;
@@ -116,16 +108,13 @@ void			buff_parser(t_vars *vars, char *buff, char **envp)
 	while (*buff)
 	{
 		new_comm = command_new();
-		buff += whitespace_remove(buff);
-		buff += command_write(new_comm, buff, vars);
-		buff += whitespace_remove(buff);
+		buff += buff_parser_command(buff, new_comm, vars);
 		while (*buff && *buff != ' ')
 		{
 			new_arg = arg_new();
 			if (ft_strchr(";|", *buff))
 			{
 				buff += pipe_write(new_arg, buff);
-				buff += whitespace_remove(buff);
 				arg_add(&new_comm->args, new_arg);
 				break ;
 			}

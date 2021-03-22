@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:04:25 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/19 23:25:33 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/22 20:54:31 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,11 @@ int						parse_redirect(t_args *args, t_parse *prs, char *buff);
 int						arg_write(t_vars *vars, t_args *args, char *buff);
 int						pipe_write(t_args *args, char *buff);
 void					buff_parser(t_vars *vars, char *buff, char **envp);
+void			check_pipes_state_ch(t_args *args, t_command *comm, char **buf);
+int			parse_dollar_arg_valid(t_vars *vars, t_args *args,
+									  t_parse *prs, char *buff);
+int 			buff_parser_command(char *buff, t_command *new_comm,\
+t_vars *vars);
 
 
 /*

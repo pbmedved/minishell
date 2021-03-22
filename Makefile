@@ -21,6 +21,7 @@ FT_PRINTF_PATH = ft_printf
 SRC_FILES = 	main.c \
 				src/command/command.c \
 				src/utils/utils.c \
+				src/utils/utils2.c \
 				src/args/arg.c \
 				src/errors/errors.c \
 				src/errors/errors2.c \

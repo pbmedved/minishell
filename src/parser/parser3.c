@@ -3,20 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   parser3.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:03:45 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/18 23:47:59 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/22 20:43:05 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int				check_token_symb(char c)
+void			check_pipes_state_ch(t_args *args, t_command *comm, char **buf)
 {
-	if (c == ';' || c == '|' || c == '<' || c == '>')
-		return (1);
-	return (0);
+	if (ft_strlen(args->arg) == 1 && !comm->command[0])
+		*buf = str_reallocpy(*buf, args->arg[0]);
+	else if (ft_strlen(args->arg) > 1)
+		*buf = str_reallocpy_str(*buf, args->arg);
 }
 
 int				check_pipes(t_command *command)
@@ -34,10 +35,7 @@ int				check_pipes(t_command *command)
 		{
 			if (args->state == 7 || args->state == 8)
 			{
-				if (ft_strlen(args->arg) == 1 && !comm->command[0])
-					buf = str_reallocpy(buf, args->arg[0]);
-				else if (ft_strlen(args->arg) > 1)
-					buf = str_reallocpy_str(buf, args->arg);
+				check_pipes_state_ch(args, comm, &buf);
 			}
 			args = args->next;
 		}
