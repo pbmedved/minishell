@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 16:29:11 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/22 20:33:42 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ void				redirect_fd_set(t_command *command)
 				if (redirect_fd_choose(comm, args))
 					args = args->next;
 			}
+			if (args->state == 404)
+				comm->state = 404;
 			args = args->next;
 		}
 		comm = comm->next;

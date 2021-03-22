@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution3.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 18:19:30 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/19 22:55:13 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/22 20:35:17 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,11 @@ void			command_handler(t_command *comm, t_vars *vars, char **envp)
 	{
 		if (!check_pipes(comm) && !check_redirect(comm))
 			break ;
+		else if (comm->state == 404)
+		{
+			end_of_file_error();
+			break ;
+		}
 		else
 			executable(comm, vars, envp);
 		comm = comm->next;

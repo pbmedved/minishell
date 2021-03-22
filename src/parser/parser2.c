@@ -50,10 +50,7 @@ int				command_write(t_command *comm, char *buff, t_vars *vars)
 			comm->command = str_reallocpy(comm->command, buff[prs.i++]);
 	}
 	if (brack_status(&prs))
-	{
-		end_of_file_error();
-		prs.i = -404;
-	}
+		comm->state = 404;
 	return (prs.i);
 }
 

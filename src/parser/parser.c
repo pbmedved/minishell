@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/19 23:44:52 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/22 20:32:35 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,40 +112,26 @@ void			buff_parser(t_vars *vars, char *buff, char **envp)
 {
 	t_command	*new_comm;
 	t_args		*new_arg;
-	int			i;
 
 	while (*buff)
 	{
-		buff += whitespace_remove(buff);
 		new_comm = command_new();
-		i = command_write(new_comm, buff, vars);
-		if (i < 0)
-		{
-			dell_all_command(&new_comm);
-			return ;
-		}
-		buff += i;
+		buff += whitespace_remove(buff);
+		buff += command_write(new_comm, buff, vars);
 		buff += whitespace_remove(buff);
 		while (*buff && *buff != ' ')
 		{
+			new_arg = arg_new();
 			if (ft_strchr(";|", *buff))
 			{
-				new_arg = arg_new();
 				buff += pipe_write(new_arg, buff);
-				arg_add(&new_comm->args, new_arg);
 				buff += whitespace_remove(buff);
+				arg_add(&new_comm->args, new_arg);
 				break ;
 			}
-			new_arg = arg_new();
-			i = arg_write(vars, new_arg, buff);
-			arg_add(&new_comm->args, new_arg);
-			if (i < 0)
-			{
-				dell_all_command(&new_comm);
-				return ;
-			}
-			buff += i;
+			buff += arg_write(vars, new_arg, buff);
 			buff += whitespace_remove(buff);
+			arg_add(&new_comm->args, new_arg);
 		}
 		command_fix(&new_comm);
 		command_handler(new_comm, vars, envp);

@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 23:35:42 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/19 23:40:14 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/22 20:31:28 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,7 @@ int				arg_write(t_vars *vars, t_args *args, char *buff)
 			return (prs.i);
 	}
 	if (brack_status(&prs))
-	{
-		end_of_file_error();
-		prs.i = -404;
-	}
+		args->state = 404;
 	return (prs.i);
 }
 
