@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:04:25 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/22 21:51:40 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/22 22:37:10 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ int						env_print(t_env *env, char *prefix);
 int						ft_cd(t_vars *vars, t_command *comm);
 int						ft_pwd(void);
 int						ft_echo(t_command *comm);
-void					exit_handler(t_command *comm);
+void					exit_handler(t_command *comm, t_vars *vars);
 
 /*
 ** 		PARSER
