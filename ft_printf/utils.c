@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/02 16:36:39 by iadrien           #+#    #+#             */
-/*   Updated: 2020/12/01 23:55:34 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/22 21:37:17 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ size_t		ft_numlen_uns(unsigned long n, int base)
 	size_t	len;
 
 	len = 1;
-	// if (n < 0 && (n *= -1))
-	// 	base == 10 ? len++ : 0;
 	while ((n /= base))
 		len++;
 	return (len);
