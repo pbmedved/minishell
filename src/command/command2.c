@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/22 20:33:42 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/25 00:06:49 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,9 @@ void				input_handler(int res, char b, t_vars *vars)
 	if (res == 0 && !ft_strlen(vars->buff))
 	{
 		write(1, "exit\n", 5);
+		free(vars->buff);
+		free(vars->prompt);
+		dell_all_env(&vars->env);
 		exit(0);
 	}
 	else
