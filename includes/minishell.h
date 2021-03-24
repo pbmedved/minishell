@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:04:25 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/22 22:37:10 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/24 23:36:31 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ int						env_print(t_env *env, char *prefix);
 int						ft_cd(t_vars *vars, t_command *comm);
 int						ft_pwd(void);
 int						ft_echo(t_command *comm);
-void					exit_handler(t_command *comm, t_vars *vars);
+void					exit_handler(t_command *comm, t_vars *vars, t_exe *exe);
 
 /*
 ** 		PARSER
@@ -178,7 +178,7 @@ void					command_handler(t_command *comm, t_vars *vars,
 void					get_exe(t_command *comm, t_exe *exe, t_vars *vars);
 void					clean_exe(t_exe *exe);
 char					*try_find_prog(char *name, t_vars *vars);
-int						try_recode(t_command *comm, t_vars *vars);
+int						try_recode(t_command *comm, t_vars *vars, t_exe *exe);
 int						call_extern_prog(t_command *comm, char **envp,
 														t_vars *vars);
 int						call_extern_prog_pipe(t_command *comm, char **envp,
