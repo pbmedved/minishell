@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:19:51 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/22 22:38:05 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/24 22:03:37 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 
 void		exit_handler(t_command *comm, t_vars *vars)
 {
+	int		err_code;
+
 	if (comm->args)
 	{
 		free(vars->prompt);
@@ -25,7 +27,9 @@ void		exit_handler(t_command *comm, t_vars *vars)
 		vars->buff = 0;
 		dell_all_env(&vars->env);
 		ft_putstr_fd("exit\n", 1);
-		exit(ft_atoi(comm->args->arg));
+		err_code = ft_atoi(comm->args->arg);
+		dell_all_args(&comm->args);
+		exit(err_code);
 	}
 	exit(0);
 }
