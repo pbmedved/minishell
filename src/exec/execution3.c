@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 18:19:30 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/22 22:36:31 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/24 23:36:06 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void			executable(t_command *comm, t_vars *vars, char **envp)
 		call_extern_prog(comm, envp, vars);
 }
 
-int				try_recode(t_command *comm, t_vars *vars)
+int				try_recode(t_command *comm, t_vars *vars, t_exe *exe)
 {
 	errno = 0;
 	if (!ft_strncmp_revers(comm->command, "echo", 4))
@@ -46,7 +46,7 @@ int				try_recode(t_command *comm, t_vars *vars)
 	else if (!ft_strncmp(comm->command, "env", 3))
 		return (env_print(vars->env, ""));
 	else if (!ft_strncmp(comm->command, "exit", 4))
-		exit_handler(comm, vars);
+		exit_handler(comm, vars, exe);
 	return (0);
 }
 
