@@ -201,6 +201,7 @@ void					newline_error(void);
 int						no_home_error(void);
 void					file_not_found(char *prog, char *file);
 void					end_of_file_error(void);
+void					to_many_args_error(void);
 
 /*
 ** SIGNALS
