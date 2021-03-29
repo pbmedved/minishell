@@ -82,7 +82,7 @@ int				ft_export(t_command *comm, t_vars *vars)
 	value = NULL;
 	if (!args)
 		env_print(vars->env, "declare -x ");
-	while (args)
+	while (args && args->state == 1)
 	{
 		if (!(ft_export_take(args, &key, &value)))
 			return (0);

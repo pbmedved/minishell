@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:19:51 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/25 00:18:56 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/29 09:26:09 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@
 void		exit_handler(t_command *comm, t_vars *vars, t_exe *exe)
 {
 	int		err_code;
-
+	err_code = 0;
+	if (arg_count(comm) > 1)
+		return (to_many_args_error());
 	if (comm->args)
 		err_code = ft_atoi(comm->args->arg);
-	err_code = 0;
 	free(vars->prompt);
 	free(vars->buff);
 	vars->buff = 0;

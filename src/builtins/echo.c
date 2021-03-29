@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 19:01:11 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/17 22:40:08 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/29 10:49:28 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int				ft_echo(t_command *comm)
 	{
 		s = str_reallocpy_str(s, arg->arg);
 		arg = arg->next;
-		if (arg && arg->state <= 2)
+		if (arg && arg->state <= 2 && !ft_strcmp(s, ""))
 			s = str_reallocpy(s, ' ');
 	}
 	if (!n)
