@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:18:15 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/25 00:06:49 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/30 13:58:28 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void				command_set_fd_out_end(t_command *comm, char *file)
 {
 	int fd;
 
-	if ((fd = open(file, O_CREAT | O_RDWR | O_APPEND, 0644)) < 0)
+	if ((fd = open(file, O_CREAT | O_RDWR | O_APPEND | O_SYNC, 0644)) < 0)
 	{
 		permission_error(comm->command, file);
 		return ;

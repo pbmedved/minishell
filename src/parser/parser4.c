@@ -102,3 +102,20 @@ t_vars *vars)
 	i += d;
 	return (i);
 }
+
+int 			buff_parser_args(char *buff, t_args *args, t_vars *vars)
+{
+	int			i;
+	int			d;
+
+	i = 0;
+	d = whitespace_remove(buff);
+	buff += d;
+	i += d;
+	d = arg_write(vars, args, buff);
+	buff += d;
+	i += d;
+	d = whitespace_remove(buff);
+	i += d;
+	return (i);
+}

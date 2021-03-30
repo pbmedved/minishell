@@ -21,6 +21,8 @@ void				dell_all_command(t_command **command)
 	while (main)
 	{
 		dell_all_args(&main->args);
+		if (main->fd_out > 2)
+			close(main->fd_out);
 		res = main->next;
 		free(main->command);
 		main->command = NULL;

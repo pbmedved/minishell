@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/24 23:38:01 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/30 14:34:05 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,10 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 		if (pid == 0)
 		{
 			dup2(comm->fd_out, 1);
+
+			execve(exe.prog, exe.ar, envp);
 			signal(SIGQUIT, SIG_DFL);
 			signal(SIGINT, SIG_DFL);
-			execve(exe.prog, exe.ar, envp);
 		}
 		else
 			wait_child(pid, status);
@@ -101,7 +102,8 @@ int			call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
 	pid = fork();
 	if (pid == 0)
 	{
-		dup2(fd[1], comm->fd_out);
+		if (comm->fd_out == 1)
+			dup2(fd[1], comm->fd_out);
 		close(fd[0]);
 		if (!try_recode(comm, vars, &exe))
 			execve(exe.prog, exe.ar, envp);

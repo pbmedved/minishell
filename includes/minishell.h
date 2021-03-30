@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:04:25 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/25 00:07:08 by amayor           ###   ########.fr       */
+/*   Updated: 2021/03/30 13:42:42 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ void					command_set_fd_in(t_command *comm, char *file);
 void					input_handler(int res, char b, t_vars *vars);
 t_args					*arg_new();
 void					arg_add(t_args **arg, t_args *new);
+int						take_last_args_arg(t_args *args);
 void					dell_all_args(t_args **arg);
 int						arg_count(t_command *comm);
 int						check_pipes(t_command *command);
@@ -145,6 +146,8 @@ void					exit_handler(t_command *comm, t_vars *vars, t_exe *exe);
 */
 
 int						check_end(t_parse *parse, char c);
+int 					buff_parser_args(char *buff, t_args *args,
+						  t_vars *vars);
 int						set_bracks(t_parse *prs, char c);
 int						brack_status(t_parse *prs);
 void					parse_bracks(t_command *comm, t_parse *prs, char c);

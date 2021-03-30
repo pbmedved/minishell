@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/29 11:07:13 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/30 14:18:56 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,14 +112,15 @@ void			buff_parser(t_vars *vars, char *buff, char **envp)
 		while (*buff && *buff != ' ')
 		{
 			new_arg = arg_new();
-			if (ft_strchr(";|", *buff))
+			if (ft_strchr(";|", *buff) && take_last_args_arg(new_comm->args))
+				buff ++;
+			else if (ft_strchr(";|", *buff))
 			{
 				buff += pipe_write(new_arg, buff);
 				arg_add(&new_comm->args, new_arg);
 				break ;
 			}
-			buff += arg_write(vars, new_arg, buff);
-			buff += whitespace_remove(buff);
+			buff += buff_parser_args(buff, new_arg, vars);
 			arg_add(&new_comm->args, new_arg);
 		}
 		command_fix(&new_comm);

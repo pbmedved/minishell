@@ -6,7 +6,7 @@
 /*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:48:00 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/10 12:41:48 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/30 13:23:27 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,19 @@ int				arg_count(t_command *comm)
 		res = res->next;
 	}
 	return (i);
+}
+
+int			take_last_args_arg(t_args *args)
+{
+	t_args *res;
+
+	res = args;
+	if (args)
+	{
+		while (res->next)
+			res = res->next;
+		if (ft_strlen(res->arg) == 1 && res->arg[0] == '>')
+			return (1);
+	}
+	return (0);
 }
