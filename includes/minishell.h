@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:04:25 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/30 13:42:42 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/30 23:03:08 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,8 +146,8 @@ void					exit_handler(t_command *comm, t_vars *vars, t_exe *exe);
 */
 
 int						check_end(t_parse *parse, char c);
-int 					buff_parser_args(char *buff, t_args *args,
-						  t_vars *vars);
+int						buff_parser_args(char *buff, t_args *args,
+						t_vars *vars);
 int						set_bracks(t_parse *prs, char c);
 int						brack_status(t_parse *prs);
 void					parse_bracks(t_command *comm, t_parse *prs, char c);

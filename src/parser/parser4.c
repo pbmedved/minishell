@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser4.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 23:35:42 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/22 21:22:02 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/30 23:02:18 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ t_vars *vars)
 	return (i);
 }
 
-int 			buff_parser_args(char *buff, t_args *args, t_vars *vars)
+int				buff_parser_args(char *buff, t_args *args, t_vars *vars)
 {
 	int			i;
 	int			d;

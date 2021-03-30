@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/30 14:34:05 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/30 23:01:28 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 		if (pid == 0)
 		{
 			dup2(comm->fd_out, 1);
-
 			execve(exe.prog, exe.ar, envp);
 			signal(SIGQUIT, SIG_DFL);
 			signal(SIGINT, SIG_DFL);

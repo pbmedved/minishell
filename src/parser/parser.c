@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/30 14:18:56 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/30 23:01:53 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void			buff_parser(t_vars *vars, char *buff, char **envp)
 		{
 			new_arg = arg_new();
 			if (ft_strchr(";|", *buff) && take_last_args_arg(new_comm->args))
-				buff ++;
+				buff++;
 			else if (ft_strchr(";|", *buff))
 			{
 				buff += pipe_write(new_arg, buff);

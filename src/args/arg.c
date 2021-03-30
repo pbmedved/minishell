@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arg.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:48:00 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/30 13:23:27 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/03/30 23:00:54 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,9 @@ int				arg_count(t_command *comm)
 	return (i);
 }
 
-int			take_last_args_arg(t_args *args)
+int				take_last_args_arg(t_args *args)
 {
-	t_args *res;
+	t_args		*res;
 
 	res = args;
 	if (args)
