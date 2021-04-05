@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:04:25 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/30 23:03:08 by amayor           ###   ########.fr       */
+/*   Updated: 2021/04/05 22:52:30 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,14 @@ extern int				g_r_code;
 **    >> 4
 **    <  5
 */
+
+/*
+** Определим статусы команды в зависимости от  наличия пайпа до, после, до И после
+*/
+#define					NO_PIPE 1
+#define					PIPE_BEFORE_FLAG 4
+#define					PIPE_AFTER_FLAG 3
+#define					PIPE_AFT_BF_FLAG 34
 
 typedef struct			s_exe {
 	char				*prog;
@@ -162,7 +170,7 @@ void					parse_dollar_arg(t_args *args, t_parse *prs,
 void					parse_semicolon(t_args *args, t_parse *prs, char *buff);
 int						parse_redirect(t_args *args, t_parse *prs, char *buff);
 int						arg_write(t_vars *vars, t_args *args, char *buff);
-int						pipe_write(t_args *args, char *buff);
+int						pipe_write(t_args *args, char *buff, int pipe_flag);
 void					buff_parser(t_vars *vars, char *buff, char **envp);
 void					check_pipes_state_ch(t_args *args, t_command *comm,
 															char **buf);
@@ -185,6 +193,8 @@ int						call_extern_prog(t_command *comm, char **envp,
 														t_vars *vars);
 int						call_extern_prog_pipe(t_command *comm, char **envp,
 														t_vars *vars);
+
+int						call_pipe_before_proc(t_command *comm, char **envp, t_vars *vars);
 void					executable(t_command *comm, t_vars *vars, char **envp);
 int						try_recode_prog(char *name);
 int						check_redirect(t_command *command);

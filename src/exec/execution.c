@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/30 23:01:28 by amayor           ###   ########.fr       */
+/*   Updated: 2021/04/03 00:05:46 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,34 @@ int			call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
 		if (!try_recode(comm, vars, &exe))
 			execve(exe.prog, exe.ar, envp);
 		close(fd[1]);
+		exit(1);
+	}
+	else
+	{
+		dup2(fd[0], comm->fd_in);
+		close(fd[1]);
+		close(fd[0]);
+	}
+	clean_exe(&exe);
+	return (1);
+}
+
+int			call_pipe_before_proc(t_command *comm, char **envp, t_vars *vars)
+{
+	t_exe	exe;
+	pid_t	pid;
+	int		fd[2];
+
+	get_exe(comm, &exe, vars);
+	pipe(fd);
+	pid = fork();
+	if (pid == 0)
+	{
+
+		dup2(fd[0], comm->fd_in);
+		close(fd[1]);
+		if (!try_recode(comm, vars, &exe))
+			execve(exe.prog, exe.ar, envp);
 		exit(1);
 	}
 	else

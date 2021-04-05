@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:43:18 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/19 22:19:00 by amayor           ###   ########.fr       */
+/*   Updated: 2021/04/05 22:49:26 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,12 @@ void				command_set_state(t_command *comm)
 		{
 			if (args->state == 8)
 			{
-				res->state = 3;
+				res->state = PIPE_AFTER_FLAG;
+				break ;
+			}
+			else if (args->state == 9)
+			{
+				res->state = PIPE_BEFORE_FLAG;
 				break ;
 			}
 			args = args->next;

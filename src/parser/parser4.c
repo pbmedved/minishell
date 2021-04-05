@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 23:35:42 by amayor            #+#    #+#             */
-/*   Updated: 2021/03/30 23:02:18 by amayor           ###   ########.fr       */
+/*   Updated: 2021/04/02 23:26:21 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,17 @@ int				arg_write(t_vars *vars, t_args *args, char *buff)
 	return (prs.i);
 }
 
-int				pipe_write(t_args *args, char *buff)
+int				pipe_write(t_args *args, char *buff, int pipe_flag)
 {
 	while (*buff && ft_strchr(";|<>", *buff))
 	{
 		args->arg = str_reallocpy(args->arg, *buff);
 		if (*buff == ';')
 			args->state = 7;
-		else if (*buff == '|')
+		else if (*buff == '|' && pipe_flag == 0)
 			args->state = 8;
+		else if (*buff == '|' && pipe_flag == 1)
+			args->state = 9;
 		else if (*buff == '>' && buff[1] != '>')
 			args->state = 3;
 		else if (*buff == '<')

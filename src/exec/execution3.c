@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 18:19:30 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/24 23:36:06 by amayor           ###   ########.fr       */
+/*   Updated: 2021/04/02 23:59:04 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void			executable(t_command *comm, t_vars *vars, char **envp)
 {
 	if (comm->state == 3)
 		call_extern_prog_pipe(comm, envp, vars);
+	else if (comm->state == 4)
+		call_pipe_before_proc(comm, envp, vars);
 	else
 		call_extern_prog(comm, envp, vars);
 }
