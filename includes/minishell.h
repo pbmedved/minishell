@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:04:25 by amayor            #+#    #+#             */
-/*   Updated: 2021/04/05 22:52:30 by amayor           ###   ########.fr       */
+/*   Updated: 2021/04/07 23:36:26 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,7 @@ int						ft_cd(t_vars *vars, t_command *comm);
 int						ft_pwd(void);
 int						ft_echo(t_command *comm);
 void					exit_handler(t_command *comm, t_vars *vars, t_exe *exe);
+//char					*path_fix(t_vars *vars, char *path);
 
 /*
 ** 		PARSER

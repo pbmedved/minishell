@@ -3,31 +3,50 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
+/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/10 15:41:28 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/15 00:18:41 by amayor           ###   ########.fr       */
+/*   Updated: 2021/04/07 23:53:53 by iadrien          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include <limits.h>
 
+char			*path_fix(t_vars *vars, char *path)
+{
+	char *newPath;
+
+	newPath = NULL;
+	if(path && *path == '~')
+	{
+		newPath = ft_strdup(env_take(vars, "HOME"));
+		path++;
+	}
+	newPath = str_reallocpy_str(newPath, path);
+	return (newPath);
+}
+
 int				ft_cd(t_vars *vars, t_command *comm)
 {
 	char		s[PATH_MAX];
 	int			dir;
+	char		*path;
 
+	path = NULL;
 	if (!comm->args || comm->args->state == 7)
 		dir = chdir(env_take(vars, "HOME"));
 	else
-		dir = chdir(comm->args->arg);
+	{
+		path = path_fix(vars, comm->args->arg);
+		dir = chdir(path);
+	}
 	if (dir == -1)
 	{
 		g_r_code = 1;
 		if (!comm->args)
 			return (no_home_error());
-		return (print_file_error(comm->args->arg));
+		return (print_file_error(path));
 	}
 	env_add_or_change(&vars->env, "OLDPWD", env_take(vars, "PWD"));
 	if (!(getcwd(s, PATH_MAX)))
@@ -37,6 +56,7 @@ int				ft_cd(t_vars *vars, t_command *comm)
 	}
 	g_r_code = errno;
 	env_add_or_change(&vars->env, "PWD", s);
+	free(path);
 	return (1);
 }
 
