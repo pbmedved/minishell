@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/21 12:12:03 by iadrien           #+#    #+#             */
-/*   Updated: 2021/04/05 23:23:58 by amayor           ###   ########.fr       */
+/*   Updated: 2021/04/06 21:41:30 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ void			buff_parser(t_vars *vars, char *buff, char **envp)
 				buff = pipe_processing(new_comm, new_arg, buff, vars);
 				if (new_comm->state == PIPE_AFTER_FLAG || new_comm->state == PIPE_AFT_BF_FLAG)
 				{
-					arg_add(&new_comm->args, new_arg);
+					// arg_add(&new_comm->args, new_arg);
 					break ;
 				}
 			}

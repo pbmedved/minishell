@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/27 07:07:35 by iadrien           #+#    #+#             */
-/*   Updated: 2021/04/03 00:05:46 by amayor           ###   ########.fr       */
+/*   Updated: 2021/04/08 23:23:06 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,30 +90,34 @@ int			call_extern_prog(t_command *comm, char **envp, t_vars *vars)
 	return (1);
 }
 
-int			call_extern_prog_pipe(t_command *comm, char **envp, t_vars *vars)
+int			call_pipe_after_proc(t_command *comm, char **envp, t_vars *vars)
 {
 	t_exe	exe;
 	pid_t	pid;
-	int		fd[2];
 
 	get_exe(comm, &exe, vars);
-	pipe(fd);
+	pipe(vars->fd_pipe);
+	vars->command_counter++;
 	pid = fork();
 	if (pid == 0)
 	{
-		if (comm->fd_out == 1)
-			dup2(fd[1], comm->fd_out);
-		close(fd[0]);
+		// if (comm->fd_out == 1)
+			// dup2(vars->fd_pipe[1], comm->fd_out);
+		dup2(vars->fd_pipe[1], STDOUT_FILENO);
+		close(vars->fd_pipe[0]);
+		close(vars->fd_pipe[1]);
 		if (!try_recode(comm, vars, &exe))
 			execve(exe.prog, exe.ar, envp);
-		close(fd[1]);
 		exit(1);
 	}
 	else
 	{
-		dup2(fd[0], comm->fd_in);
-		close(fd[1]);
-		close(fd[0]);
+		// close(vars->fd_pipe[0]);
+		// close(vars->fd_pipe[1]);
+		waitpid(pid, NULL, 0);
+		// dup2(fd[0], comm->fd_in);
+		// close(fd[1]);
+		// close(fd[0]);
 	}
 	clean_exe(&exe);
 	return (1);
@@ -123,26 +127,90 @@ int			call_pipe_before_proc(t_command *comm, char **envp, t_vars *vars)
 {
 	t_exe	exe;
 	pid_t	pid;
-	int		fd[2];
 
 	get_exe(comm, &exe, vars);
-	pipe(fd);
+	vars->command_counter++;
 	pid = fork();
 	if (pid == 0)
 	{
-
-		dup2(fd[0], comm->fd_in);
-		close(fd[1]);
+		if (vars->command_counter == 3)
+		{
+			dup2(vars->fd_pipe2[0], STDIN_FILENO);
+			close(vars->fd_pipe[0]);
+			close(vars->fd_pipe[1]);
+			close(vars->fd_pipe2[0]);
+			close(vars->fd_pipe2[1]);
+		}
+		else
+		{
+			dup2(vars->fd_pipe[0], STDIN_FILENO);
+			close(vars->fd_pipe[0]);
+			close(vars->fd_pipe[1]);
+			close(vars->fd_pipe2[0]);
+			close(vars->fd_pipe2[1]);
+		}
 		if (!try_recode(comm, vars, &exe))
 			execve(exe.prog, exe.ar, envp);
 		exit(1);
 	}
 	else
 	{
-		dup2(fd[0], comm->fd_in);
-		close(fd[1]);
-		close(fd[0]);
+		close(vars->fd_pipe[0]);
+		close(vars->fd_pipe[1]);
+		close(vars->fd_pipe2[0]);
+		close(vars->fd_pipe2[1]);
+		waitpid(pid, NULL, 0);
 	}
+	clean_exe(&exe);
+	return (1);
+}
+
+int			call_pipe_before_after_proc(t_command *comm, char **envp, t_vars *vars)
+{
+	t_exe	exe;
+	pid_t	pid;
+
+	get_exe(comm, &exe, vars);
+	vars->command_counter++;
+	if (vars->command_counter == 2)
+		if (pipe(vars->fd_pipe2) == -1)
+			return (1);
+	pid = fork();
+	if (pid == 0)
+	{
+
+		// if(vars->command_counter % 2 == 0)
+		if(vars->command_counter == 2)
+		{
+			dup2(vars->fd_pipe[0], STDIN_FILENO);
+			// dup2(vars->fd[0], vars->fd_pipe[0]);
+			dup2(vars->fd_pipe2[1], STDOUT_FILENO);
+			// close(vars->fd_pipe[0]);
+			close(vars->fd[0]);
+			close(vars->fd[1]);
+			close(vars->fd_pipe[1]);
+			close(vars->fd_pipe2[0]);
+			close(vars->fd_pipe2[1]);
+		}
+		// else if (vars->command_counter % 3 == 0)
+		// {
+		// 	dup2(vars->fd_pipe2[0], STDIN_FILENO);
+		// 	dup2(vars->fd_pipe[1], STDOUT_FILENO);
+		// 	close(vars->fd_pipe[0]);
+		// 	close(vars->fd_pipe[1]);
+		// 	close(vars->fd_pipe2[0]);
+		// 	close(vars->fd_pipe2[1]);
+		// }
+		if (!try_recode(comm, vars, &exe))
+			execve(exe.prog, exe.ar, envp);
+		exit(1);
+	}
+	// else
+	// {
+		// close(vars->fd_pipe[0]);
+		// close(vars->fd_pipe[1]);
+		waitpid(pid, NULL, 0);
+	// }
 	clean_exe(&exe);
 	return (1);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iadrien <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:04:25 by amayor            #+#    #+#             */
-/*   Updated: 2021/04/07 23:36:26 by iadrien          ###   ########.fr       */
+/*   Updated: 2021/04/09 09:32:35 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,12 @@ typedef struct			s_vars {
 	char				*buff;
 	int					state;
 	int					fd[2];
+	int					fd_pipe[2];
+	int					fd_pipe2[2];
 	char				*prompt;
 	struct s_command	*comm;
 	int					global_r_code;
+	int					command_counter;
 }						t_vars;
 
 /*
@@ -192,9 +195,10 @@ char					*try_find_prog(char *name, t_vars *vars);
 int						try_recode(t_command *comm, t_vars *vars, t_exe *exe);
 int						call_extern_prog(t_command *comm, char **envp,
 														t_vars *vars);
-int						call_extern_prog_pipe(t_command *comm, char **envp,
+int						call_pipe_after_proc(t_command *comm, char **envp,
 														t_vars *vars);
-
+int						call_pipe_before_after_proc(t_command *comm,
+													char **envp, t_vars *vars);
 int						call_pipe_before_proc(t_command *comm, char **envp, t_vars *vars);
 void					executable(t_command *comm, t_vars *vars, char **envp);
 int						try_recode_prog(char *name);

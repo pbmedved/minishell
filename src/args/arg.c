@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 22:48:00 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/30 23:00:54 by amayor           ###   ########.fr       */
+/*   Updated: 2021/04/06 22:11:11 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ void			arg_add(t_args **arg, t_args *new)
 {
 	t_args		*res;
 
+	if (ft_strchr(new->arg, '|'))
+		return ;
 	if (!*arg)
 		*arg = new;
 	else

@@ -6,7 +6,7 @@
 /*   By: amayor <amayor@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 09:24:37 by iadrien           #+#    #+#             */
-/*   Updated: 2021/03/25 00:07:01 by amayor           ###   ########.fr       */
+/*   Updated: 2021/04/08 23:14:26 by amayor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static void		preallocated(t_vars *vars)
 	vars->fd[1] = dup(1);
 	vars->prompt = NULL;
 	vars->global_r_code = 0;
+	vars->command_counter = 0;
 }
 
 int				g_signal_flag;
